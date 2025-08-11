@@ -4,6 +4,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Type checked: mypy](https://img.shields.io/badge/type_checked-mypy-blue.svg)](https://mypy.readthedocs.io/)
+[![Tests](https://img.shields.io/badge/tests-in_development-yellow.svg)](https://github.com/Javihaus/Digital-Twin-in-python)
 
 > Implementation of an hybrid digital twin technology for Li-ion battery capacity prediction and lifecycle management, combining physics-based modeling with machine learning for superior accuracy.
 
