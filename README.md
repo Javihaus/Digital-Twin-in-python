@@ -8,6 +8,12 @@
 
 > Implementation of an hybrid digital twin technology for Li-ion battery capacity prediction and lifecycle management, combining physics-based modeling with machine learning for superior accuracy.
 
+<div align="center">
+  <img src="docs/images/hybrid-digital-twin-overview.png" alt="Hybrid Digital Twin Framework Overview" width="700"/>
+  <br>
+  <em>Hybrid Digital Twin Architecture combining Physics-based and ML models</em>
+</div>
+
 ## Table of Contents
 
 - [Overview](#overview)
