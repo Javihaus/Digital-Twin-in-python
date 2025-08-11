@@ -7,7 +7,7 @@
 
 > A professional-grade implementation of hybrid digital twin technology for Li-ion battery capacity prediction and lifecycle management, combining physics-based modeling with machine learning for superior accuracy.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Overview](#overview)
 - [Mathematical Foundation](#mathematical-foundation)
@@ -21,7 +21,7 @@
 - [Contributing](#contributing)
 - [Citation](#citation)
 
-## 🔬 Overview
+## Overview
 
 This framework implements a state-of-the-art **hybrid digital twin** approach for Li-ion battery modeling that combines the interpretability of physics-based models with the accuracy of machine learning. The system is designed for industrial applications requiring high reliability, interpretability, and performance.
 
@@ -35,60 +35,55 @@ A hybrid digital twin leverages both **first-principles physics models** and **d
 - **Fleet Management**: Battery health monitoring across vehicle fleets
 - **Grid Storage**: Performance optimization for large-scale energy storage
 
-## 📐 Mathematical Foundation
+##  Mathematical Foundation
 
 ### 1. Physics-Based Model
 
 The physics component implements the Li-ion battery degradation model based on **Xu et al. (2016)**:
 
 #### Battery Lifetime Evolution
-```
-L = 1 - (1 - L') × exp(-f_d)
-```
+
+$L = 1 - (1 - L') \times e^{-f_d}$
 
 Where:
-- `L`: Current battery lifetime fraction
-- `L'`: Initial battery lifetime
-- `f_d`: Linearized degradation rate function
+- $L$: Current battery lifetime fraction
+- $L'$: Initial battery lifetime
+- $f_d$: Linearized degradation rate function
 
 #### Degradation Rate Function
-```
-f_d = k × T_c × i / t
-```
+$f_d = \frac{k T_c i}{t}$
 
 Where:
-- `k`: Empirical degradation coefficient (≈ 0.13)
-- `T_c`: Cell temperature (°C)  
-- `i`: Cycle number
-- `t`: Charge time per cycle (seconds)
+- $k$: Empirical degradation coefficient ($≈$ 0.13)
+- $T_c$: Cell temperature (°C)  
+- $i$: Cycle number
+- $t$: Charge time per cycle (seconds)
 
 #### Capacity Evolution Model
-```
-C(t) = C_0 × exp(-f_d)
-```
+$C(t) = C_0 e^{-f_d}$
 
 Where:
-- `C(t)`: Battery capacity at time t
-- `C_0`: Initial battery capacity
+- $C(t)$: Battery capacity at time $t$
+- $C_0$: Initial battery capacity
 
 ### 2. Machine Learning Correction
 
 The ML component learns the residual function between physics predictions and observations:
 
 #### Residual Learning
-```
-ΔC = f_ML(C_physics, T, cycle, time, ...)
-```
+
+$\Delta C = f_{ML}(C_{physics}, T, cycle, time, etc. )$
+
 
 Where:
-- `ΔC`: Correction term
-- `f_ML`: Neural network function
+- $\Delta C$: Correction term
+- $f_{ML}$: Neural network function
 - Additional features include environmental and operational parameters
 
 #### Final Hybrid Prediction
-```
-C_hybrid = C_physics + ΔC
-```
+
+$C_{hybrid} = C_{physics} +  \Delta C$
+
 
 ### 3. Mathematical Advantages
 
@@ -116,41 +111,41 @@ graph TB
     H --> I[Final Output]
 ```
 
-## ✨ Key Features
+##  Key Features
 
-### 🏗️ Production-Ready Architecture
+### Production-Ready Architecture
 - **Modular Design**: Separate physics and ML components for maximum flexibility
 - **Type Safety**: Full type hints and mypy compatibility
 - **Error Handling**: Comprehensive exception handling and validation
 - **Logging**: Structured logging with configurable levels
 - **Configuration Management**: YAML/JSON configuration with validation
 
-### 🔬 Advanced Modeling Capabilities
+### Advanced Modeling Capabilities
 - **Physics-Based Foundation**: Empirically validated degradation models
 - **Deep Learning**: Configurable neural network architectures
 - **Uncertainty Quantification**: Monte Carlo dropout and ensemble methods
 - **Feature Engineering**: Automated domain-specific feature extraction
 - **Model Interpretability**: Feature importance and sensitivity analysis
 
-### 📊 Comprehensive Evaluation
+### Comprehensive Evaluation
 - **Performance Metrics**: RMSE, MAE, R², MAPE, and custom battery metrics
 - **Model Comparison**: Side-by-side evaluation of multiple approaches
 - **Residual Analysis**: Statistical validation of model assumptions
 - **Time Series Validation**: Specialized metrics for temporal predictions
 
-### 🚀 Scalability & Performance
+### Scalability & Performance
 - **Batch Processing**: Efficient handling of large datasets
 - **GPU Acceleration**: TensorFlow/CUDA support for training
 - **Model Persistence**: Optimized model serialization and loading
 - **Memory Management**: Streaming data processing for large files
 
-### 🔍 Monitoring & Observability
+### Monitoring & Observability
 - **MLflow Integration**: Experiment tracking and model registry
 - **Prometheus Metrics**: Production monitoring capabilities
 - **Performance Profiling**: Built-in timing and resource usage tracking
 - **Model Drift Detection**: Statistical tests for data and concept drift
 
-## 🛠️ Installation
+##  Installation
 
 ### Prerequisites
 - Python 3.9+
@@ -191,7 +186,7 @@ docker run -p 8888:8888 hybrid-digital-twin
 - **GPU**: Optional but recommended for ML training (CUDA-compatible)
 - **Storage**: SSD recommended for data I/O intensive operations
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Basic Usage
 
@@ -254,7 +249,7 @@ hybrid-twin predict --model model.pkl --data new_data.csv --output predictions.c
 hybrid-twin evaluate --model model.pkl --test-data test.csv
 ```
 
-## 🏛️ Architecture
+## Architecture
 
 ### Project Structure
 
@@ -318,7 +313,7 @@ classDiagram
     HybridDigitalTwin --> BatteryDataLoader
 ```
 
-## 📚 API Reference
+## API Reference
 
 ### Core Classes
 
@@ -382,7 +377,7 @@ logging:
   format: structured         # Log format
 ```
 
-## 💡 Examples
+## Examples
 
 ### 1. Basic Battery Modeling
 
@@ -519,13 +514,13 @@ while True:
     drift_detected = monitor.check_drift(new_data, prediction)
     
     if drift_detected:
-        print("⚠️  Model drift detected - consider retraining")
+        print("Model drift detected - consider retraining")
         # Trigger retraining pipeline
     
     time.sleep(60)  # Check every minute
 ```
 
-## 📈 Performance
+## Performance
 
 ### Benchmark Results
 
@@ -551,7 +546,7 @@ Evaluation on NASA Battery Dataset (B0005):
 - **Throughput**: 10,000+ predictions/second
 - **Availability**: 99.9% uptime in production
 
-## 🧪 Testing
+## Testing
 
 ### Running Tests
 
@@ -577,7 +572,7 @@ Current test coverage: **95%+**
 - **Performance Tests**: Benchmarking and profiling
 - **Regression Tests**: Model output validation
 
-## 🤝 Contributing
+## Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
@@ -606,16 +601,16 @@ pytest
 - **Code Style**: Black formatting and isort import sorting
 - **Linting**: Flake8 compliance required
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 📖 Citation
+## Citation
 
 If you use this framework in your research, please cite:
 
 ```bibtex
-@software{marin2024hybrid,
+@article{marin2024hybrid,
   title={Hybrid Digital Twin Framework for Li-ion Battery Modeling},
   author={Marin, Javier},
   year={2024},
@@ -632,13 +627,9 @@ If you use this framework in your research, please cite:
 
 3. **Richardson, R. R., Irish, M. A., & Howey, D. A.** (2020). Battery health prediction under generalized conditions using a Gaussian process transition model. *Journal of Energy Storage*, 23, 320-328.
 
-## 🆘 Support
+## Support
 
 - **Documentation**: [https://hybrid-digital-twin.readthedocs.io](https://hybrid-digital-twin.readthedocs.io)
 - **Issues**: [GitHub Issues](https://github.com/Javihaus/Digital-Twin-in-python/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/Javihaus/Digital-Twin-in-python/discussions)
-- **Email**: javier@example.com
-
----
-
-**Built with ❤️ for the battery research and industrial IoT communities.**
+- **Email**: javier@jmarin.info
