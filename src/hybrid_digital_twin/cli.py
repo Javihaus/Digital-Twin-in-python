@@ -23,7 +23,7 @@ from loguru import logger
 from hybrid_digital_twin import HybridDigitalTwin
 from hybrid_digital_twin.data.data_loader import BatteryDataLoader
 from hybrid_digital_twin.utils.exceptions import DigitalTwinError
-from hybrid_digital_twin.visualization.plotters import BatteryPlotter
+# from hybrid_digital_twin.visualization.plotters import BatteryPlotter  # Import when needed
 
 app = typer.Typer(
     name="hybrid-twin",
@@ -152,6 +152,7 @@ def train(
             plot_dir = output.parent / "plots"
             plot_dir.mkdir(exist_ok=True)
             
+            from hybrid_digital_twin.visualization.plotters import BatteryPlotter
             plotter = BatteryPlotter()
             
             # Training history plot
@@ -408,6 +409,7 @@ def evaluate(
             plot_dir = (output.parent if output else Path('.')) / "evaluation_plots"
             plot_dir.mkdir(exist_ok=True)
             
+            from hybrid_digital_twin.visualization.plotters import BatteryPlotter
             plotter = BatteryPlotter()
             
             # Get predictions for plotting
