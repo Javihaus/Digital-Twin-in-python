@@ -263,6 +263,6 @@ def test_degradation_coefficient_impact(sample_battery_data, k_value, expected_t
     if expected_trend == "slower_degradation":
         assert final_capacity_ratio > 0.80  # Less degradation (relaxed from 0.85)
     elif expected_trend == "faster_degradation":
-        assert final_capacity_ratio < 0.90  # More degradation (relaxed from 0.75)  
+        assert final_capacity_ratio < 0.90  # More degradation (relaxed from 0.75)
     else:  # normal_degradation
         assert 0.75 <= final_capacity_ratio <= 0.95  # Broader range

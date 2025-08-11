@@ -59,9 +59,11 @@ class TestHybridDigitalTwin:
         """Create a mock physics model."""
         model = Mock(spec=PhysicsBasedModel)
         model.fit.return_value = {"rmse": 0.01, "mae": 0.008, "r2": 0.98}
+
         # Return predictions that match the input data size dynamically
         def predict_side_effect(data):
             return np.random.uniform(1.8, 2.0, len(data))
+
         model.predict.side_effect = predict_side_effect
         model.is_fitted = True
         # Add save/load methods for serialization
@@ -74,9 +76,11 @@ class TestHybridDigitalTwin:
         """Create a mock ML model."""
         model = Mock(spec=MLCorrectionModel)
         model.fit.return_value = {"rmse": 0.005, "mae": 0.004, "r2": 0.99}
+
         # Return corrections that match the input size dynamically
         def predict_side_effect(features):
             return np.random.uniform(-0.01, 0.01, len(features))
+
         model.predict.side_effect = predict_side_effect
         model.is_fitted = True
         # Add save/load methods for serialization
