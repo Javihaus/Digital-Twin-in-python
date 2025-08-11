@@ -31,28 +31,28 @@ def sample_battery_data():
     """Create realistic sample battery data for testing."""
     np.random.seed(42)
     n_cycles = 100
-    
+
     # Generate realistic battery degradation data
     cycles = np.arange(1, n_cycles + 1)
     base_temp = 25.0
     temperature = base_temp + np.random.normal(0, 2, n_cycles)
     time = 3600 + np.random.normal(0, 100, n_cycles)
     time = np.clip(time, 1000, 7200)  # Realistic charge times
-    
+
     # Physics-based capacity degradation
     initial_capacity = 2.0
     k = 0.13
     degradation_factor = k * temperature * cycles / time
     capacity = initial_capacity * np.exp(-degradation_factor * 0.001)  # Scale for realistic degradation
-    
+
     # Add realistic noise
     capacity += np.random.normal(0, 0.005, n_cycles)
     capacity = np.clip(capacity, 0.5, initial_capacity)  # Ensure physical constraints
-    
+
     # Additional realistic columns
     voltage = 3.7 - 0.3 * (1 - capacity / initial_capacity) + np.random.normal(0, 0.05, n_cycles)
     current = -2.0 + np.random.normal(0, 0.1, n_cycles)
-    
+
     return pd.DataFrame({
         'id_cycle': cycles,
         'Temperature_measured': temperature,

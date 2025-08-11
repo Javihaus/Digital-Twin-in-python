@@ -17,7 +17,7 @@ from hybrid_digital_twin.utils.metrics import ModelMetrics
 
 __all__ = [
     "HybridDigitalTwin",
-    "PhysicsBasedModel", 
+    "PhysicsBasedModel",
     "MLCorrectionModel",
     "BatteryDataLoader",
     "ModelMetrics",
