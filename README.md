@@ -43,7 +43,7 @@ The physics component implements the Li-ion battery degradation model based on *
 
 #### Battery Lifetime Evolution
 
-$L = 1 - (1 - L') \by exp^{-f_d}$
+$L = 1 - (1 - L') \times \exp(-f_d)$
 
 Where:
 - $L$: Current battery lifetime fraction
@@ -51,43 +51,39 @@ Where:
 - $f_d$: Linearized degradation rate function
 
 #### Degradation Rate Function
-```
-f_d = k × T_c × i / t
-```
+$f_d = k \times T_c \times i / t$
 
 Where:
-- `k`: Empirical degradation coefficient (≈ 0.13)
-- `T_c`: Cell temperature (°C)  
-- `i`: Cycle number
-- `t`: Charge time per cycle (seconds)
+- $k$: Empirical degradation coefficient ($≈$ 0.13)
+- $T_c$: Cell temperature (°C)  
+- $i$: Cycle number
+- $t$: Charge time per cycle (seconds)
 
 #### Capacity Evolution Model
-```
-C(t) = C_0 × exp(-f_d)
-```
+$ C(t) = C_0 \exp(-f_d)$
 
 Where:
-- `C(t)`: Battery capacity at time t
-- `C_0`: Initial battery capacity
+- $C(t)$: Battery capacity at time $t$
+- $C_0$: Initial battery capacity
 
 ### 2. Machine Learning Correction
 
 The ML component learns the residual function between physics predictions and observations:
 
 #### Residual Learning
-```
-ΔC = f_ML(C_physics, T, cycle, time, ...)
-```
+
+$\Delta C = f_{ML}(C_{physics}, T, cycle, time, ...)$
+
 
 Where:
-- `ΔC`: Correction term
-- `f_ML`: Neural network function
+- $\Delta C$: Correction term
+- $f_{ML}$: Neural network function
 - Additional features include environmental and operational parameters
 
 #### Final Hybrid Prediction
-```
-C_hybrid = C_physics + ΔC
-```
+
+$C_{hybrid} = C_{physics} +  \Delta C$
+
 
 ### 3. Mathematical Advantages
 
