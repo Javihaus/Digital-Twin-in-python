@@ -1,6 +1,6 @@
 # Hybrid Digital Twin Framework for Li-ion Battery Modeling
 
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/release/python-390/)
+[![Python 3.7+](https://img.shields.io/badge/python-3.7+-blue.svg)](https://www.python.org/downloads/release/python-370/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Type checked: mypy](https://img.shields.io/badge/type_checked-mypy-blue.svg)](https://mypy.readthedocs.io/)
@@ -148,7 +148,7 @@ graph TB
 ##  Installation
 
 ### Prerequisites
-- Python 3.9+
+- Python 3.7+
 - pip or conda package manager
 
 ### Option 1: PyPI Installation (Recommended)
