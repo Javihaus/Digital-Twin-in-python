@@ -82,7 +82,7 @@ class ModelMetrics:
         self,
         y_true: np.ndarray,
         y_pred: np.ndarray,
-        sample_weight: Optional[np.ndarray] = None
+        sample_weight: Optional[np.ndarray] = None,
     ) -> Dict[str, float]:
         """
         Calculate comprehensive set of regression metrics.
@@ -135,7 +135,7 @@ class ModelMetrics:
         self,
         y_true: np.ndarray,
         y_pred: np.ndarray,
-        sample_weight: Optional[np.ndarray] = None
+        sample_weight: Optional[np.ndarray] = None,
     ) -> MetricsResult:
         """
         Calculate metrics and return as MetricsResult object.
@@ -166,7 +166,7 @@ class ModelMetrics:
         self,
         y_true: np.ndarray,
         predictions_dict: Dict[str, np.ndarray],
-        metrics: Optional[List[str]] = None
+        metrics: Optional[List[str]] = None,
     ) -> pd.DataFrame:
         """
         Compare multiple models on the same dataset.
@@ -207,7 +207,7 @@ class ModelMetrics:
         self,
         y_true: np.ndarray,
         y_pred: np.ndarray,
-        time_index: Optional[np.ndarray] = None
+        time_index: Optional[np.ndarray] = None,
     ) -> Dict[str, float]:
         """
         Calculate time series specific metrics.
@@ -254,9 +254,7 @@ class ModelMetrics:
         return ts_metrics
 
     def calculate_residual_statistics(
-        self,
-        y_true: np.ndarray,
-        y_pred: np.ndarray
+        self, y_true: np.ndarray, y_pred: np.ndarray
     ) -> Dict[str, float]:
         """
         Calculate detailed residual statistics for model diagnostics.
@@ -301,10 +299,7 @@ class ModelMetrics:
         return stats_dict
 
     def calculate_confidence_intervals(
-        self,
-        y_true: np.ndarray,
-        y_pred: np.ndarray,
-        confidence_level: float = 0.95
+        self, y_true: np.ndarray, y_pred: np.ndarray, confidence_level: float = 0.95
     ) -> Dict[str, Tuple[float, float]]:
         """
         Calculate confidence intervals for model metrics.
@@ -340,8 +335,8 @@ class ModelMetrics:
             if metric in ["n_samples"]:  # Skip non-metric columns
                 continue
 
-            lower = np.percentile(bootstrap_df[metric], (alpha/2) * 100)
-            upper = np.percentile(bootstrap_df[metric], (1 - alpha/2) * 100)
+            lower = np.percentile(bootstrap_df[metric], (alpha / 2) * 100)
+            upper = np.percentile(bootstrap_df[metric], (1 - alpha / 2) * 100)
             confidence_intervals[metric] = (lower, upper)
 
         return confidence_intervals
@@ -350,7 +345,7 @@ class ModelMetrics:
         self,
         y_true: np.ndarray,
         y_pred: np.ndarray,
-        sample_weight: Optional[np.ndarray] = None
+        sample_weight: Optional[np.ndarray] = None,
     ) -> None:
         """Validate input arrays for metrics calculation."""
         if not isinstance(y_true, np.ndarray):
@@ -393,7 +388,7 @@ class ModelMetrics:
     def _durbin_watson(self, residuals: np.ndarray) -> float:
         """Calculate Durbin-Watson test statistic for autocorrelation."""
         diff_residuals = np.diff(residuals)
-        return np.sum(diff_residuals ** 2) / np.sum(residuals ** 2)
+        return np.sum(diff_residuals**2) / np.sum(residuals**2)
 
     def export_metrics_report(
         self,
@@ -401,7 +396,7 @@ class ModelMetrics:
         y_pred: np.ndarray,
         model_name: str = "Model",
         include_residuals: bool = True,
-        include_confidence: bool = False
+        include_confidence: bool = False,
     ) -> Dict[str, Any]:
         """
         Generate comprehensive metrics report.
@@ -423,10 +418,14 @@ class ModelMetrics:
         }
 
         if include_residuals:
-            report["residual_statistics"] = self.calculate_residual_statistics(y_true, y_pred)
+            report["residual_statistics"] = self.calculate_residual_statistics(
+                y_true, y_pred
+            )
 
         if include_confidence:
-            report["confidence_intervals"] = self.calculate_confidence_intervals(y_true, y_pred)
+            report["confidence_intervals"] = self.calculate_confidence_intervals(
+                y_true, y_pred
+            )
 
         logger.info(f"Generated comprehensive metrics report for {model_name}")
         return report

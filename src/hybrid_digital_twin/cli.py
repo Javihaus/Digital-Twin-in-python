@@ -23,13 +23,14 @@ from loguru import logger
 from hybrid_digital_twin import HybridDigitalTwin
 from hybrid_digital_twin.data.data_loader import BatteryDataLoader
 from hybrid_digital_twin.utils.exceptions import DigitalTwinError
+
 # from hybrid_digital_twin.visualization.plotters import BatteryPlotter
 
 app = typer.Typer(
     name="hybrid-twin",
     help="Professional CLI for Hybrid Digital Twin battery modeling",
     add_completion=False,
-    rich_markup_mode="rich"
+    rich_markup_mode="rich",
 )
 
 console = Console()
@@ -51,7 +52,9 @@ def train(
     battery_id: Optional[str] = typer.Option(
         None, "--battery", "-b", help="Specific battery ID to train on"
     ),
-    verbose: bool = typer.Option(False, "--verbose", "-v", help="Enable verbose logging"),
+    verbose: bool = typer.Option(
+        False, "--verbose", "-v", help="Enable verbose logging"
+    ),
     plot: bool = typer.Option(False, "--plot", help="Generate training plots"),
 ) -> None:
     """
@@ -69,16 +72,18 @@ def train(
             logger.remove()
             logger.add(sys.stderr, level="DEBUG")
 
-        console.print(Panel.fit(
-            "[bold blue]Hybrid Digital Twin - Training[/bold blue]",
-            border_style="blue"
-        ))
+        console.print(
+            Panel.fit(
+                "[bold blue]Hybrid Digital Twin - Training[/bold blue]",
+                border_style="blue",
+            )
+        )
 
         # Load configuration
         config_dict = {}
         if config and config.exists():
             with open(config) as f:
-                if config.suffix.lower() in ['.yml', '.yaml']:
+                if config.suffix.lower() in [".yml", ".yaml"]:
                     config_dict = yaml.safe_load(f)
                 else:
                     config_dict = json.load(f)
@@ -88,7 +93,7 @@ def train(
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
-            console=console
+            console=console,
         ) as progress:
             task = progress.add_task("Loading data...", total=None)
 
@@ -100,26 +105,28 @@ def train(
 
             progress.update(task, completed=1, description="Data loaded successfully")
 
-        console.print(f"📊 Loaded {len(data_df):,} samples with {len(data_df.columns)} features")
+        console.print(
+            f"📊 Loaded {len(data_df):,} samples with {len(data_df.columns)} features"
+        )
 
         # Display data info
         if target_column in data_df.columns:
-            capacity_range = data_df[target_column].agg(['min', 'max'])
-            console.print(f"🔋 Capacity range: {capacity_range['min']:.3f} - {capacity_range['max']:.3f} Ah")
+            capacity_range = data_df[target_column].agg(["min", "max"])
+            console.print(
+                f"🔋 Capacity range: {capacity_range['min']:.3f} - {capacity_range['max']:.3f} Ah"
+            )
 
         # Initialize and train model
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
-            console=console
+            console=console,
         ) as progress:
             task = progress.add_task("Training hybrid digital twin...", total=None)
 
             twin = HybridDigitalTwin(config=config_dict)
             metrics = twin.fit(
-                data_df,
-                target_column=target_column,
-                validation_split=validation_split
+                data_df, target_column=target_column, validation_split=validation_split
             )
 
             progress.update(task, completed=1, description="Training completed")
@@ -131,7 +138,7 @@ def train(
         results_table.add_column("Train", justify="right")
         results_table.add_column("Validation", justify="right")
 
-        key_metrics = ['rmse', 'mae', 'r2', 'mape']
+        key_metrics = ["rmse", "mae", "r2", "mape"]
         for metric in key_metrics:
             train_key = f"train_{metric}"
             val_key = f"val_{metric}"
@@ -139,10 +146,10 @@ def train(
             if train_key in metrics and val_key in metrics:
                 train_val = f"{metrics[train_key]:.4f}"
                 val_val = f"{metrics[val_key]:.4f}"
-                if metric == 'r2':
+                if metric == "r2":
                     train_val = f"{metrics[train_key]:.4f}"
                     val_val = f"{metrics[val_key]:.4f}"
-                elif metric == 'mape':
+                elif metric == "mape":
                     train_val = f"{metrics[train_key]:.2f}%"
                     val_val = f"{metrics[val_key]:.2f}%"
 
@@ -161,12 +168,15 @@ def train(
             plot_dir.mkdir(exist_ok=True)
 
             from hybrid_digital_twin.visualization.plotters import BatteryPlotter
+
             plotter = BatteryPlotter()
 
             # Training history plot
-            if hasattr(twin.ml_model, 'training_history'):
+            if hasattr(twin.ml_model, "training_history"):
                 history_plot = plot_dir / "training_history.png"
-                plotter.plot_training_history(twin.ml_model.training_history, save_path=history_plot)
+                plotter.plot_training_history(
+                    twin.ml_model.training_history, save_path=history_plot
+                )
                 console.print(f"📈 Training history plot saved to {history_plot}")
 
             # Prediction comparison plot
@@ -176,7 +186,7 @@ def train(
                 actual=data_df[target_column].values,
                 physics_pred=predictions.physics_prediction,
                 hybrid_pred=predictions.hybrid_prediction,
-                save_path=comparison_plot
+                save_path=comparison_plot,
             )
             console.print(f"📊 Prediction comparison plot saved to {comparison_plot}")
 
@@ -192,10 +202,18 @@ def predict(
     model: Path = typer.Argument(..., help="Path to trained model file"),
     data: Path = typer.Argument(..., help="Path to data file for prediction"),
     output: Path = typer.Argument(..., help="Output path for predictions"),
-    return_components: bool = typer.Option(False, "--components", help="Return individual model components"),
-    return_uncertainty: bool = typer.Option(False, "--uncertainty", help="Return uncertainty estimates"),
-    batch_size: int = typer.Option(1000, "--batch-size", help="Batch size for large datasets"),
-    format: str = typer.Option("csv", "--format", help="Output format (csv, json, parquet)"),
+    return_components: bool = typer.Option(
+        False, "--components", help="Return individual model components"
+    ),
+    return_uncertainty: bool = typer.Option(
+        False, "--uncertainty", help="Return uncertainty estimates"
+    ),
+    batch_size: int = typer.Option(
+        1000, "--batch-size", help="Batch size for large datasets"
+    ),
+    format: str = typer.Option(
+        "csv", "--format", help="Output format (csv, json, parquet)"
+    ),
 ) -> None:
     """
     Make predictions using a trained hybrid digital twin model.
@@ -206,16 +224,18 @@ def predict(
         hybrid-twin predict models/battery_twin.pkl data/new_data.csv predictions.csv
     """
     try:
-        console.print(Panel.fit(
-            "[bold blue]Hybrid Digital Twin - Prediction[/bold blue]",
-            border_style="blue"
-        ))
+        console.print(
+            Panel.fit(
+                "[bold blue]Hybrid Digital Twin - Prediction[/bold blue]",
+                border_style="blue",
+            )
+        )
 
         # Load model
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
-            console=console
+            console=console,
         ) as progress:
             task = progress.add_task("Loading model...", total=None)
             twin = HybridDigitalTwin.load_model(model)
@@ -227,12 +247,14 @@ def predict(
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
-            console=console
+            console=console,
         ) as progress:
             task = progress.add_task("Loading data...", total=None)
 
             loader = BatteryDataLoader()
-            data_df = loader.load_csv(data, validate=False)  # Skip validation for prediction data
+            data_df = loader.load_csv(
+                data, validate=False
+            )  # Skip validation for prediction data
 
             progress.update(task, completed=1, description="Data loaded successfully")
 
@@ -245,18 +267,18 @@ def predict(
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
-            console=console
+            console=console,
         ) as progress:
             task = progress.add_task("Making predictions...", total=n_batches)
 
             for i in range(0, len(data_df), batch_size):
-                batch_data = data_df.iloc[i:i+batch_size]
+                batch_data = data_df.iloc[i : i + batch_size]
 
                 if return_components or return_uncertainty:
                     batch_pred = twin.predict(
                         batch_data,
                         return_components=True,
-                        return_uncertainty=return_uncertainty
+                        return_uncertainty=return_uncertainty,
                     )
                 else:
                     batch_pred = twin.predict(batch_data)
@@ -269,19 +291,19 @@ def predict(
             # Combine PredictionResult objects
             combined_result = all_predictions[0]
             if len(all_predictions) > 1:
-                combined_result.physics_prediction = np.concatenate([
-                    pred.physics_prediction for pred in all_predictions
-                ])
-                combined_result.ml_correction = np.concatenate([
-                    pred.ml_correction for pred in all_predictions
-                ])
-                combined_result.hybrid_prediction = np.concatenate([
-                    pred.hybrid_prediction for pred in all_predictions
-                ])
+                combined_result.physics_prediction = np.concatenate(
+                    [pred.physics_prediction for pred in all_predictions]
+                )
+                combined_result.ml_correction = np.concatenate(
+                    [pred.ml_correction for pred in all_predictions]
+                )
+                combined_result.hybrid_prediction = np.concatenate(
+                    [pred.hybrid_prediction for pred in all_predictions]
+                )
                 if return_uncertainty and combined_result.uncertainty is not None:
-                    combined_result.uncertainty = np.concatenate([
-                        pred.uncertainty for pred in all_predictions
-                    ])
+                    combined_result.uncertainty = np.concatenate(
+                        [pred.uncertainty for pred in all_predictions]
+                    )
 
             predictions = combined_result
         else:
@@ -291,22 +313,22 @@ def predict(
         output_data = data_df.copy()
 
         if isinstance(predictions, np.ndarray):
-            output_data['prediction'] = predictions
+            output_data["prediction"] = predictions
         else:
-            output_data['physics_prediction'] = predictions.physics_prediction
-            output_data['ml_correction'] = predictions.ml_correction
-            output_data['hybrid_prediction'] = predictions.hybrid_prediction
+            output_data["physics_prediction"] = predictions.physics_prediction
+            output_data["ml_correction"] = predictions.ml_correction
+            output_data["hybrid_prediction"] = predictions.hybrid_prediction
             if return_uncertainty and predictions.uncertainty is not None:
-                output_data['uncertainty'] = predictions.uncertainty
+                output_data["uncertainty"] = predictions.uncertainty
 
         # Save results
         output.parent.mkdir(parents=True, exist_ok=True)
 
-        if format.lower() == 'csv':
+        if format.lower() == "csv":
             output_data.to_csv(output, index=False)
-        elif format.lower() == 'json':
-            output_data.to_json(output, orient='records', indent=2)
-        elif format.lower() == 'parquet':
+        elif format.lower() == "json":
+            output_data.to_json(output, orient="records", indent=2)
+        elif format.lower() == "parquet":
             output_data.to_parquet(output, index=False)
         else:
             raise ValueError(f"Unsupported output format: {format}")
@@ -325,7 +347,9 @@ def predict(
         console.print(f"📊 Min prediction: {pred_values.min():.4f}")
         console.print(f"📊 Max prediction: {pred_values.max():.4f}")
 
-        console.print("\n[bold green]✅ Predictions completed successfully![/bold green]")
+        console.print(
+            "\n[bold green]✅ Predictions completed successfully![/bold green]"
+        )
 
     except Exception as e:
         console.print(f"[bold red]❌ Prediction failed: {str(e)}[/bold red]")
@@ -336,8 +360,12 @@ def predict(
 def evaluate(
     model: Path = typer.Argument(..., help="Path to trained model file"),
     test_data: Path = typer.Argument(..., help="Path to test data file"),
-    target_column: str = typer.Option("Capacity", "--target", "-t", help="Target column name"),
-    output: Optional[Path] = typer.Option(None, "--output", "-o", help="Output path for evaluation report"),
+    target_column: str = typer.Option(
+        "Capacity", "--target", "-t", help="Target column name"
+    ),
+    output: Optional[Path] = typer.Option(
+        None, "--output", "-o", help="Output path for evaluation report"
+    ),
     plot: bool = typer.Option(False, "--plot", help="Generate evaluation plots"),
 ) -> None:
     """
@@ -350,10 +378,12 @@ def evaluate(
         hybrid-twin evaluate models/battery_twin.pkl data/test_data.csv --output evaluation_report.json
     """
     try:
-        console.print(Panel.fit(
-            "[bold blue]Hybrid Digital Twin - Evaluation[/bold blue]",
-            border_style="blue"
-        ))
+        console.print(
+            Panel.fit(
+                "[bold blue]Hybrid Digital Twin - Evaluation[/bold blue]",
+                border_style="blue",
+            )
+        )
 
         # Load model and data
         twin = HybridDigitalTwin.load_model(model)
@@ -367,7 +397,7 @@ def evaluate(
         with Progress(
             SpinnerColumn(),
             TextColumn("[progress.description]{task.description}"),
-            console=console
+            console=console,
         ) as progress:
             task = progress.add_task("Evaluating model...", total=None)
 
@@ -384,9 +414,9 @@ def evaluate(
 
         for metric_name, value in metrics.items():
             if isinstance(value, float):
-                if metric_name in ['mape']:
+                if metric_name in ["mape"]:
                     formatted_value = f"{value:.2f}%"
-                elif metric_name in ['r2']:
+                elif metric_name in ["r2"]:
                     formatted_value = f"{value:.4f}"
                 else:
                     formatted_value = f"{value:.4f}"
@@ -398,26 +428,27 @@ def evaluate(
         # Save evaluation report
         if output:
             report = {
-                'model_path': str(model),
-                'test_data_path': str(test_data),
-                'target_column': target_column,
-                'n_test_samples': len(test_df),
-                'metrics': metrics,
-                'timestamp': pd.Timestamp.now().isoformat()
+                "model_path": str(model),
+                "test_data_path": str(test_data),
+                "target_column": target_column,
+                "n_test_samples": len(test_df),
+                "metrics": metrics,
+                "timestamp": pd.Timestamp.now().isoformat(),
             }
 
             output.parent.mkdir(parents=True, exist_ok=True)
-            with open(output, 'w') as f:
+            with open(output, "w") as f:
                 json.dump(report, f, indent=2)
 
             console.print(f"📄 Evaluation report saved to {output}")
 
         # Generate plots if requested
         if plot:
-            plot_dir = (output.parent if output else Path('.')) / "evaluation_plots"
+            plot_dir = (output.parent if output else Path(".")) / "evaluation_plots"
             plot_dir.mkdir(exist_ok=True)
 
             from hybrid_digital_twin.visualization.plotters import BatteryPlotter
+
             plotter = BatteryPlotter()
 
             # Get predictions for plotting
@@ -429,7 +460,7 @@ def evaluate(
             plotter.plot_prediction_scatter(
                 actual=actual_values,
                 predicted=predictions.hybrid_prediction,
-                save_path=scatter_plot
+                save_path=scatter_plot,
             )
             console.print(f"📈 Prediction scatter plot saved to {scatter_plot}")
 
@@ -438,11 +469,13 @@ def evaluate(
             plotter.plot_residuals(
                 actual=actual_values,
                 predicted=predictions.hybrid_prediction,
-                save_path=residuals_plot
+                save_path=residuals_plot,
             )
             console.print(f"📊 Residuals plot saved to {residuals_plot}")
 
-        console.print("\n[bold green]✅ Evaluation completed successfully![/bold green]")
+        console.print(
+            "\n[bold green]✅ Evaluation completed successfully![/bold green]"
+        )
 
     except Exception as e:
         console.print(f"[bold red]❌ Evaluation failed: {str(e)}[/bold red]")
@@ -463,17 +496,21 @@ def info(
         hybrid-twin info models/battery_twin.pkl
     """
     try:
-        console.print(Panel.fit(
-            "[bold blue]Hybrid Digital Twin - Model Information[/bold blue]",
-            border_style="blue"
-        ))
+        console.print(
+            Panel.fit(
+                "[bold blue]Hybrid Digital Twin - Model Information[/bold blue]",
+                border_style="blue",
+            )
+        )
 
         # Load model
         twin = HybridDigitalTwin.load_model(model)
         console.print(f"📥 Loaded model from {model}")
 
         # Display basic information
-        console.print(f"\n[bold]Model Status:[/bold] {'✅ Trained' if twin.is_trained else '❌ Not trained'}")
+        console.print(
+            f"\n[bold]Model Status:[/bold] {'✅ Trained' if twin.is_trained else '❌ Not trained'}"
+        )
 
         # Configuration
         if twin.config:
@@ -507,7 +544,9 @@ def info(
                     for metric_name, metric_value in metrics.items():
                         if isinstance(metric_value, (int, float)):
                             formatted_value = f"{metric_value:.4f}"
-                            history_table.add_row(component, metric_name, formatted_value)
+                            history_table.add_row(
+                                component, metric_name, formatted_value
+                            )
 
             console.print(history_table)
 
@@ -518,12 +557,22 @@ def info(
         arch_table.add_column("Type", style="cyan")
         arch_table.add_column("Status", justify="right")
 
-        arch_table.add_row("Physics Model", "Degradation Model", "✅ Fitted" if twin.physics_model.is_fitted else "❌ Not fitted")
-        arch_table.add_row("ML Model", "Neural Network", "✅ Fitted" if twin.ml_model.is_fitted else "❌ Not fitted")
+        arch_table.add_row(
+            "Physics Model",
+            "Degradation Model",
+            "✅ Fitted" if twin.physics_model.is_fitted else "❌ Not fitted",
+        )
+        arch_table.add_row(
+            "ML Model",
+            "Neural Network",
+            "✅ Fitted" if twin.ml_model.is_fitted else "❌ Not fitted",
+        )
 
         console.print(arch_table)
 
-        console.print("\n[bold green]✅ Model information displayed successfully![/bold green]")
+        console.print(
+            "\n[bold green]✅ Model information displayed successfully![/bold green]"
+        )
 
     except Exception as e:
         console.print(f"[bold red]❌ Failed to load model info: {str(e)}[/bold red]")

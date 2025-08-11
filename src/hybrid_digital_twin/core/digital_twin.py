@@ -88,7 +88,7 @@ class HybridDigitalTwin:
         data: pd.DataFrame,
         target_column: str = "Capacity",
         validation_split: float = 0.2,
-        **kwargs
+        **kwargs,
     ) -> Dict[str, float]:
         """
         Train the hybrid digital twin on battery data.
@@ -131,18 +131,22 @@ class HybridDigitalTwin:
 
             # Step 4: Train ML correction model
             logger.info("Training ML correction model")
-            ml_features_train = self._extract_ml_features(train_data, train_physics_pred)
+            ml_features_train = self._extract_ml_features(
+                train_data, train_physics_pred
+            )
             ml_features_val = self._extract_ml_features(val_data, val_physics_pred)
 
             ml_metrics = self.ml_model.fit(
                 ml_features_train,
                 train_residuals,
                 validation_data=(ml_features_val, val_residuals),
-                **kwargs
+                **kwargs,
             )
 
             # Step 5: Evaluate hybrid model
-            hybrid_pred_train = train_physics_pred + self.ml_model.predict(ml_features_train)
+            hybrid_pred_train = train_physics_pred + self.ml_model.predict(
+                ml_features_train
+            )
             hybrid_pred_val = val_physics_pred + self.ml_model.predict(ml_features_val)
 
             # Calculate metrics
@@ -150,7 +154,7 @@ class HybridDigitalTwin:
                 train_data[target_column].values,
                 val_data[target_column].values,
                 hybrid_pred_train,
-                hybrid_pred_val
+                hybrid_pred_val,
             )
 
             # Store training history
@@ -221,8 +225,10 @@ class HybridDigitalTwin:
                     uncertainty=uncertainty,
                     metadata={
                         "n_samples": len(data),
-                        "feature_dimensions": ml_features.shape[1] if ml_features.ndim > 1 else 1,
-                    }
+                        "feature_dimensions": (
+                            ml_features.shape[1] if ml_features.ndim > 1 else 1
+                        ),
+                    },
                 )
 
             return hybrid_pred
@@ -256,20 +262,22 @@ class HybridDigitalTwin:
             raise ModelNotTrainedError("Models must be trained before prediction")
 
         # Create synthetic data for future cycles
-        future_data = pd.DataFrame({
-            'id_cycle': cycles,
-            'Temperature_measured': temperature,
-            'Time': charge_time,
-            'Capacity': initial_capacity,  # Will be overridden by physics model
-        })
-
-        return self.predict(
-            future_data,
-            return_uncertainty=return_uncertainty,
-            return_components=True
+        future_data = pd.DataFrame(
+            {
+                "id_cycle": cycles,
+                "Temperature_measured": temperature,
+                "Time": charge_time,
+                "Capacity": initial_capacity,  # Will be overridden by physics model
+            }
         )
 
-    def evaluate(self, test_data: pd.DataFrame, target_column: str = "Capacity") -> Dict[str, float]:
+        return self.predict(
+            future_data, return_uncertainty=return_uncertainty, return_components=True
+        )
+
+    def evaluate(
+        self, test_data: pd.DataFrame, target_column: str = "Capacity"
+    ) -> Dict[str, float]:
         """
         Evaluate the hybrid model on test data.
 
@@ -329,7 +337,9 @@ class HybridDigitalTwin:
         logger.info(f"Model loaded from {filepath}")
         return instance
 
-    def _extract_ml_features(self, data: pd.DataFrame, physics_pred: np.ndarray) -> np.ndarray:
+    def _extract_ml_features(
+        self, data: pd.DataFrame, physics_pred: np.ndarray
+    ) -> np.ndarray:
         """Extract features for ML model."""
         features = []
 
@@ -337,14 +347,14 @@ class HybridDigitalTwin:
         features.append(physics_pred.reshape(-1, 1))
 
         # Additional engineered features
-        if 'Temperature_measured' in data.columns:
-            features.append(data['Temperature_measured'].values.reshape(-1, 1))
+        if "Temperature_measured" in data.columns:
+            features.append(data["Temperature_measured"].values.reshape(-1, 1))
 
-        if 'id_cycle' in data.columns:
-            features.append(data['id_cycle'].values.reshape(-1, 1))
+        if "id_cycle" in data.columns:
+            features.append(data["id_cycle"].values.reshape(-1, 1))
 
-        if 'Time' in data.columns:
-            features.append(data['Time'].values.reshape(-1, 1))
+        if "Time" in data.columns:
+            features.append(data["Time"].values.reshape(-1, 1))
 
         return np.hstack(features)
 

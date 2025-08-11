@@ -14,7 +14,10 @@ from dataclasses import dataclass
 from loguru import logger
 
 from hybrid_digital_twin.utils.exceptions import DataLoaderError, InvalidDataError
-from hybrid_digital_twin.utils.validators import validate_battery_data, sanitize_numeric_data
+from hybrid_digital_twin.utils.validators import (
+    validate_battery_data,
+    sanitize_numeric_data,
+)
 
 
 @dataclass
@@ -80,7 +83,7 @@ class BatteryDataLoader:
         battery_filter: Optional[str] = None,
         validate: bool = True,
         clean: bool = True,
-        **kwargs
+        **kwargs,
     ) -> pd.DataFrame:
         """
         Load battery data from CSV file.
@@ -115,10 +118,12 @@ class BatteryDataLoader:
             logger.debug(f"Loaded {len(data):,} rows and {len(data.columns)} columns")
 
             # Filter by battery if requested
-            if battery_filter and 'Battery' in data.columns:
+            if battery_filter and "Battery" in data.columns:
                 original_size = len(data)
-                data = data[data['Battery'] == battery_filter].copy()
-                logger.debug(f"Filtered to battery {battery_filter}: {len(data):,} rows (from {original_size:,})")
+                data = data[data["Battery"] == battery_filter].copy()
+                logger.debug(
+                    f"Filtered to battery {battery_filter}: {len(data):,} rows (from {original_size:,})"
+                )
 
             # Clean data if requested
             if clean:
@@ -143,7 +148,7 @@ class BatteryDataLoader:
         self,
         battery_id: str = "B0005",
         dataset_path: Optional[Union[str, Path]] = None,
-        temperature_filter: Optional[Tuple[float, float]] = None
+        temperature_filter: Optional[Tuple[float, float]] = None,
     ) -> pd.DataFrame:
         """
         Load NASA battery dataset with standardized preprocessing.
@@ -166,27 +171,35 @@ class BatteryDataLoader:
             data = self.load_csv(dataset_path, battery_filter=battery_id)
 
             # NASA dataset specific processing
-            if 'Temperature_measured' in data.columns and temperature_filter:
+            if "Temperature_measured" in data.columns and temperature_filter:
                 min_temp, max_temp = temperature_filter
                 original_size = len(data)
                 data = data[
-                    (data['Temperature_measured'] >= min_temp) &
-                    (data['Temperature_measured'] <= max_temp)
+                    (data["Temperature_measured"] >= min_temp)
+                    & (data["Temperature_measured"] <= max_temp)
                 ].copy()
-                logger.debug(f"Temperature filter applied: {len(data):,} rows (from {original_size:,})")
+                logger.debug(
+                    f"Temperature filter applied: {len(data):,} rows (from {original_size:,})"
+                )
 
             # Group by cycle and get max values (end of discharge)
-            if 'id_cycle' in data.columns:
-                cycle_data = data.groupby('id_cycle').agg({
-                    'Capacity': 'first',  # Capacity at start of cycle
-                    'Temperature_measured': 'mean',
-                    'Time': 'max',  # Total cycle time
-                    'Voltage_measured': 'mean',
-                    'Current_measured': 'mean',
-                }).reset_index()
+            if "id_cycle" in data.columns:
+                cycle_data = (
+                    data.groupby("id_cycle")
+                    .agg(
+                        {
+                            "Capacity": "first",  # Capacity at start of cycle
+                            "Temperature_measured": "mean",
+                            "Time": "max",  # Total cycle time
+                            "Voltage_measured": "mean",
+                            "Current_measured": "mean",
+                        }
+                    )
+                    .reset_index()
+                )
 
                 # Add cumulative time
-                cycle_data['Cumulated_T'] = cycle_data['Time'].cumsum()
+                cycle_data["Cumulated_T"] = cycle_data["Time"].cumsum()
 
                 logger.debug(f"Aggregated to {len(cycle_data)} cycles")
                 data = cycle_data
@@ -201,7 +214,7 @@ class BatteryDataLoader:
         self,
         filepath: Union[str, Path],
         battery_ids: Optional[List[str]] = None,
-        combine: bool = False
+        combine: bool = False,
     ) -> Union[Dict[str, pd.DataFrame], pd.DataFrame]:
         """
         Load data for multiple batteries.
@@ -220,10 +233,12 @@ class BatteryDataLoader:
             # Load full dataset
             full_data = pd.read_csv(filepath)
 
-            if 'Battery' not in full_data.columns:
-                raise DataLoaderError("Dataset must contain 'Battery' column for multi-battery loading")
+            if "Battery" not in full_data.columns:
+                raise DataLoaderError(
+                    "Dataset must contain 'Battery' column for multi-battery loading"
+                )
 
-            available_batteries = full_data['Battery'].unique().tolist()
+            available_batteries = full_data["Battery"].unique().tolist()
 
             if battery_ids is None:
                 battery_ids = available_batteries
@@ -237,7 +252,7 @@ class BatteryDataLoader:
 
             battery_data = {}
             for battery_id in battery_ids:
-                data = full_data[full_data['Battery'] == battery_id].copy()
+                data = full_data[full_data["Battery"] == battery_id].copy()
                 data = self._clean_data(data)
                 validate_battery_data(data)
                 battery_data[battery_id] = data
@@ -246,7 +261,9 @@ class BatteryDataLoader:
 
             if combine:
                 combined_data = pd.concat(battery_data.values(), ignore_index=True)
-                logger.info(f"Combined {len(battery_ids)} batteries: {len(combined_data):,} total samples")
+                logger.info(
+                    f"Combined {len(battery_ids)} batteries: {len(combined_data):,} total samples"
+                )
                 return combined_data
 
             return battery_data
@@ -255,7 +272,9 @@ class BatteryDataLoader:
             logger.error(f"Failed to load multiple batteries: {str(e)}")
             raise DataLoaderError(f"Multi-battery loading failed: {str(e)}") from e
 
-    def get_dataset_info(self, data: pd.DataFrame, name: str = "Dataset") -> DatasetInfo:
+    def get_dataset_info(
+        self, data: pd.DataFrame, name: str = "Dataset"
+    ) -> DatasetInfo:
         """
         Generate comprehensive information about a dataset.
 
@@ -271,26 +290,29 @@ class BatteryDataLoader:
             n_samples, n_features = data.shape
 
             # Capacity statistics
-            if 'Capacity' in data.columns:
-                capacity_range = (data['Capacity'].min(), data['Capacity'].max())
+            if "Capacity" in data.columns:
+                capacity_range = (data["Capacity"].min(), data["Capacity"].max())
             else:
                 capacity_range = (0.0, 0.0)
 
             # Cycle statistics
-            if 'id_cycle' in data.columns:
-                cycle_range = (int(data['id_cycle'].min()), int(data['id_cycle'].max()))
+            if "id_cycle" in data.columns:
+                cycle_range = (int(data["id_cycle"].min()), int(data["id_cycle"].max()))
             else:
                 cycle_range = (0, 0)
 
             # Temperature statistics
-            if 'Temperature_measured' in data.columns:
-                temp_range = (data['Temperature_measured'].min(), data['Temperature_measured'].max())
+            if "Temperature_measured" in data.columns:
+                temp_range = (
+                    data["Temperature_measured"].min(),
+                    data["Temperature_measured"].max(),
+                )
             else:
                 temp_range = (0.0, 0.0)
 
             # Battery list
-            if 'Battery' in data.columns:
-                batteries = sorted(data['Battery'].unique().tolist())
+            if "Battery" in data.columns:
+                batteries = sorted(data["Battery"].unique().tolist())
             else:
                 batteries = ["Unknown"]
 
@@ -301,7 +323,7 @@ class BatteryDataLoader:
                 capacity_range=capacity_range,
                 cycle_range=cycle_range,
                 temperature_range=temp_range,
-                batteries=batteries
+                batteries=batteries,
             )
 
         except Exception as e:
@@ -314,7 +336,7 @@ class BatteryDataLoader:
         target_column: str = "Capacity",
         feature_columns: Optional[List[str]] = None,
         normalize: bool = True,
-        add_derived_features: bool = True
+        add_derived_features: bool = True,
     ) -> Tuple[pd.DataFrame, List[str]]:
         """
         Preprocess data for modeling applications.
@@ -337,8 +359,10 @@ class BatteryDataLoader:
             # Auto-detect feature columns if not provided
             if feature_columns is None:
                 feature_columns = [
-                    col for col in processed_data.columns
-                    if col != target_column and processed_data[col].dtype in ['int64', 'float64']
+                    col
+                    for col in processed_data.columns
+                    if col != target_column
+                    and processed_data[col].dtype in ["int64", "float64"]
                 ]
 
             # Add derived features
@@ -347,7 +371,8 @@ class BatteryDataLoader:
 
                 # Update feature list with new features
                 new_features = [
-                    col for col in processed_data.columns
+                    col
+                    for col in processed_data.columns
                     if col not in data.columns and col != target_column
                 ]
                 feature_columns.extend(new_features)
@@ -357,7 +382,9 @@ class BatteryDataLoader:
                 from sklearn.preprocessing import StandardScaler
 
                 scaler = StandardScaler()
-                processed_data[feature_columns] = scaler.fit_transform(processed_data[feature_columns])
+                processed_data[feature_columns] = scaler.fit_transform(
+                    processed_data[feature_columns]
+                )
                 logger.debug("Applied StandardScaler normalization to features")
 
             logger.success(f"Preprocessing completed: {len(feature_columns)} features")
@@ -394,10 +421,10 @@ class BatteryDataLoader:
         data = sanitize_numeric_data(data, numeric_columns)
 
         # Sort by cycle and time if available
-        if 'id_cycle' in data.columns:
-            sort_columns = ['id_cycle']
-            if 'Time' in data.columns:
-                sort_columns.append('Time')
+        if "id_cycle" in data.columns:
+            sort_columns = ["id_cycle"]
+            if "Time" in data.columns:
+                sort_columns.append("Time")
             data = data.sort_values(sort_columns).reset_index(drop=True)
 
         return data
@@ -409,35 +436,43 @@ class BatteryDataLoader:
         data = data.copy()
 
         # Cycle-based features
-        if 'id_cycle' in data.columns:
-            data['cycle_normalized'] = data['id_cycle'] / data['id_cycle'].max()
-            data['cycle_squared'] = data['id_cycle'] ** 2
-            data['cycle_log'] = np.log1p(data['id_cycle'])
+        if "id_cycle" in data.columns:
+            data["cycle_normalized"] = data["id_cycle"] / data["id_cycle"].max()
+            data["cycle_squared"] = data["id_cycle"] ** 2
+            data["cycle_log"] = np.log1p(data["id_cycle"])
 
         # Temperature features
-        if 'Temperature_measured' in data.columns:
-            data['temp_deviation'] = data['Temperature_measured'] - data['Temperature_measured'].mean()
-            data['temp_squared'] = data['Temperature_measured'] ** 2
+        if "Temperature_measured" in data.columns:
+            data["temp_deviation"] = (
+                data["Temperature_measured"] - data["Temperature_measured"].mean()
+            )
+            data["temp_squared"] = data["Temperature_measured"] ** 2
 
         # Time-based features
-        if 'Time' in data.columns:
-            data['time_log'] = np.log1p(data['Time'])
-            data['time_reciprocal'] = 1 / (data['Time'] + 1e-8)
+        if "Time" in data.columns:
+            data["time_log"] = np.log1p(data["Time"])
+            data["time_reciprocal"] = 1 / (data["Time"] + 1e-8)
 
         # Capacity features (if present)
-        if 'Capacity' in data.columns:
+        if "Capacity" in data.columns:
             # Rolling statistics (if enough data)
             if len(data) > 10:
-                data['capacity_ma_5'] = data['Capacity'].rolling(window=5, min_periods=1).mean()
-                data['capacity_std_5'] = data['Capacity'].rolling(window=5, min_periods=1).std().fillna(0)
+                data["capacity_ma_5"] = (
+                    data["Capacity"].rolling(window=5, min_periods=1).mean()
+                )
+                data["capacity_std_5"] = (
+                    data["Capacity"].rolling(window=5, min_periods=1).std().fillna(0)
+                )
 
         # Voltage features (if present)
-        if 'Voltage_measured' in data.columns:
-            data['voltage_normalized'] = data['Voltage_measured'] / data['Voltage_measured'].max()
+        if "Voltage_measured" in data.columns:
+            data["voltage_normalized"] = (
+                data["Voltage_measured"] / data["Voltage_measured"].max()
+            )
 
         # Current features (if present)
-        if 'Current_measured' in data.columns:
-            data['current_abs'] = np.abs(data['Current_measured'])
+        if "Current_measured" in data.columns:
+            data["current_abs"] = np.abs(data["Current_measured"])
 
         logger.debug(f"Added {len(data.columns) - len(data.columns)} derived features")
         return data
@@ -447,7 +482,7 @@ class BatteryDataLoader:
         data: pd.DataFrame,
         filepath: Union[str, Path],
         format: str = "csv",
-        include_metadata: bool = True
+        include_metadata: bool = True,
     ) -> None:
         """
         Export processed data to file.
@@ -469,7 +504,7 @@ class BatteryDataLoader:
             elif format.lower() == "parquet":
                 data.to_parquet(filepath, index=False)
             elif format.lower() == "hdf5":
-                data.to_hdf(filepath, key='battery_data', mode='w')
+                data.to_hdf(filepath, key="battery_data", mode="w")
             else:
                 raise DataLoaderError(f"Unsupported export format: {format}")
 
@@ -478,7 +513,7 @@ class BatteryDataLoader:
                 dataset_info = self.get_dataset_info(data, filepath.stem)
                 metadata_path = filepath.parent / f"{filepath.stem}_metadata.txt"
 
-                with open(metadata_path, 'w') as f:
+                with open(metadata_path, "w") as f:
                     f.write(str(dataset_info))
                     f.write(f"\n\nColumns:\n")
                     for col in data.columns:

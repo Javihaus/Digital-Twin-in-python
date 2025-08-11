@@ -12,7 +12,7 @@ from unittest.mock import Mock, patch
 
 from hybrid_digital_twin.models.physics_model import (
     PhysicsBasedModel,
-    PhysicsModelParameters
+    PhysicsModelParameters,
 )
 from hybrid_digital_twin.utils.exceptions import ModelError, InvalidParameterError
 
@@ -31,9 +31,7 @@ class TestPhysicsModelParameters:
     def test_custom_parameters(self):
         """Test custom parameter initialization."""
         params = PhysicsModelParameters(
-            k=0.15,
-            initial_capacity=2.5,
-            temperature_ref=30.0
+            k=0.15, initial_capacity=2.5, temperature_ref=30.0
         )
 
         assert params.k == 0.15
@@ -42,18 +40,26 @@ class TestPhysicsModelParameters:
 
     def test_invalid_k_parameter(self):
         """Test validation of k parameter."""
-        with pytest.raises(InvalidParameterError, match="Degradation coefficient k must be positive"):
+        with pytest.raises(
+            InvalidParameterError, match="Degradation coefficient k must be positive"
+        ):
             PhysicsModelParameters(k=-0.1)
 
-        with pytest.raises(InvalidParameterError, match="Degradation coefficient k must be positive"):
+        with pytest.raises(
+            InvalidParameterError, match="Degradation coefficient k must be positive"
+        ):
             PhysicsModelParameters(k=0.0)
 
     def test_invalid_temperature_parameter(self):
         """Test validation of temperature parameter."""
-        with pytest.raises(InvalidParameterError, match="Reference temperature out of realistic range"):
+        with pytest.raises(
+            InvalidParameterError, match="Reference temperature out of realistic range"
+        ):
             PhysicsModelParameters(temperature_ref=-100.0)
 
-        with pytest.raises(InvalidParameterError, match="Reference temperature out of realistic range"):
+        with pytest.raises(
+            InvalidParameterError, match="Reference temperature out of realistic range"
+        ):
             PhysicsModelParameters(temperature_ref=200.0)
 
 
@@ -71,10 +77,7 @@ class TestPhysicsBasedModel:
 
     def test_init_with_config(self):
         """Test initialization with configuration."""
-        config = {
-            "physics_k": 0.15,
-            "temperature_ref": 30.0
-        }
+        config = {"physics_k": 0.15, "temperature_ref": 30.0}
 
         model = PhysicsBasedModel(config=config)
 
@@ -100,9 +103,7 @@ class TestPhysicsBasedModel:
         model = PhysicsBasedModel()
 
         # Missing required columns
-        invalid_data = pd.DataFrame({
-            'wrong_column': [1, 2, 3]
-        })
+        invalid_data = pd.DataFrame({"wrong_column": [1, 2, 3]})
 
         with pytest.raises(ModelError, match="Missing required columns"):
             model.fit(invalid_data)
@@ -111,7 +112,9 @@ class TestPhysicsBasedModel:
         """Test prediction with unfitted model."""
         model = PhysicsBasedModel()
 
-        with pytest.raises(ModelError, match="Model must be fitted before making predictions"):
+        with pytest.raises(
+            ModelError, match="Model must be fitted before making predictions"
+        ):
             model.predict(sample_battery_data)
 
     def test_predict_success(self, sample_battery_data):
@@ -124,7 +127,9 @@ class TestPhysicsBasedModel:
         assert isinstance(predictions, np.ndarray)
         assert len(predictions) == len(sample_battery_data)
         assert np.all(predictions > 0)  # Capacity should be positive
-        assert np.all(predictions <= model.params.initial_capacity)  # Should not exceed initial
+        assert np.all(
+            predictions <= model.params.initial_capacity
+        )  # Should not exceed initial
 
     def test_degradation_factor_calculation(self, sample_battery_data):
         """Test degradation factor calculation."""
@@ -143,10 +148,7 @@ class TestPhysicsBasedModel:
         model.fit(sample_battery_data)
 
         lifetime_info = model.predict_lifetime(
-            max_cycles=500,
-            temperature=25.0,
-            charge_time=3600.0,
-            capacity_threshold=0.8
+            max_cycles=500, temperature=25.0, charge_time=3600.0, capacity_threshold=0.8
         )
 
         assert isinstance(lifetime_info, dict)
@@ -161,17 +163,15 @@ class TestPhysicsBasedModel:
         model = PhysicsBasedModel()
         model.fit(sample_battery_data)
 
-        parameter_ranges = {
-            'k': (0.1, 0.2)
-        }
+        parameter_ranges = {"k": (0.1, 0.2)}
 
         results = model.sensitivity_analysis(sample_battery_data, parameter_ranges)
 
         assert isinstance(results, dict)
-        assert 'k' in results
-        assert 'values' in results['k']
-        assert 'predictions' in results['k']
-        assert 'rmse_vs_base' in results['k']
+        assert "k" in results
+        assert "values" in results["k"]
+        assert "predictions" in results["k"]
+        assert "rmse_vs_base" in results["k"]
 
     def test_export_import_parameters(self, sample_battery_data):
         """Test parameter export and import."""
@@ -203,10 +203,12 @@ class TestPhysicsBasedModel:
 
         # Physics constraints
         assert np.all(predictions > 0), "Capacity should be positive"
-        assert np.all(predictions <= model.params.initial_capacity), "Capacity should not exceed initial"
+        assert np.all(
+            predictions <= model.params.initial_capacity
+        ), "Capacity should not exceed initial"
 
         # Should show degradation over cycles
-        cycles = sample_battery_data['id_cycle'].values
+        cycles = sample_battery_data["id_cycle"].values
         sorted_indices = np.argsort(cycles)
         sorted_predictions = predictions[sorted_indices]
 
@@ -219,14 +221,16 @@ class TestPhysicsBasedModel:
         model = PhysicsBasedModel()
 
         # Edge case: zero or negative time values
-        edge_data = pd.DataFrame({
-            'id_cycle': [1, 2, 3],
-            'Temperature_measured': [25.0, 25.0, 25.0],
-            'Time': [0, -100, 3600],  # Invalid time values
-            'Capacity': [2.0, 1.9, 1.8],
-            'Voltage_measured': [3.7, 3.6, 3.5],
-            'Current_measured': [-2.0, -2.0, -2.0]
-        })
+        edge_data = pd.DataFrame(
+            {
+                "id_cycle": [1, 2, 3],
+                "Temperature_measured": [25.0, 25.0, 25.0],
+                "Time": [0, -100, 3600],  # Invalid time values
+                "Capacity": [2.0, 1.9, 1.8],
+                "Voltage_measured": [3.7, 3.6, 3.5],
+                "Current_measured": [-2.0, -2.0, -2.0],
+            }
+        )
 
         model.fit(edge_data)
         predictions = model.predict(edge_data)
@@ -236,11 +240,14 @@ class TestPhysicsBasedModel:
         assert np.all(np.isfinite(predictions))
 
 
-@pytest.mark.parametrize("k_value,expected_trend", [
-    (0.05, "slower_degradation"),
-    (0.13, "normal_degradation"),
-    (0.25, "faster_degradation")
-])
+@pytest.mark.parametrize(
+    "k_value,expected_trend",
+    [
+        (0.05, "slower_degradation"),
+        (0.13, "normal_degradation"),
+        (0.25, "faster_degradation"),
+    ],
+)
 def test_degradation_coefficient_impact(sample_battery_data, k_value, expected_trend):
     """Test impact of different degradation coefficients."""
     config = {"physics_k": k_value}

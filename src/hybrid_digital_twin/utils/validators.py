@@ -37,7 +37,9 @@ def validate_input_data(
         raise InvalidDataError(f"Expected pandas DataFrame, got {type(data)}")
 
     if len(data) < min_rows:
-        raise InvalidDataError(f"Data must have at least {min_rows} rows, got {len(data)}")
+        raise InvalidDataError(
+            f"Data must have at least {min_rows} rows, got {len(data)}"
+        )
 
     if data.empty:
         raise InvalidDataError("Input data is empty")
@@ -66,7 +68,9 @@ def validate_input_data(
                     f"Column '{col}' contains {invalid_count} non-finite values (inf, -inf, NaN)"
                 )
 
-    logger.debug(f"Data validation passed: {data.shape[0]} rows, {data.shape[1]} columns")
+    logger.debug(
+        f"Data validation passed: {data.shape[0]} rows, {data.shape[1]} columns"
+    )
 
 
 def validate_battery_data(data: pd.DataFrame) -> None:
@@ -86,7 +90,9 @@ def validate_battery_data(data: pd.DataFrame) -> None:
     if (data["Capacity"] <= 0).any():
         raise InvalidDataError("Battery capacity must be positive")
 
-    if (data["Temperature_measured"] < -50).any() or (data["Temperature_measured"] > 100).any():
+    if (data["Temperature_measured"] < -50).any() or (
+        data["Temperature_measured"] > 100
+    ).any():
         raise InvalidDataError("Temperature must be between -50°C and 100°C")
 
     if (data["Time"] <= 0).any():
@@ -117,7 +123,9 @@ def validate_model_parameters(params: Dict[str, Any]) -> None:
     if "physics_k" in params:
         k = params["physics_k"]
         if not isinstance(k, (int, float)) or k <= 0:
-            raise InvalidParameterError("Physics degradation coefficient 'k' must be positive")
+            raise InvalidParameterError(
+                "Physics degradation coefficient 'k' must be positive"
+            )
 
     # ML model parameters
     if "ml_model" in params:
@@ -125,8 +133,12 @@ def validate_model_parameters(params: Dict[str, Any]) -> None:
 
         if "hidden_layers" in ml_config:
             layers = ml_config["hidden_layers"]
-            if not isinstance(layers, list) or not all(isinstance(x, int) and x > 0 for x in layers):
-                raise InvalidParameterError("Hidden layers must be a list of positive integers")
+            if not isinstance(layers, list) or not all(
+                isinstance(x, int) and x > 0 for x in layers
+            ):
+                raise InvalidParameterError(
+                    "Hidden layers must be a list of positive integers"
+                )
 
         if "learning_rate" in ml_config:
             lr = ml_config["learning_rate"]
@@ -220,7 +232,9 @@ def validate_array_shapes(arrays: Dict[str, np.ndarray]) -> None:
     logger.debug("Array shape validation passed")
 
 
-def sanitize_numeric_data(data: pd.DataFrame, columns: Optional[List[str]] = None) -> pd.DataFrame:
+def sanitize_numeric_data(
+    data: pd.DataFrame, columns: Optional[List[str]] = None
+) -> pd.DataFrame:
     """
     Sanitize numeric data by handling outliers and invalid values.
 
@@ -255,7 +269,9 @@ def sanitize_numeric_data(data: pd.DataFrame, columns: Optional[List[str]] = Non
             lower_bound = Q1 - 3 * IQR
             upper_bound = Q3 + 3 * IQR
 
-            outlier_mask = (data_clean[col] < lower_bound) | (data_clean[col] > upper_bound)
+            outlier_mask = (data_clean[col] < lower_bound) | (
+                data_clean[col] > upper_bound
+            )
             if outlier_mask.any():
                 outlier_count = outlier_mask.sum()
                 logger.warning(f"Found {outlier_count} outliers in column '{col}'")
@@ -287,7 +303,9 @@ def check_data_quality(data: pd.DataFrame) -> Dict[str, Any]:
         "missing_values": data.isnull().sum().to_dict(),
         "duplicate_rows": data.duplicated().sum(),
         "numeric_columns": data.select_dtypes(include=[np.number]).columns.tolist(),
-        "categorical_columns": data.select_dtypes(include=["object", "category"]).columns.tolist(),
+        "categorical_columns": data.select_dtypes(
+            include=["object", "category"]
+        ).columns.tolist(),
     }
 
     # Check for outliers in numeric columns
@@ -312,5 +330,7 @@ def check_data_quality(data: pd.DataFrame) -> Dict[str, Any]:
     quality_metrics["completeness_percent"] = completeness
     quality_metrics["overall_completeness"] = np.mean(list(completeness.values()))
 
-    logger.debug(f"Data quality assessment completed: {quality_metrics['overall_completeness']:.1f}% complete")
+    logger.debug(
+        f"Data quality assessment completed: {quality_metrics['overall_completeness']:.1f}% complete"
+    )
     return quality_metrics

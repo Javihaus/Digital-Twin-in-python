@@ -20,7 +20,7 @@ import seaborn as sns
 from hybrid_digital_twin.utils.exceptions import VisualizationError
 
 # Set professional styling
-plt.style.use('default')
+plt.style.use("default")
 sns.set_palette("husl")
 
 
@@ -49,7 +49,7 @@ class BatteryPlotter:
         data: pd.DataFrame,
         title: str = "Battery Capacity Degradation",
         save_path: Optional[Path] = None,
-        interactive: bool = True
+        interactive: bool = True,
     ) -> go.Figure:
         """
         Plot battery capacity degradation over cycles.
@@ -67,39 +67,49 @@ class BatteryPlotter:
             if interactive:
                 fig = go.Figure()
 
-                fig.add_trace(go.Scatter(
-                    x=data['id_cycle'],
-                    y=data['Capacity'],
-                    mode='lines+markers',
-                    name='Capacity',
-                    line=dict(color=self.colors['primary'], width=2),
-                    marker=dict(size=4)
-                ))
+                fig.add_trace(
+                    go.Scatter(
+                        x=data["id_cycle"],
+                        y=data["Capacity"],
+                        mode="lines+markers",
+                        name="Capacity",
+                        line=dict(color=self.colors["primary"], width=2),
+                        marker=dict(size=4),
+                    )
+                )
 
                 fig.update_layout(
                     title=title,
                     xaxis_title="Cycle Number",
                     yaxis_title="Capacity (Ah)",
                     template=self.style,
-                    hovermode='x unified'
+                    hovermode="x unified",
                 )
 
                 if save_path:
-                    fig.write_html(save_path.with_suffix('.html'))
-                    fig.write_image(save_path.with_suffix('.png'), width=800, height=600)
+                    fig.write_html(save_path.with_suffix(".html"))
+                    fig.write_image(
+                        save_path.with_suffix(".png"), width=800, height=600
+                    )
 
                 return fig
             else:
                 plt.figure(figsize=(10, 6))
-                plt.plot(data['id_cycle'], data['Capacity'], 'o-',
-                        color=self.colors['primary'], linewidth=2, markersize=4)
+                plt.plot(
+                    data["id_cycle"],
+                    data["Capacity"],
+                    "o-",
+                    color=self.colors["primary"],
+                    linewidth=2,
+                    markersize=4,
+                )
                 plt.title(title)
-                plt.xlabel('Cycle Number')
-                plt.ylabel('Capacity (Ah)')
+                plt.xlabel("Cycle Number")
+                plt.ylabel("Capacity (Ah)")
                 plt.grid(True, alpha=0.3)
 
                 if save_path:
-                    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                    plt.savefig(save_path, dpi=300, bbox_inches="tight")
                     plt.close()
 
         except Exception as e:
@@ -112,7 +122,7 @@ class BatteryPlotter:
         hybrid_pred: np.ndarray,
         cycles: Optional[np.ndarray] = None,
         title: str = "Model Prediction Comparison",
-        save_path: Optional[Path] = None
+        save_path: Optional[Path] = None,
     ) -> go.Figure:
         """
         Compare actual values with physics and hybrid predictions.
@@ -135,59 +145,49 @@ class BatteryPlotter:
             fig = go.Figure()
 
             # Actual data
-            fig.add_trace(go.Scatter(
-                x=cycles,
-                y=actual,
-                mode='markers',
-                name='Actual',
-                marker=dict(
-                    color=self.colors['actual'],
-                    symbol='circle',
-                    size=6
+            fig.add_trace(
+                go.Scatter(
+                    x=cycles,
+                    y=actual,
+                    mode="markers",
+                    name="Actual",
+                    marker=dict(color=self.colors["actual"], symbol="circle", size=6),
                 )
-            ))
+            )
 
             # Physics predictions
-            fig.add_trace(go.Scatter(
-                x=cycles,
-                y=physics_pred,
-                mode='lines',
-                name='Physics Model',
-                line=dict(
-                    color=self.colors['physics'],
-                    width=2,
-                    dash='dash'
+            fig.add_trace(
+                go.Scatter(
+                    x=cycles,
+                    y=physics_pred,
+                    mode="lines",
+                    name="Physics Model",
+                    line=dict(color=self.colors["physics"], width=2, dash="dash"),
                 )
-            ))
+            )
 
             # Hybrid predictions
-            fig.add_trace(go.Scatter(
-                x=cycles,
-                y=hybrid_pred,
-                mode='lines',
-                name='Hybrid Model',
-                line=dict(
-                    color=self.colors['hybrid'],
-                    width=3
+            fig.add_trace(
+                go.Scatter(
+                    x=cycles,
+                    y=hybrid_pred,
+                    mode="lines",
+                    name="Hybrid Model",
+                    line=dict(color=self.colors["hybrid"], width=3),
                 )
-            ))
+            )
 
             fig.update_layout(
                 title=title,
                 xaxis_title="Cycle Number",
                 yaxis_title="Capacity (Ah)",
                 template=self.style,
-                legend=dict(
-                    yanchor="top",
-                    y=0.99,
-                    xanchor="left",
-                    x=0.01
-                )
+                legend=dict(yanchor="top", y=0.99, xanchor="left", x=0.01),
             )
 
             if save_path:
-                fig.write_html(save_path.with_suffix('.html'))
-                fig.write_image(save_path.with_suffix('.png'), width=1000, height=600)
+                fig.write_html(save_path.with_suffix(".html"))
+                fig.write_image(save_path.with_suffix(".png"), width=1000, height=600)
 
             return fig
 
@@ -199,7 +199,7 @@ class BatteryPlotter:
         actual: np.ndarray,
         predicted: np.ndarray,
         title: str = "Residual Analysis",
-        save_path: Optional[Path] = None
+        save_path: Optional[Path] = None,
     ) -> go.Figure:
         """
         Plot residuals for model diagnostics.
@@ -218,13 +218,14 @@ class BatteryPlotter:
 
             # Create subplots
             fig = make_subplots(
-                rows=2, cols=2,
+                rows=2,
+                cols=2,
                 subplot_titles=(
-                    'Residuals vs Predicted',
-                    'Residuals Distribution',
-                    'Q-Q Plot',
-                    'Residuals vs Index'
-                )
+                    "Residuals vs Predicted",
+                    "Residuals Distribution",
+                    "Q-Q Plot",
+                    "Residuals vs Index",
+                ),
             )
 
             # Residuals vs Predicted
@@ -232,11 +233,12 @@ class BatteryPlotter:
                 go.Scatter(
                     x=predicted,
                     y=residuals,
-                    mode='markers',
-                    name='Residuals',
-                    marker=dict(color=self.colors['primary'], size=4)
+                    mode="markers",
+                    name="Residuals",
+                    marker=dict(color=self.colors["primary"], size=4),
                 ),
-                row=1, col=1
+                row=1,
+                col=1,
             )
 
             # Add zero line
@@ -247,26 +249,31 @@ class BatteryPlotter:
                 go.Histogram(
                     x=residuals,
                     nbinsx=30,
-                    name='Distribution',
-                    marker=dict(color=self.colors['secondary'])
+                    name="Distribution",
+                    marker=dict(color=self.colors["secondary"]),
                 ),
-                row=1, col=2
+                row=1,
+                col=2,
             )
 
             # Q-Q plot (simplified)
             from scipy import stats
-            theoretical_quantiles = stats.norm.ppf(np.linspace(0.01, 0.99, len(residuals)))
+
+            theoretical_quantiles = stats.norm.ppf(
+                np.linspace(0.01, 0.99, len(residuals))
+            )
             sample_quantiles = np.sort(residuals)
 
             fig.add_trace(
                 go.Scatter(
                     x=theoretical_quantiles,
                     y=sample_quantiles,
-                    mode='markers',
-                    name='Q-Q',
-                    marker=dict(color=self.colors['accent'], size=4)
+                    mode="markers",
+                    name="Q-Q",
+                    marker=dict(color=self.colors["accent"], size=4),
                 ),
-                row=2, col=1
+                row=2,
+                col=1,
             )
 
             # Add perfect correlation line
@@ -276,11 +283,12 @@ class BatteryPlotter:
                 go.Scatter(
                     x=[min_val, max_val],
                     y=[min_val, max_val],
-                    mode='lines',
-                    line=dict(dash='dash', color='red'),
-                    showlegend=False
+                    mode="lines",
+                    line=dict(dash="dash", color="red"),
+                    showlegend=False,
                 ),
-                row=2, col=1
+                row=2,
+                col=1,
             )
 
             # Residuals vs Index
@@ -288,25 +296,23 @@ class BatteryPlotter:
                 go.Scatter(
                     x=np.arange(len(residuals)),
                     y=residuals,
-                    mode='markers',
-                    name='Index',
-                    marker=dict(color=self.colors['primary'], size=4)
+                    mode="markers",
+                    name="Index",
+                    marker=dict(color=self.colors["primary"], size=4),
                 ),
-                row=2, col=2
+                row=2,
+                col=2,
             )
 
             fig.add_hline(y=0, line_dash="dash", line_color="red", row=2, col=2)
 
             fig.update_layout(
-                title_text=title,
-                template=self.style,
-                showlegend=False,
-                height=800
+                title_text=title, template=self.style, showlegend=False, height=800
             )
 
             if save_path:
-                fig.write_html(save_path.with_suffix('.html'))
-                fig.write_image(save_path.with_suffix('.png'), width=1000, height=800)
+                fig.write_html(save_path.with_suffix(".html"))
+                fig.write_image(save_path.with_suffix(".png"), width=1000, height=800)
 
             return fig
 
@@ -317,7 +323,7 @@ class BatteryPlotter:
         self,
         history: Dict,
         title: str = "Training History",
-        save_path: Optional[Path] = None
+        save_path: Optional[Path] = None,
     ) -> go.Figure:
         """
         Plot training history for ML model.
@@ -332,73 +338,73 @@ class BatteryPlotter:
         """
         try:
             fig = make_subplots(
-                rows=1, cols=2,
-                subplot_titles=('Loss', 'Mean Absolute Error')
+                rows=1, cols=2, subplot_titles=("Loss", "Mean Absolute Error")
             )
 
-            epochs = list(range(1, len(history['loss']) + 1))
+            epochs = list(range(1, len(history["loss"]) + 1))
 
             # Loss plot
             fig.add_trace(
                 go.Scatter(
                     x=epochs,
-                    y=history['loss'],
-                    mode='lines',
-                    name='Training Loss',
-                    line=dict(color=self.colors['primary'])
+                    y=history["loss"],
+                    mode="lines",
+                    name="Training Loss",
+                    line=dict(color=self.colors["primary"]),
                 ),
-                row=1, col=1
+                row=1,
+                col=1,
             )
 
-            if 'val_loss' in history and history['val_loss']:
+            if "val_loss" in history and history["val_loss"]:
                 fig.add_trace(
                     go.Scatter(
                         x=epochs,
-                        y=history['val_loss'],
-                        mode='lines',
-                        name='Validation Loss',
-                        line=dict(color=self.colors['secondary'])
+                        y=history["val_loss"],
+                        mode="lines",
+                        name="Validation Loss",
+                        line=dict(color=self.colors["secondary"]),
                     ),
-                    row=1, col=1
+                    row=1,
+                    col=1,
                 )
 
             # MAE plot
-            if 'mae' in history:
+            if "mae" in history:
                 fig.add_trace(
                     go.Scatter(
                         x=epochs,
-                        y=history['mae'],
-                        mode='lines',
-                        name='Training MAE',
-                        line=dict(color=self.colors['primary'])
+                        y=history["mae"],
+                        mode="lines",
+                        name="Training MAE",
+                        line=dict(color=self.colors["primary"]),
                     ),
-                    row=1, col=2
+                    row=1,
+                    col=2,
                 )
 
-                if 'val_mae' in history and history['val_mae']:
+                if "val_mae" in history and history["val_mae"]:
                     fig.add_trace(
                         go.Scatter(
                             x=epochs,
-                            y=history['val_mae'],
-                            mode='lines',
-                            name='Validation MAE',
-                            line=dict(color=self.colors['secondary'])
+                            y=history["val_mae"],
+                            mode="lines",
+                            name="Validation MAE",
+                            line=dict(color=self.colors["secondary"]),
                         ),
-                        row=1, col=2
+                        row=1,
+                        col=2,
                     )
 
-            fig.update_layout(
-                title_text=title,
-                template=self.style
-            )
+            fig.update_layout(title_text=title, template=self.style)
 
             fig.update_xaxes(title_text="Epoch")
             fig.update_yaxes(title_text="Loss", row=1, col=1)
             fig.update_yaxes(title_text="MAE", row=1, col=2)
 
             if save_path:
-                fig.write_html(save_path.with_suffix('.html'))
-                fig.write_image(save_path.with_suffix('.png'), width=1000, height=500)
+                fig.write_html(save_path.with_suffix(".html"))
+                fig.write_image(save_path.with_suffix(".png"), width=1000, height=500)
 
             return fig
 
@@ -410,7 +416,7 @@ class BatteryPlotter:
         actual: np.ndarray,
         predicted: np.ndarray,
         title: str = "Predicted vs Actual",
-        save_path: Optional[Path] = None
+        save_path: Optional[Path] = None,
     ) -> go.Figure:
         """
         Create scatter plot of predicted vs actual values.
@@ -427,46 +433,47 @@ class BatteryPlotter:
         try:
             # Calculate R² and RMSE for display
             from sklearn.metrics import r2_score, mean_squared_error
+
             r2 = r2_score(actual, predicted)
             rmse = np.sqrt(mean_squared_error(actual, predicted))
 
             fig = go.Figure()
 
             # Scatter plot
-            fig.add_trace(go.Scatter(
-                x=actual,
-                y=predicted,
-                mode='markers',
-                name=f'R² = {r2:.3f}<br>RMSE = {rmse:.4f}',
-                marker=dict(
-                    color=self.colors['primary'],
-                    size=6,
-                    opacity=0.7
+            fig.add_trace(
+                go.Scatter(
+                    x=actual,
+                    y=predicted,
+                    mode="markers",
+                    name=f"R² = {r2:.3f}<br>RMSE = {rmse:.4f}",
+                    marker=dict(color=self.colors["primary"], size=6, opacity=0.7),
                 )
-            ))
+            )
 
             # Perfect prediction line
             min_val = min(actual.min(), predicted.min())
             max_val = max(actual.max(), predicted.max())
 
-            fig.add_trace(go.Scatter(
-                x=[min_val, max_val],
-                y=[min_val, max_val],
-                mode='lines',
-                name='Perfect Prediction',
-                line=dict(dash='dash', color='red', width=2)
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=[min_val, max_val],
+                    y=[min_val, max_val],
+                    mode="lines",
+                    name="Perfect Prediction",
+                    line=dict(dash="dash", color="red", width=2),
+                )
+            )
 
             fig.update_layout(
                 title=title,
                 xaxis_title="Actual Values",
                 yaxis_title="Predicted Values",
-                template=self.style
+                template=self.style,
             )
 
             if save_path:
-                fig.write_html(save_path.with_suffix('.html'))
-                fig.write_image(save_path.with_suffix('.png'), width=800, height=600)
+                fig.write_html(save_path.with_suffix(".html"))
+                fig.write_image(save_path.with_suffix(".png"), width=800, height=600)
 
             return fig
 
@@ -482,7 +489,7 @@ class BatteryPlotter:
                 "accent": "#F18F01",
                 "actual": "#525252",
                 "physics": "#2E86AB",
-                "hybrid": "#C73E1D"
+                "hybrid": "#C73E1D",
             },
             "professional": {
                 "primary": "#1f77b4",
@@ -490,8 +497,8 @@ class BatteryPlotter:
                 "accent": "#2ca02c",
                 "actual": "#d62728",
                 "physics": "#9467bd",
-                "hybrid": "#8c564b"
-            }
+                "hybrid": "#8c564b",
+            },
         }
 
         return palettes.get(scheme, palettes["default"])

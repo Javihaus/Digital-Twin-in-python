@@ -74,7 +74,9 @@ class PhysicsBasedModel:
 
         logger.debug(f"Initialized PhysicsBasedModel with parameters: {self.params}")
 
-    def fit(self, data: pd.DataFrame, target_column: str = "Capacity") -> Dict[str, float]:
+    def fit(
+        self, data: pd.DataFrame, target_column: str = "Capacity"
+    ) -> Dict[str, float]:
         """
         Fit the physics model to training data.
 
@@ -95,24 +97,30 @@ class PhysicsBasedModel:
             logger.info("Fitting physics-based model")
 
             # Validate required columns
-            required_cols = ['id_cycle', 'Temperature_measured', 'Time', target_column]
+            required_cols = ["id_cycle", "Temperature_measured", "Time", target_column]
             missing_cols = [col for col in required_cols if col not in data.columns]
             if missing_cols:
                 raise ModelError(f"Missing required columns: {missing_cols}")
 
             # Estimate initial capacity from data
             self.params.initial_capacity = data[target_column].iloc[0]
-            logger.debug(f"Estimated initial capacity: {self.params.initial_capacity:.4f} Ah")
+            logger.debug(
+                f"Estimated initial capacity: {self.params.initial_capacity:.4f} Ah"
+            )
 
             # Generate physics predictions
             physics_pred = self._predict_physics(data)
             actual_capacity = data[target_column].values
 
             # Calculate fit metrics
-            self.fit_metrics = self._calculate_physics_metrics(actual_capacity, physics_pred)
+            self.fit_metrics = self._calculate_physics_metrics(
+                actual_capacity, physics_pred
+            )
 
             self.is_fitted = True
-            logger.success(f"Physics model fitted successfully. RMSE: {self.fit_metrics['rmse']:.4f}")
+            logger.success(
+                f"Physics model fitted successfully. RMSE: {self.fit_metrics['rmse']:.4f}"
+            )
 
             return self.fit_metrics
 
@@ -150,12 +158,14 @@ class PhysicsBasedModel:
         C(t) = C_0 * exp(-f_d)
         where f_d = k * T_c * i / t
         """
-        cycles = data['id_cycle'].values
-        temperature = data['Temperature_measured'].values
-        charge_time = data['Time'].values
+        cycles = data["id_cycle"].values
+        temperature = data["Temperature_measured"].values
+        charge_time = data["Time"].values
 
         # Handle edge cases
-        charge_time = np.where(charge_time <= 0, 1e-6, charge_time)  # Avoid division by zero
+        charge_time = np.where(
+            charge_time <= 0, 1e-6, charge_time
+        )  # Avoid division by zero
 
         # Calculate degradation factor
         f_d = self.params.k * temperature * cycles / charge_time
@@ -165,7 +175,9 @@ class PhysicsBasedModel:
 
         return capacity_predictions
 
-    def _calculate_physics_metrics(self, y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
+    def _calculate_physics_metrics(
+        self, y_true: np.ndarray, y_pred: np.ndarray
+    ) -> Dict[str, float]:
         """Calculate physics model performance metrics."""
         from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
@@ -192,19 +204,21 @@ class PhysicsBasedModel:
         Returns:
             Array of degradation factors
         """
-        cycles = data['id_cycle'].values
-        temperature = data['Temperature_measured'].values
-        charge_time = data['Time'].values
+        cycles = data["id_cycle"].values
+        temperature = data["Temperature_measured"].values
+        charge_time = data["Time"].values
 
         charge_time = np.where(charge_time <= 0, 1e-6, charge_time)
 
         return self.params.k * temperature * cycles / charge_time
 
-    def predict_lifetime(self,
-                        max_cycles: int,
-                        temperature: float,
-                        charge_time: float,
-                        capacity_threshold: float = 0.8) -> Dict[str, float]:
+    def predict_lifetime(
+        self,
+        max_cycles: int,
+        temperature: float,
+        charge_time: float,
+        capacity_threshold: float = 0.8,
+    ) -> Dict[str, float]:
         """
         Predict battery lifetime until capacity falls below threshold.
 
@@ -223,11 +237,13 @@ class PhysicsBasedModel:
         cycles = np.arange(1, max_cycles + 1)
 
         # Create synthetic data
-        data = pd.DataFrame({
-            'id_cycle': cycles,
-            'Temperature_measured': temperature,
-            'Time': charge_time,
-        })
+        data = pd.DataFrame(
+            {
+                "id_cycle": cycles,
+                "Temperature_measured": temperature,
+                "Time": charge_time,
+            }
+        )
 
         predicted_capacities = self.predict(data)
         normalized_capacities = predicted_capacities / self.params.initial_capacity
@@ -250,9 +266,9 @@ class PhysicsBasedModel:
             "total_cycles_simulated": max_cycles,
         }
 
-    def sensitivity_analysis(self,
-                           data: pd.DataFrame,
-                           parameter_ranges: Dict[str, tuple]) -> Dict[str, np.ndarray]:
+    def sensitivity_analysis(
+        self, data: pd.DataFrame, parameter_ranges: Dict[str, tuple]
+    ) -> Dict[str, np.ndarray]:
         """
         Perform sensitivity analysis on model parameters.
 
@@ -267,7 +283,7 @@ class PhysicsBasedModel:
         base_prediction = self.predict(data)
 
         for param_name, (min_val, max_val) in parameter_ranges.items():
-            if param_name == 'k':
+            if param_name == "k":
                 original_k = self.params.k
 
                 # Test different values of k
@@ -280,12 +296,12 @@ class PhysicsBasedModel:
                     predictions.append(pred)
 
                 results[param_name] = {
-                    'values': k_values,
-                    'predictions': np.array(predictions),
-                    'rmse_vs_base': [
+                    "values": k_values,
+                    "predictions": np.array(predictions),
+                    "rmse_vs_base": [
                         np.sqrt(np.mean((pred - base_prediction) ** 2))
                         for pred in predictions
-                    ]
+                    ],
                 }
 
                 # Restore original value

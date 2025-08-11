@@ -6,6 +6,7 @@ predictions by modeling the residual between physics predictions and observation
 """
 
 from typing import Dict, List, Optional, Tuple, Union
+
 try:
     from typing import Literal
 except ImportError:
@@ -94,7 +95,9 @@ class MLCorrectionModel:
         Args:
             config: Configuration dictionary for model parameters
         """
-        self.config = MLModelConfig(**({} if config is None else config.get("ml_model", {})))
+        self.config = MLModelConfig(
+            **({} if config is None else config.get("ml_model", {}))
+        )
         self.model: Optional[keras.Model] = None
         self.scaler = StandardScaler()
         self.is_fitted = False
@@ -107,12 +110,14 @@ class MLCorrectionModel:
 
         logger.debug(f"Initialized MLCorrectionModel with config: {self.config}")
 
-    def fit(self,
-            X: np.ndarray,
-            y: np.ndarray,
-            validation_data: Optional[Tuple[np.ndarray, np.ndarray]] = None,
-            feature_names: Optional[List[str]] = None,
-            **kwargs) -> Dict[str, float]:
+    def fit(
+        self,
+        X: np.ndarray,
+        y: np.ndarray,
+        validation_data: Optional[Tuple[np.ndarray, np.ndarray]] = None,
+        feature_names: Optional[List[str]] = None,
+        **kwargs,
+    ) -> Dict[str, float]:
         """
         Train the ML correction model.
 
@@ -133,7 +138,9 @@ class MLCorrectionModel:
             logger.info("Training ML correction model")
 
             # Store feature names
-            self.feature_names = feature_names or [f"feature_{i}" for i in range(X.shape[1])]
+            self.feature_names = feature_names or [
+                f"feature_{i}" for i in range(X.shape[1])
+            ]
 
             # Scale features
             X_scaled = self.scaler.fit_transform(X)
@@ -154,13 +161,14 @@ class MLCorrectionModel:
 
             # Train the model
             history = self.model.fit(
-                X_scaled, y,
+                X_scaled,
+                y,
                 batch_size=self.config.batch_size,
                 epochs=self.config.epochs,
                 validation_data=validation_data_scaled,
                 callbacks=callbacks_list,
                 verbose=1,
-                **kwargs
+                **kwargs,
             )
 
             # Store training history
@@ -181,7 +189,9 @@ class MLCorrectionModel:
                 training_metrics.update({f"val_{k}": v for k, v in val_metrics.items()})
 
             self.is_fitted = True
-            logger.success(f"ML model training completed. Train RMSE: {training_metrics['rmse']:.4f}")
+            logger.success(
+                f"ML model training completed. Train RMSE: {training_metrics['rmse']:.4f}"
+            )
 
             return training_metrics
 
@@ -213,9 +223,9 @@ class MLCorrectionModel:
             logger.error(f"ML prediction failed: {str(e)}")
             raise ModelError(f"ML prediction failed: {str(e)}") from e
 
-    def predict_with_uncertainty(self,
-                                X: np.ndarray,
-                                n_samples: int = 100) -> Tuple[np.ndarray, np.ndarray]:
+    def predict_with_uncertainty(
+        self, X: np.ndarray, n_samples: int = 100
+    ) -> Tuple[np.ndarray, np.ndarray]:
         """
         Predict with uncertainty estimation using Monte Carlo Dropout.
 
@@ -255,23 +265,17 @@ class MLCorrectionModel:
                 units,
                 activation=self.config.activation,
                 kernel_regularizer=keras.regularizers.L1L2(
-                    l1=self.config.l1_regularization,
-                    l2=self.config.l2_regularization
+                    l1=self.config.l1_regularization, l2=self.config.l2_regularization
                 ),
-                name=f"dense_{i+1}"
+                name=f"dense_{i+1}",
             )(x)
 
             if self.config.dropout_rate > 0:
-                x = layers.Dropout(
-                    self.config.dropout_rate,
-                    name=f"dropout_{i+1}"
-                )(x)
+                x = layers.Dropout(self.config.dropout_rate, name=f"dropout_{i+1}")(x)
 
         # Output layer
         outputs = layers.Dense(
-            1,
-            activation=self.config.output_activation,
-            name="output"
+            1, activation=self.config.output_activation, name="output"
         )(x)
 
         model = keras.Model(inputs=inputs, outputs=outputs, name="ml_correction_model")
@@ -279,9 +283,7 @@ class MLCorrectionModel:
         # Compile model
         optimizer = self._get_optimizer()
         model.compile(
-            optimizer=optimizer,
-            loss=self.config.loss_function,
-            metrics=["mae", "mse"]
+            optimizer=optimizer, loss=self.config.loss_function, metrics=["mae", "mse"]
         )
 
         logger.debug(f"Built model with {model.count_params()} parameters")
@@ -308,7 +310,7 @@ class MLCorrectionModel:
                 monitor="val_loss",
                 patience=self.config.early_stopping_patience,
                 restore_best_weights=True,
-                verbose=1
+                verbose=1,
             )
             callbacks_list.append(early_stopping)
 
@@ -319,13 +321,15 @@ class MLCorrectionModel:
                 factor=0.5,
                 patience=self.config.reduce_lr_patience,
                 min_lr=1e-7,
-                verbose=1
+                verbose=1,
             )
             callbacks_list.append(reduce_lr)
 
         return callbacks_list
 
-    def _calculate_metrics(self, y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
+    def _calculate_metrics(
+        self, y_true: np.ndarray, y_pred: np.ndarray
+    ) -> Dict[str, float]:
         """Calculate model performance metrics."""
         from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
@@ -345,7 +349,9 @@ class MLCorrectionModel:
             "max_error": max_error,
         }
 
-    def get_feature_importance(self, X: np.ndarray, method: str = "permutation") -> Dict[str, float]:
+    def get_feature_importance(
+        self, X: np.ndarray, method: str = "permutation"
+    ) -> Dict[str, float]:
         """
         Calculate feature importance using the specified method.
 
@@ -357,7 +363,9 @@ class MLCorrectionModel:
             Dictionary mapping feature names to importance scores
         """
         if not self.is_fitted:
-            raise ModelError("Model must be fitted before calculating feature importance")
+            raise ModelError(
+                "Model must be fitted before calculating feature importance"
+            )
 
         if method == "permutation":
             return self._permutation_importance(X)
@@ -369,7 +377,7 @@ class MLCorrectionModel:
     def _permutation_importance(self, X: np.ndarray) -> Dict[str, float]:
         """Calculate permutation-based feature importance."""
         baseline_pred = self.predict(X)
-        baseline_score = np.mean(baseline_pred ** 2)  # MSE as baseline
+        baseline_score = np.mean(baseline_pred**2)  # MSE as baseline
 
         importance_scores = {}
 
@@ -380,7 +388,7 @@ class MLCorrectionModel:
 
             # Calculate score with permuted feature
             permuted_pred = self.predict(X_permuted)
-            permuted_score = np.mean(permuted_pred ** 2)
+            permuted_score = np.mean(permuted_pred**2)
 
             # Importance is the increase in error
             importance_scores[feature_name] = permuted_score - baseline_score
@@ -415,6 +423,7 @@ class MLCorrectionModel:
 
         # Save scaler and metadata
         import joblib
+
         joblib.dump(self.scaler, filepath / "scaler.joblib")
 
         metadata = {
@@ -444,6 +453,7 @@ class MLCorrectionModel:
         instance.model = keras.models.load_model(filepath / "keras_model")
 
         import joblib
+
         instance.scaler = joblib.load(filepath / "scaler.joblib")
 
         instance.feature_names = metadata["feature_names"]

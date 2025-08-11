@@ -42,20 +42,22 @@ class TestHybridDigitalTwin:
         capacity = initial_capacity * np.exp(-degradation)
         capacity += np.random.normal(0, 0.001, n_samples)  # Add noise
 
-        return pd.DataFrame({
-            'id_cycle': cycles,
-            'Temperature_measured': temperature,
-            'Time': time,
-            'Capacity': capacity,
-            'Voltage_measured': 3.5 + np.random.normal(0, 0.1, n_samples),
-            'Current_measured': -2.0 + np.random.normal(0, 0.05, n_samples),
-        })
+        return pd.DataFrame(
+            {
+                "id_cycle": cycles,
+                "Temperature_measured": temperature,
+                "Time": time,
+                "Capacity": capacity,
+                "Voltage_measured": 3.5 + np.random.normal(0, 0.1, n_samples),
+                "Current_measured": -2.0 + np.random.normal(0, 0.05, n_samples),
+            }
+        )
 
     @pytest.fixture
     def mock_physics_model(self):
         """Create a mock physics model."""
         model = Mock(spec=PhysicsBasedModel)
-        model.fit.return_value = {'rmse': 0.01, 'mae': 0.008, 'r2': 0.98}
+        model.fit.return_value = {"rmse": 0.01, "mae": 0.008, "r2": 0.98}
         model.predict.return_value = np.array([1.98, 1.97, 1.96, 1.95])
         model.is_fitted = True
         return model
@@ -64,7 +66,7 @@ class TestHybridDigitalTwin:
     def mock_ml_model(self):
         """Create a mock ML model."""
         model = Mock(spec=MLCorrectionModel)
-        model.fit.return_value = {'rmse': 0.005, 'mae': 0.004, 'r2': 0.99}
+        model.fit.return_value = {"rmse": 0.005, "mae": 0.004, "r2": 0.99}
         model.predict.return_value = np.array([0.001, -0.002, 0.001, 0.0])
         model.is_fitted = True
         return model
@@ -81,12 +83,10 @@ class TestHybridDigitalTwin:
 
     def test_init_with_models(self, mock_physics_model, mock_ml_model):
         """Test initialization with provided models."""
-        config = {'test': 'value'}
+        config = {"test": "value"}
 
         twin = HybridDigitalTwin(
-            physics_model=mock_physics_model,
-            ml_model=mock_ml_model,
-            config=config
+            physics_model=mock_physics_model, ml_model=mock_ml_model, config=config
         )
 
         assert twin.physics_model is mock_physics_model
@@ -96,12 +96,11 @@ class TestHybridDigitalTwin:
     def test_fit_success(self, sample_data, mock_physics_model, mock_ml_model):
         """Test successful model training."""
         twin = HybridDigitalTwin(
-            physics_model=mock_physics_model,
-            ml_model=mock_ml_model
+            physics_model=mock_physics_model, ml_model=mock_ml_model
         )
 
         # Mock the _extract_ml_features method
-        with patch.object(twin, '_extract_ml_features') as mock_extract:
+        with patch.object(twin, "_extract_ml_features") as mock_extract:
             mock_extract.return_value = np.random.rand(len(sample_data), 3)
 
             metrics = twin.fit(sample_data, validation_split=0.2)
@@ -113,7 +112,7 @@ class TestHybridDigitalTwin:
         # Verify training state
         assert twin.is_trained
         assert isinstance(metrics, dict)
-        assert 'train_rmse' in metrics or 'hybrid_metrics' in twin.training_history
+        assert "train_rmse" in metrics or "hybrid_metrics" in twin.training_history
 
     def test_fit_invalid_data(self):
         """Test fit with invalid data."""
@@ -125,7 +124,7 @@ class TestHybridDigitalTwin:
             twin.fit(empty_data)
 
         # Missing required columns
-        invalid_data = pd.DataFrame({'wrong_column': [1, 2, 3]})
+        invalid_data = pd.DataFrame({"wrong_column": [1, 2, 3]})
         with pytest.raises(InvalidDataError):
             twin.fit(invalid_data)
 
@@ -139,13 +138,12 @@ class TestHybridDigitalTwin:
     def test_predict_success(self, sample_data, mock_physics_model, mock_ml_model):
         """Test successful prediction."""
         twin = HybridDigitalTwin(
-            physics_model=mock_physics_model,
-            ml_model=mock_ml_model
+            physics_model=mock_physics_model, ml_model=mock_ml_model
         )
         twin.is_trained = True
 
         # Mock feature extraction
-        with patch.object(twin, '_extract_ml_features') as mock_extract:
+        with patch.object(twin, "_extract_ml_features") as mock_extract:
             mock_extract.return_value = np.random.rand(len(sample_data), 3)
 
             predictions = twin.predict(sample_data)
@@ -157,15 +155,16 @@ class TestHybridDigitalTwin:
         mock_physics_model.predict.assert_called_once()
         mock_ml_model.predict.assert_called_once()
 
-    def test_predict_with_components(self, sample_data, mock_physics_model, mock_ml_model):
+    def test_predict_with_components(
+        self, sample_data, mock_physics_model, mock_ml_model
+    ):
         """Test prediction returning components."""
         twin = HybridDigitalTwin(
-            physics_model=mock_physics_model,
-            ml_model=mock_ml_model
+            physics_model=mock_physics_model, ml_model=mock_ml_model
         )
         twin.is_trained = True
 
-        with patch.object(twin, '_extract_ml_features') as mock_extract:
+        with patch.object(twin, "_extract_ml_features") as mock_extract:
             mock_extract.return_value = np.random.rand(len(sample_data), 3)
 
             result = twin.predict(sample_data, return_components=True)
@@ -179,8 +178,7 @@ class TestHybridDigitalTwin:
     def test_predict_future(self, mock_physics_model, mock_ml_model):
         """Test future prediction functionality."""
         twin = HybridDigitalTwin(
-            physics_model=mock_physics_model,
-            ml_model=mock_ml_model
+            physics_model=mock_physics_model, ml_model=mock_ml_model
         )
         twin.is_trained = True
 
@@ -189,7 +187,7 @@ class TestHybridDigitalTwin:
         charge_time = 3600.0
         initial_capacity = 2.0
 
-        with patch.object(twin, 'predict') as mock_predict:
+        with patch.object(twin, "predict") as mock_predict:
             mock_predict.return_value = PredictionResult(
                 physics_prediction=np.array([1.8, 1.7, 1.6]),
                 ml_correction=np.array([0.01, 0.02, 0.01]),
@@ -201,7 +199,7 @@ class TestHybridDigitalTwin:
                 temperature=temperature,
                 charge_time=charge_time,
                 initial_capacity=initial_capacity,
-                return_uncertainty=True
+                return_uncertainty=True,
             )
 
         assert isinstance(result, PredictionResult)
@@ -210,30 +208,30 @@ class TestHybridDigitalTwin:
     def test_evaluate(self, sample_data, mock_physics_model, mock_ml_model):
         """Test model evaluation."""
         twin = HybridDigitalTwin(
-            physics_model=mock_physics_model,
-            ml_model=mock_ml_model
+            physics_model=mock_physics_model, ml_model=mock_ml_model
         )
         twin.is_trained = True
 
         # Mock predict method
-        with patch.object(twin, 'predict') as mock_predict:
-            mock_predict.return_value = sample_data['Capacity'].values + np.random.normal(0, 0.01, len(sample_data))
+        with patch.object(twin, "predict") as mock_predict:
+            mock_predict.return_value = sample_data[
+                "Capacity"
+            ].values + np.random.normal(0, 0.01, len(sample_data))
 
             metrics = twin.evaluate(sample_data)
 
         assert isinstance(metrics, dict)
-        assert 'rmse' in metrics
-        assert 'mae' in metrics
-        assert 'r2' in metrics
+        assert "rmse" in metrics
+        assert "mae" in metrics
+        assert "r2" in metrics
 
     def test_save_load_model(self, sample_data, mock_physics_model, mock_ml_model):
         """Test model saving and loading."""
         twin = HybridDigitalTwin(
-            physics_model=mock_physics_model,
-            ml_model=mock_ml_model
+            physics_model=mock_physics_model, ml_model=mock_ml_model
         )
         twin.is_trained = True
-        twin.training_history = {'test': 'data'}
+        twin.training_history = {"test": "data"}
 
         with tempfile.TemporaryDirectory() as temp_dir:
             model_path = Path(temp_dir) / "test_model.pkl"
@@ -296,12 +294,12 @@ class TestHybridDigitalTwin:
         )
 
         assert isinstance(metrics, dict)
-        assert 'train_rmse' in metrics
-        assert 'val_rmse' in metrics
-        assert 'train_mae' in metrics
-        assert 'val_mae' in metrics
-        assert 'train_r2' in metrics
-        assert 'val_r2' in metrics
+        assert "train_rmse" in metrics
+        assert "val_rmse" in metrics
+        assert "train_mae" in metrics
+        assert "val_mae" in metrics
+        assert "train_r2" in metrics
+        assert "val_r2" in metrics
 
 
 class TestPredictionResult:
@@ -313,14 +311,14 @@ class TestPredictionResult:
         ml_correction = np.array([0.01, -0.02, 0.005])
         hybrid_pred = np.array([1.01, 1.08, 1.205])
         uncertainty = np.array([0.005, 0.007, 0.006])
-        metadata = {'n_samples': 3}
+        metadata = {"n_samples": 3}
 
         result = PredictionResult(
             physics_prediction=physics_pred,
             ml_correction=ml_correction,
             hybrid_prediction=hybrid_pred,
             uncertainty=uncertainty,
-            metadata=metadata
+            metadata=metadata,
         )
 
         assert np.array_equal(result.physics_prediction, physics_pred)
@@ -338,7 +336,7 @@ class TestPredictionResult:
         result = PredictionResult(
             physics_prediction=physics_pred,
             ml_correction=ml_correction,
-            hybrid_prediction=hybrid_pred
+            hybrid_prediction=hybrid_pred,
         )
 
         assert result.uncertainty is None
@@ -351,14 +349,16 @@ def trained_twin(sample_data):
     twin = HybridDigitalTwin()
 
     # Mock the training process
-    with patch.object(twin.physics_model, 'fit') as mock_physics_fit:
-        mock_physics_fit.return_value = {'rmse': 0.01}
-        with patch.object(twin.physics_model, 'predict') as mock_physics_predict:
+    with patch.object(twin.physics_model, "fit") as mock_physics_fit:
+        mock_physics_fit.return_value = {"rmse": 0.01}
+        with patch.object(twin.physics_model, "predict") as mock_physics_predict:
             mock_physics_predict.return_value = np.random.rand(len(sample_data))
-            with patch.object(twin.ml_model, 'fit') as mock_ml_fit:
-                mock_ml_fit.return_value = {'rmse': 0.005}
-                with patch.object(twin.ml_model, 'predict') as mock_ml_predict:
-                    mock_ml_predict.return_value = np.random.rand(len(sample_data)) * 0.01
+            with patch.object(twin.ml_model, "fit") as mock_ml_fit:
+                mock_ml_fit.return_value = {"rmse": 0.005}
+                with patch.object(twin.ml_model, "predict") as mock_ml_predict:
+                    mock_ml_predict.return_value = (
+                        np.random.rand(len(sample_data)) * 0.01
+                    )
 
                     twin.fit(sample_data)
 
@@ -383,32 +383,22 @@ class TestHybridDigitalTwinIntegration:
 
         # Evaluation
         eval_metrics = twin.evaluate(sample_data[10:20])
-        assert 'rmse' in eval_metrics
+        assert "rmse" in eval_metrics
 
         # Future prediction
         future_result = twin.predict_future(
             cycles=np.array([200, 300, 400]),
             temperature=25.0,
             charge_time=3600.0,
-            initial_capacity=2.0
+            initial_capacity=2.0,
         )
         assert isinstance(future_result, PredictionResult)
 
     def test_configuration_impact(self, sample_data):
         """Test that configuration affects model behavior."""
-        config1 = {
-            'ml_model': {
-                'hidden_layers': [32, 16],
-                'epochs': 10
-            }
-        }
+        config1 = {"ml_model": {"hidden_layers": [32, 16], "epochs": 10}}
 
-        config2 = {
-            'ml_model': {
-                'hidden_layers': [64, 32, 16],
-                'epochs': 20
-            }
-        }
+        config2 = {"ml_model": {"hidden_layers": [64, 32, 16], "epochs": 20}}
 
         twin1 = HybridDigitalTwin(config=config1)
         twin2 = HybridDigitalTwin(config=config2)

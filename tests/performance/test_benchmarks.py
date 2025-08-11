@@ -13,6 +13,7 @@ from unittest.mock import patch
 # Handle pytest-benchmark import gracefully
 try:
     import pytest_benchmark
+
     HAS_BENCHMARK = True
 except ImportError:
     HAS_BENCHMARK = False
@@ -40,7 +41,7 @@ class TestPerformanceBenchmarks:
     def test_metrics_calculation_speed(self, benchmark, sample_battery_data):
         """Benchmark metrics calculation speed."""
         metrics_calc = ModelMetrics()
-        y_true = sample_battery_data['Capacity'].values
+        y_true = sample_battery_data["Capacity"].values
         y_pred = y_true + np.random.normal(0, 0.01, len(y_true))
 
         # Benchmark metrics calculation
@@ -48,21 +49,16 @@ class TestPerformanceBenchmarks:
 
         # Verify result structure
         assert isinstance(result, dict)
-        assert 'rmse' in result
-        assert 'mae' in result
-        assert 'r2' in result
+        assert "rmse" in result
+        assert "mae" in result
+        assert "r2" in result
 
     @pytest.mark.slow
     def test_training_speed_small_model(self, benchmark, minimal_data):
         """Benchmark training speed for small model."""
+
         def train_small_model():
-            config = {
-                "ml_model": {
-                    "hidden_layers": [4],
-                    "epochs": 2,
-                    "batch_size": 4
-                }
-            }
+            config = {"ml_model": {"hidden_layers": [4], "epochs": 2, "batch_size": 4}}
             twin = HybridDigitalTwin(config=config)
             return twin.fit(minimal_data, validation_split=0.4)
 
@@ -102,9 +98,9 @@ class TestMemoryUsage:
         initial_memory = process.memory_info().rss / 1024 / 1024  # MB
 
         # Create and train model
-        twin = HybridDigitalTwin(config={
-            "ml_model": {"hidden_layers": [32, 16], "epochs": 5}
-        })
+        twin = HybridDigitalTwin(
+            config={"ml_model": {"hidden_layers": [32, 16], "epochs": 5}}
+        )
 
         twin.fit(sample_battery_data, validation_split=0.2)
 
@@ -130,15 +126,16 @@ class TestScalability:
         # Create synthetic data of different sizes
         cycles = np.arange(1, data_size + 1)
         data = {
-            'id_cycle': cycles,
-            'Temperature_measured': np.full(data_size, 25.0),
-            'Time': np.full(data_size, 3600.0),
-            'Capacity': 2.0 * np.exp(-0.001 * cycles),
-            'Voltage_measured': np.full(data_size, 3.7),
-            'Current_measured': np.full(data_size, -2.0)
+            "id_cycle": cycles,
+            "Temperature_measured": np.full(data_size, 25.0),
+            "Time": np.full(data_size, 3600.0),
+            "Capacity": 2.0 * np.exp(-0.001 * cycles),
+            "Voltage_measured": np.full(data_size, 3.7),
+            "Current_measured": np.full(data_size, -2.0),
         }
 
         import pandas as pd
+
         test_data = pd.DataFrame(data)
 
         # Train a simple model
@@ -152,13 +149,16 @@ class TestScalability:
 
         # Basic scalability check
         time_per_sample = prediction_time / data_size
-        assert time_per_sample < 0.01, f"Prediction too slow: {time_per_sample:.4f}s per sample"
+        assert (
+            time_per_sample < 0.01
+        ), f"Prediction too slow: {time_per_sample:.4f}s per sample"
         assert len(predictions) == data_size
 
 
 # Mock benchmark if pytest-benchmark is not available
 def mock_benchmark_fixture():
     """Mock benchmark fixture for when pytest-benchmark is not available."""
+
     class MockBenchmark:
         def __call__(self, func, *args, **kwargs):
             return func(*args, **kwargs)

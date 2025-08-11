@@ -32,18 +32,14 @@ class TestEndToEndWorkflow:
         assert len(data) == len(minimal_data)
 
         # Train model with minimal configuration
-        config = {
-            "ml_model": {
-                "hidden_layers": [4],
-                "epochs": 2,
-                "batch_size": 2
-            }
-        }
+        config = {"ml_model": {"hidden_layers": [4], "epochs": 2, "batch_size": 2}}
 
         twin = HybridDigitalTwin(config=config)
 
         # Training
-        metrics = twin.fit(data, validation_split=0.4)  # Large validation split for small data
+        metrics = twin.fit(
+            data, validation_split=0.4
+        )  # Large validation split for small data
 
         assert twin.is_trained
         assert "train_rmse" in metrics or len(twin.training_history) > 0
@@ -77,11 +73,7 @@ class TestEndToEndWorkflow:
         # Train model
         config = {
             "physics_k": 0.13,
-            "ml_model": {
-                "hidden_layers": [16, 8],
-                "epochs": 10,
-                "batch_size": 8
-            }
+            "ml_model": {"hidden_layers": [16, 8], "epochs": 10, "batch_size": 8},
         }
 
         twin = HybridDigitalTwin(config=config)
@@ -107,7 +99,7 @@ class TestEndToEndWorkflow:
 
         # Verify reasonable performance
         assert eval_metrics["rmse"] < 0.5  # Should be reasonable for test data
-        assert eval_metrics["r2"] > 0.0    # Should have some predictive power
+        assert eval_metrics["r2"] > 0.0  # Should have some predictive power
 
         # Test future prediction
         future_cycles = np.array([150, 200, 250])
@@ -115,7 +107,7 @@ class TestEndToEndWorkflow:
             cycles=future_cycles,
             temperature=25.0,
             charge_time=3600.0,
-            initial_capacity=2.0
+            initial_capacity=2.0,
         )
 
         assert isinstance(future_results, PredictionResult)
@@ -130,9 +122,9 @@ class TestDataLoaderIntegration:
         """Test CSV loading and processing pipeline."""
         # Save data with multiple batteries
         multi_battery_data = sample_battery_data.copy()
-        multi_battery_data.loc[:30, 'Battery'] = 'B0006'
-        multi_battery_data.loc[31:60, 'Battery'] = 'B0007'
-        multi_battery_data.loc[61:, 'Battery'] = 'B0005'
+        multi_battery_data.loc[:30, "Battery"] = "B0006"
+        multi_battery_data.loc[31:60, "Battery"] = "B0007"
+        multi_battery_data.loc[61:, "Battery"] = "B0005"
 
         data_file = temp_dir / "multi_battery.csv"
         multi_battery_data.to_csv(data_file, index=False)
@@ -141,27 +133,27 @@ class TestDataLoaderIntegration:
 
         # Test single battery loading
         single_battery = loader.load_csv(data_file.name, battery_filter="B0005")
-        assert len(single_battery) == len(multi_battery_data[multi_battery_data['Battery'] == 'B0005'])
+        assert len(single_battery) == len(
+            multi_battery_data[multi_battery_data["Battery"] == "B0005"]
+        )
 
         # Test multiple battery loading
         multiple_batteries = loader.load_multiple_batteries(
-            data_file.name,
-            battery_ids=["B0005", "B0006"],
-            combine=True
+            data_file.name, battery_ids=["B0005", "B0006"], combine=True
         )
 
-        assert len(multiple_batteries) == len(multi_battery_data[
-            multi_battery_data['Battery'].isin(["B0005", "B0006"])
-        ])
+        assert len(multiple_batteries) == len(
+            multi_battery_data[multi_battery_data["Battery"].isin(["B0005", "B0006"])]
+        )
 
         # Test data preprocessing
         processed_data, feature_names = loader.preprocess_for_modeling(
-            single_battery,
-            target_column="Capacity",
-            add_derived_features=True
+            single_battery, target_column="Capacity", add_derived_features=True
         )
 
-        assert len(feature_names) > len(single_battery.columns) - 1  # Should add features
+        assert (
+            len(feature_names) > len(single_battery.columns) - 1
+        )  # Should add features
         assert "Capacity" not in feature_names  # Target should not be in features
 
 
@@ -172,14 +164,8 @@ class TestConfigurationIntegration:
     def test_different_configurations(self, minimal_data):
         """Test models with different configurations."""
         configs = [
-            {
-                "physics_k": 0.1,
-                "ml_model": {"hidden_layers": [4], "epochs": 2}
-            },
-            {
-                "physics_k": 0.15,
-                "ml_model": {"hidden_layers": [8, 4], "epochs": 3}
-            }
+            {"physics_k": 0.1, "ml_model": {"hidden_layers": [4], "epochs": 2}},
+            {"physics_k": 0.15, "ml_model": {"hidden_layers": [8, 4], "epochs": 3}},
         ]
 
         models = []
@@ -207,12 +193,9 @@ def test_performance_benchmark(sample_battery_data):
     """Basic performance benchmark test."""
     import time
 
-    twin = HybridDigitalTwin(config={
-        "ml_model": {
-            "hidden_layers": [32, 16],
-            "epochs": 20
-        }
-    })
+    twin = HybridDigitalTwin(
+        config={"ml_model": {"hidden_layers": [32, 16], "epochs": 20}}
+    )
 
     # Training time
     start_time = time.time()
