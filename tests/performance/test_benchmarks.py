@@ -5,10 +5,11 @@ This module contains performance tests to ensure the framework
 meets performance requirements.
 """
 
-import pytest
-import numpy as np
 import time
 from unittest.mock import patch
+
+import numpy as np
+import pytest
 
 # Handle pytest-benchmark import gracefully
 try:
@@ -91,8 +92,9 @@ class TestMemoryUsage:
 
     def test_model_memory_footprint(self, sample_battery_data):
         """Test that model doesn't use excessive memory."""
-        import psutil
         import os
+
+        import psutil
 
         process = psutil.Process(os.getpid())
         initial_memory = process.memory_info().rss / 1024 / 1024  # MB

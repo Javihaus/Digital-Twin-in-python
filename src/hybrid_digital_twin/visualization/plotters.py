@@ -5,17 +5,17 @@ This module provides high-quality plotting functions for visualizing
 battery data, model predictions, and evaluation results.
 """
 
-from typing import Dict, List, Optional, Tuple, Union
-import numpy as np
-import pandas as pd
 from pathlib import Path
+from typing import Dict, List, Optional, Tuple, Union
 
 import matplotlib.pyplot as plt
 import matplotlib.style as style
-import plotly.graph_objects as go
+import numpy as np
+import pandas as pd
 import plotly.express as px
-from plotly.subplots import make_subplots
+import plotly.graph_objects as go
 import seaborn as sns
+from plotly.subplots import make_subplots
 
 from hybrid_digital_twin.utils.exceptions import VisualizationError
 
@@ -432,7 +432,7 @@ class BatteryPlotter:
         """
         try:
             # Calculate R² and RMSE for display
-            from sklearn.metrics import r2_score, mean_squared_error
+            from sklearn.metrics import mean_squared_error, r2_score
 
             r2 = r2_score(actual, predicted)
             rmse = np.sqrt(mean_squared_error(actual, predicted))

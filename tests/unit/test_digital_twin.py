@@ -5,21 +5,22 @@ This module contains comprehensive unit tests for the core digital twin
 functionality, focusing on individual component behavior and integration.
 """
 
-import pytest
+import tempfile
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
+import joblib
 import numpy as np
 import pandas as pd
-from unittest.mock import Mock, patch, MagicMock
-from pathlib import Path
-import tempfile
-import joblib
+import pytest
 
 from hybrid_digital_twin.core.digital_twin import HybridDigitalTwin, PredictionResult
-from hybrid_digital_twin.models.physics_model import PhysicsBasedModel
 from hybrid_digital_twin.models.ml_model import MLCorrectionModel
+from hybrid_digital_twin.models.physics_model import PhysicsBasedModel
 from hybrid_digital_twin.utils.exceptions import (
     DigitalTwinError,
-    ModelNotTrainedError,
     InvalidDataError,
+    ModelNotTrainedError,
 )
 
 

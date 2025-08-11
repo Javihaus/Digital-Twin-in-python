@@ -5,13 +5,14 @@ This module contains integration tests that verify the complete workflow
 from data loading to model training and prediction.
 """
 
-import pytest
+import tempfile
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
-import tempfile
+import pytest
 
-from hybrid_digital_twin import HybridDigitalTwin, BatteryDataLoader
+from hybrid_digital_twin import BatteryDataLoader, HybridDigitalTwin
 from hybrid_digital_twin.core.digital_twin import PredictionResult
 
 

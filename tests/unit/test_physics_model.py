@@ -5,16 +5,17 @@ This module contains comprehensive unit tests for the physics-based
 battery degradation model component.
 """
 
-import pytest
+from unittest.mock import Mock, patch
+
 import numpy as np
 import pandas as pd
-from unittest.mock import Mock, patch
+import pytest
 
 from hybrid_digital_twin.models.physics_model import (
     PhysicsBasedModel,
     PhysicsModelParameters,
 )
-from hybrid_digital_twin.utils.exceptions import ModelError, InvalidParameterError
+from hybrid_digital_twin.utils.exceptions import InvalidParameterError, ModelError
 
 
 class TestPhysicsModelParameters:

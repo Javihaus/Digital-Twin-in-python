@@ -6,19 +6,20 @@ the performance of both physics-based and machine learning models
 in the hybrid digital twin framework.
 """
 
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
+
 import numpy as np
 import pandas as pd
-from dataclasses import dataclass
-from sklearn.metrics import (
-    mean_squared_error,
-    mean_absolute_error,
-    r2_score,
-    mean_absolute_percentage_error,
-    median_absolute_error,
-)
-from scipy import stats
 from loguru import logger
+from scipy import stats
+from sklearn.metrics import (
+    mean_absolute_error,
+    mean_absolute_percentage_error,
+    mean_squared_error,
+    median_absolute_error,
+    r2_score,
+)
 
 from hybrid_digital_twin.utils.exceptions import InvalidDataError
 

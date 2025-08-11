@@ -5,13 +5,14 @@ This module implements the physics-based component of the hybrid digital twin,
 based on the lithium-ion battery degradation model from Xu et al. (2016).
 """
 
+from dataclasses import dataclass
 from typing import Dict, Optional
+
 import numpy as np
 import pandas as pd
-from dataclasses import dataclass
 from loguru import logger
 
-from hybrid_digital_twin.utils.exceptions import ModelError, InvalidParameterError
+from hybrid_digital_twin.utils.exceptions import InvalidParameterError, ModelError
 
 
 @dataclass
@@ -179,7 +180,7 @@ class PhysicsBasedModel:
         self, y_true: np.ndarray, y_pred: np.ndarray
     ) -> Dict[str, float]:
         """Calculate physics model performance metrics."""
-        from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+        from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
         rmse = np.sqrt(mean_squared_error(y_true, y_pred))
         mae = mean_absolute_error(y_true, y_pred)
