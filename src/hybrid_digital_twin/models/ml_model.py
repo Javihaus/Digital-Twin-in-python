@@ -6,6 +6,10 @@ predictions by modeling the residual between physics predictions and observation
 """
 
 from typing import Dict, List, Optional, Tuple, Union
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 import numpy as np
 import pandas as pd
 from dataclasses import dataclass

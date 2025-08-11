@@ -10,8 +10,12 @@ import numpy as np
 import time
 from unittest.mock import patch
 
-# Only run these tests if pytest-benchmark is available
-pytest_benchmark = pytest.importorskip("pytest_benchmark", reason="pytest-benchmark not available")
+# Handle pytest-benchmark import gracefully
+try:
+    import pytest_benchmark
+    HAS_BENCHMARK = True
+except ImportError:
+    HAS_BENCHMARK = False
 
 from hybrid_digital_twin import HybridDigitalTwin
 from hybrid_digital_twin.models.physics_model import PhysicsBasedModel
