@@ -43,7 +43,7 @@ The physics component implements the Li-ion battery degradation model based on *
 
 #### Battery Lifetime Evolution
 
-$L = 1 - (1 - L') \times \exp(-f_d)$
+$L = 1 - (1 - L') \times e^{-f_d}$
 
 Where:
 - $L$: Current battery lifetime fraction
@@ -51,7 +51,7 @@ Where:
 - $f_d$: Linearized degradation rate function
 
 #### Degradation Rate Function
-$f_d = k \times T_c \times i / t$
+$f_d = \frac{k T_c i}{t}$
 
 Where:
 - $k$: Empirical degradation coefficient ($≈$ 0.13)
@@ -60,7 +60,7 @@ Where:
 - $t$: Charge time per cycle (seconds)
 
 #### Capacity Evolution Model
-$ C(t) = C_0 \exp(-f_d)$
+$C(t) = C_0 e^{-f_d}$
 
 Where:
 - $C(t)$: Battery capacity at time $t$
@@ -72,7 +72,7 @@ The ML component learns the residual function between physics predictions and ob
 
 #### Residual Learning
 
-$\Delta C = f_{ML}(C_{physics}, T, cycle, time, ...)$
+$\Delta C = f_{ML}(C_{physics}, T, cycle, time, etc. )$
 
 
 Where:
