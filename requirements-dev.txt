@@ -1,4 +1,4 @@
-# Development dependencies (Python 3.7+ compatible)
+# Development dependencies (Python 3.8+ compatible)
 -r requirements.txt
 
 # Testing

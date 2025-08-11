@@ -1,4 +1,4 @@
-# Core dependencies (Python 3.7+ compatible)
+# Core dependencies (Python 3.8+ compatible)
 numpy>=1.19.0
 pandas>=1.3.0
 scikit-learn>=1.0.0
