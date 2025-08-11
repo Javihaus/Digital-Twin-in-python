@@ -5,7 +5,7 @@
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![Type checked: mypy](https://img.shields.io/badge/type_checked-mypy-blue.svg)](https://mypy.readthedocs.io/)
 
-> A professional-grade implementation of hybrid digital twin technology for Li-ion battery capacity prediction and lifecycle management, combining physics-based modeling with machine learning for superior accuracy.
+> Implementation of an hybrid digital twin technology for Li-ion battery capacity prediction and lifecycle management, combining physics-based modeling with machine learning for superior accuracy.
 
 ## Table of Contents
 
