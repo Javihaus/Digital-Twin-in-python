@@ -3,84 +3,74 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "hybrid-digital-twin"
-version = "1.0.0"
-description = "Professional-grade hybrid digital twin implementation for Li-ion battery modeling and prediction"
+name = "PKG"
+version = "2.0.0-alpha"
+description = "Composable, physically-consistent (port-Hamiltonian) digital twins with calibrated uncertainty and honest evaluation by default — lightweight, CPU-first"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [
-    {name = "Javier Marin", email = "javier@example.com"},
+    {name = "Javier Marin", email = "javier@jmarin.info"},
 ]
 maintainers = [
-    {name = "Javier Marin", email = "javier@example.com"},
+    {name = "Javier Marin", email = "javier@jmarin.info"},
 ]
 keywords = [
     "digital-twin",
-    "battery",
-    "machine-learning",
-    "physics-based-modeling",
-    "predictive-maintenance",
-    "hybrid-modeling",
+    "port-hamiltonian",
+    "physics-informed",
+    "uncertainty-quantification",
+    "forecasting",
+    "structure-preserving",
 ]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Topic :: Scientific/Engineering :: Physics",
     "Typing :: Typed",
 ]
+
+# Core: numpy and scipy only
 dependencies = [
-    "numpy>=1.19.0",
-    "pandas>=1.3.0",
-    "scikit-learn>=1.0.0",
-    "tensorflow>=2.8.0",
-    "plotly>=5.0.0",
-    "matplotlib>=3.3.0",
-    "pydantic>=1.8.0",
-    "typer>=0.6.0",
-    "rich>=10.0.0",
-    "loguru>=0.6.0",
-    "hydra-core>=1.1.0",
-    "mlflow>=1.30.0",
+    "numpy>=1.21.0",
     "scipy>=1.7.0",
-    "joblib>=1.0.0",
 ]
 
 [project.optional-dependencies]
+# Optional: PyTorch for learned PHS (CPU-only)
+torch = [
+    "torch>=2.0.0",
+]
+# Optional: GP backend for GP-PHS
+gp = [
+    "gpytorch>=1.9.0",
+    "scikit-learn>=1.0.0",
+]
+# Optional: visualization
+viz = [
+    "matplotlib>=3.5.0",
+    "plotly>=5.0.0",
+]
+# Dev: testing, linting, typing, docs
 dev = [
-    "pytest>=6.0.0",
-    "pytest-cov>=3.0.0",
-    "pytest-mock>=3.6.0",
-    "black>=21.0.0",
-    "isort>=5.0.0",
-    "flake8>=4.0.0",
-    "mypy>=0.910",
-    "pre-commit>=2.15.0",
-    "sphinx>=4.0.0",
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "hypothesis>=6.0.0",
+    "mypy>=1.0.0",
+    "ruff>=0.1.0",
+    "black>=23.0.0",
+    "sphinx>=5.0.0",
     "sphinx-rtd-theme>=1.0.0",
-    "jupyterlab>=3.0.0",
-    "ipywidgets>=7.6.0",
-]
-docs = [
-    "sphinx>=4.0.0",
-    "sphinx-rtd-theme>=1.0.0",
-    "myst-parser>=0.17.0",
-    "sphinx-autoapi>=1.8.0",
-]
-monitoring = [
-    "prometheus-client>=0.17.0",
-    "opentelemetry-api>=1.15.0",
-    "opentelemetry-sdk>=1.15.0",
 ]
 
 [project.urls]
@@ -88,9 +78,6 @@ Homepage = "https://github.com/Javihaus/Digital-Twin-in-python"
 Documentation = "https://github.com/Javihaus/Digital-Twin-in-python/docs"
 Repository = "https://github.com/Javihaus/Digital-Twin-in-python.git"
 Issues = "https://github.com/Javihaus/Digital-Twin-in-python/issues"
-
-[project.scripts]
-hybrid-twin = "hybrid_digital_twin.cli:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -100,30 +87,33 @@ where = ["src"]
 
 [tool.black]
 line-length = 88
-target-version = ['py39']
+target-version = ['py310']
 include = '\.pyi?$'
 extend-exclude = '''
 /(
-  # directories
   \.eggs
   | \.git
-  | \.hg
   | \.mypy_cache
   | \.tox
   | \.venv
   | build
   | dist
+  | legacy_v1
 )/
 '''
 
-[tool.isort]
-profile = "black"
-multi_line_output = 3
-line_length = 88
-known_first_party = ["hybrid_digital_twin"]
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+extend-exclude = ["legacy_v1"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = []
 
 [tool.mypy]
-python_version = "3.9"
+python_version = "3.10"
+strict = true
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
@@ -139,10 +129,11 @@ strict_equality = true
 
 [[tool.mypy.overrides]]
 module = [
-    "plotly.*",
+    "torch.*",
+    "gpytorch.*",
     "sklearn.*",
-    "tensorflow.*",
-    "mlflow.*",
+    "plotly.*",
+    "matplotlib.*",
 ]
 ignore_missing_imports = true
 
@@ -150,34 +141,32 @@ ignore_missing_imports = true
 minversion = "7.0"
 addopts = "-ra -q --strict-markers --strict-config"
 testpaths = ["tests"]
-python_files = ["test_*.py", "*_test.py"]
+python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
-    "e2e: marks tests as end-to-end tests",
     "unit: marks tests as unit tests",
 ]
 
 [tool.coverage.run]
-source = ["src/hybrid_digital_twin"]
+source = ["src/PKG"]
 omit = [
     "*/tests/*",
     "*/test_*.py",
     "*/__pycache__/*",
+    "legacy_v1/*",
 ]
 
 [tool.coverage.report]
 exclude_lines = [
     "pragma: no cover",
     "def __repr__",
-    "if self.debug:",
-    "if settings.DEBUG",
     "raise AssertionError",
     "raise NotImplementedError",
-    "if 0:",
     "if __name__ == .__main__.:",
-    "class .*\bProtocol\\):",
+    "if TYPE_CHECKING:",
     "@(abc\\.)?abstractmethod",
 ]
+fail_under = 85
