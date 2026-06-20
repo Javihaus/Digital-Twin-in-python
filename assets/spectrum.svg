@@ -1,0 +1,66 @@
+<svg viewBox="0 0 980 600" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="otwin spectrum of physics">
+  <title>otwin: one pattern, a spectrum of physics</title>
+  <desc>The same pattern (physical prior + learned residual + calibrated uncertainty + leakage-free evaluation) applied from strong physics (port-Hamiltonian) to light physics (empirical law). Battery State-of-Health is the light end, not port-Hamiltonian.</desc>
+
+  <!-- self-contained background so it renders on light and dark GitHub themes -->
+  <rect x="0" y="0" width="980" height="600" rx="18" fill="#FBF8F3"/>
+
+  <!-- palette: ink #1B2430, strong #1C4E73, light #3D80A9, accent #B5651D, cream #F1EAE2 -->
+  <text x="40" y="46" font-size="24" font-weight="700" fill="#1B2430">otwin — one pattern, a spectrum of physics</text>
+  <text x="40" y="72" font-size="15" fill="#5b5b5b">You choose how much physics to impose. Everything downstream of that choice is the same.</text>
+
+  <!-- spectrum bar -->
+  <defs>
+    <linearGradient id="sp" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1C4E73"/>
+      <stop offset="1" stop-color="#9CC2DA"/>
+    </linearGradient>
+  </defs>
+  <rect x="60" y="104" width="860" height="26" rx="13" fill="url(#sp)"/>
+  <circle cx="150" cy="117" r="9" fill="#1B2430" stroke="#FBF8F3" stroke-width="3"/>
+  <circle cx="830" cy="117" r="9" fill="#1B2430" stroke="#FBF8F3" stroke-width="3"/>
+  <text x="60" y="154" font-size="14" font-weight="700" fill="#1C4E73">◀ STRONG PHYSICS</text>
+  <text x="60" y="172" font-size="12.5" fill="#5b5b5b">structure imposed · conservation guaranteed</text>
+  <text x="920" y="154" font-size="14" font-weight="700" fill="#3D80A9" text-anchor="end">LIGHT PHYSICS ▶</text>
+  <text x="920" y="172" font-size="12.5" fill="#5b5b5b" text-anchor="end">only the trend · the rest is learned</text>
+
+  <!-- shared pipeline -->
+  <text x="490" y="214" font-size="13" font-weight="700" fill="#1B2430" text-anchor="middle" letter-spacing="0.5">THE COMMON PATTERN (identical at both ends)</text>
+  <g font-size="12.5" fill="#1B2430">
+    <rect x="60" y="228" width="186" height="44" rx="8" fill="#F1EAE2" stroke="#cdbfae"/>
+    <text x="153" y="255" text-anchor="middle" font-weight="700">physical prior</text>
+    <rect x="278" y="228" width="186" height="44" rx="8" fill="#F1EAE2" stroke="#cdbfae"/>
+    <text x="371" y="255" text-anchor="middle" font-weight="700">+ learned residual</text>
+    <rect x="496" y="228" width="196" height="44" rx="8" fill="#F1EAE2" stroke="#cdbfae"/>
+    <text x="594" y="255" text-anchor="middle" font-weight="700">+ calibrated uncertainty</text>
+    <rect x="724" y="228" width="196" height="44" rx="8" fill="#F1EAE2" stroke="#cdbfae"/>
+    <text x="822" y="255" text-anchor="middle" font-weight="700">leakage-free evaluation</text>
+    <text x="262" y="256" text-anchor="middle" font-size="18" fill="#B5651D">→</text>
+    <text x="480" y="256" text-anchor="middle" font-size="18" fill="#B5651D">→</text>
+    <text x="708" y="256" text-anchor="middle" font-size="18" fill="#B5651D">→</text>
+  </g>
+
+  <!-- card A: strong -->
+  <rect x="60" y="312" width="410" height="246" rx="14" fill="#ffffff" stroke="#1C4E73" stroke-width="2"/>
+  <path d="M60 326 a14 14 0 0 1 14 -14 h382 a14 14 0 0 1 14 14 v26 h-410 z" fill="#1C4E73"/>
+  <text x="80" y="339" font-size="15" font-weight="700" fill="#ffffff">Strong end · Port-Hamiltonian (PHS)</text>
+  <text x="80" y="384" font-size="14" font-weight="700" fill="#1B2430">Example: water tank, RC circuit, mechanics</text>
+  <text x="80" y="414" font-size="17" fill="#1C4E73" font-family="Georgia, serif" font-style="italic">ẋ = (J − R)·∇H(x) + g·u</text>
+  <text x="80" y="445" font-size="12.5" fill="#444">You provide: energy H, interconnection J,</text>
+  <text x="80" y="463" font-size="12.5" fill="#444">dissipation R, input g.</text>
+  <text x="80" y="493" font-size="12.5" fill="#444">Use when you know the conservation /</text>
+  <text x="80" y="511" font-size="12.5" fill="#444">energy structure of the system.</text>
+  <text x="80" y="541" font-size="12.5" font-weight="700" fill="#1C4E73">Guarantee: no energy-creating drift.</text>
+
+  <!-- card B: light -->
+  <rect x="510" y="312" width="410" height="246" rx="14" fill="#ffffff" stroke="#3D80A9" stroke-width="2"/>
+  <path d="M510 326 a14 14 0 0 1 14 -14 h382 a14 14 0 0 1 14 14 v26 h-410 z" fill="#3D80A9"/>
+  <text x="530" y="339" font-size="15" font-weight="700" fill="#ffffff">Light end · empirical law</text>
+  <text x="530" y="384" font-size="14" font-weight="700" fill="#1B2430">Example: battery State-of-Health, degradation</text>
+  <text x="530" y="414" font-size="16" fill="#3D80A9" font-family="Georgia, serif" font-style="italic">SoH(n) = SoH₀·e^(−a·n) + g(n)</text>
+  <text x="530" y="445" font-size="12.5" fill="#444">You provide: a trend law (exp, power,</text>
+  <text x="530" y="463" font-size="12.5" fill="#444">Arrhenius) + bounds.</text>
+  <text x="530" y="493" font-size="12.5" fill="#444">Use when you only know the slow trend,</text>
+  <text x="530" y="511" font-size="12.5" fill="#444">not the energy dynamics.</text>
+  <text x="530" y="541" font-size="12.5" font-weight="700" fill="#B5651D">NOT port-Hamiltonian.</text>
+</svg>

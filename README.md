@@ -30,9 +30,11 @@ The physical prior exists for one reason: **extrapolation**. Black-box models in
 
 You decide **how much physics you impose**. Everything downstream of that choice is identical:
 
-```
-physical prior  →  + learned residual  →  + calibrated uncertainty  →  leakage-free evaluation
-```
+<div align="center">
+
+<img src="assets/spectrum.svg" alt="otwin spectrum of physics: strong (port-Hamiltonian) to light (empirical law), sharing one pattern — physical prior, learned residual, calibrated uncertainty, leakage-free evaluation" width="820">
+
+</div>
 
 **◀ Strong end — Port-Hamiltonian (PHS).** For systems with a known energy/conservation structure (mechanical, electrical, thermal, fluid). You supply the energy `H`, interconnection `J`, dissipation `R`, and input map `g`; conservation and passivity then hold **by construction**. This is the rigorous core.
 
