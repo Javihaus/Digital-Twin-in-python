@@ -20,22 +20,34 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 
 ## What is this?
 
-A lightweight Python library for **physics-informed digital twins**: pair a *structured physical prior* with a *learned correction*, attach *calibrated uncertainty*, and evaluate *without leakage*. One pattern, applied from full dynamical systems to slow degradation.
+otwin builds **digital twins** by pairing a *physical prior you trust* with a *learned correction*, then attaching **calibrated uncertainty** and grading itself only with leakage-free metrics. It is **one pattern**, applied across a spectrum — from full energy-conserving dynamics down to a slow degradation curve.
 
-The physical prior spans a spectrum:
+The physical prior exists for one reason: **extrapolation**. Black-box models interpolate well but drift on long horizons and out-of-distribution inputs. Structure keeps a forecast physically admissible far ahead, and the calibrated interval states how much to trust it — a stated 90% interval is checked to actually contain the truth ~90% of the time.
 
-- **Strong end — port-Hamiltonian systems (PHS).** For systems with known conservation structure, dynamics are constrained to PHS form so that conservation, dissipation, and passivity hold **by construction** — the principled answer to long-horizon **drift**. This is the rigorous core of the library.
-- **Light end — empirical/structured laws.** For aging and degradation (e.g. battery capacity fade), a transparent physical prior carries the trend and a bounded learned residual corrects it. Same hybrid pattern, lighter physics.
+---
 
-**The three load-bearing differentiators:**
+## The mental model: a spectrum of physics
 
-1. **Physics as a prior, not a hope.** Structure (from PHS to empirical laws) keeps forecasts physically admissible far ahead, where black-box models drift.
-2. **Calibrated uncertainty as a first-class citizen.** Ensemble / GP predictions with conformal, horizon-aware intervals and calibration metrics (PICP, coverage, CRPS) — a stated 90% interval is checked to mean 90%.
-3. **Leakage-free evaluation by default.** Temporal / rolling-origin splits, mandatory naive baselines, skill scores. No headline metric without a baseline and a declared split protocol.
+You decide **how much physics you impose**. Everything downstream of that choice is identical:
 
-**Flagship example:** battery State-of-Health & Remaining-Useful-Life forecasting for grid-scale storage — [`examples/battery_soh`](examples/battery_soh).
+```
+physical prior  →  + learned residual  →  + calibrated uncertainty  →  leakage-free evaluation
+```
 
-> **Where this sits.** These are *observable-state, structure-known* dynamics models — the white-box end of the broader family that also includes latent-state ML *world models*. Same substrate (state, conservation, dissipation, coupling); opposite ends of the observable↔latent axis.
+**◀ Strong end — Port-Hamiltonian (PHS).** For systems with a known energy/conservation structure (mechanical, electrical, thermal, fluid). You supply the energy `H`, interconnection `J`, dissipation `R`, and input map `g`; conservation and passivity then hold **by construction**. This is the rigorous core.
+
+**Light end — empirical law ▶.** For aging and degradation, where there is no energy dynamics — only a slow trend. You supply a transparent law (exponential, power, Arrhenius) plus bounds; a small learned residual corrects it.
+
+**Which end do I use?**
+
+| If you... | Use | Example |
+|---|---|---|
+| know the state-space and energy structure | **Strong (PHS)** | water tank, RC circuit, mass-spring |
+| only know a slow degradation trend | **Light (empirical law)** | battery State-of-Health, fatigue |
+
+> **Battery State-of-Health is the light end — it is _not_ port-Hamiltonian.** Capacity fade is a monotone degradation curve, not an energy-conserving system. Confusing the two is the most common conceptual error; otwin keeps them as two ends of one spectrum, not two unrelated tools.
+
+> **Where this sits.** otwin models *observable-state, structure-known* dynamics — the white-box end of the broader family that also includes latent-state ML *world models*. Same substrate (state, conservation, dissipation, coupling); opposite ends of the observable↔latent axis.
 
 ---
 
@@ -62,51 +74,35 @@ pip install "otwin[dev]"    # For testing/linting/typing/docs
 
 ---
 
-## Quick Start
+## Quick start
 
 ```python
+import numpy as np
 from otwin import DigitalTwin, evaluate
-from otwin.systems.library import water_tank
+from otwin.systems import water_tank
 
-# Use an analytic port-Hamiltonian system
+# Strong end: an analytic port-Hamiltonian system from the catalog
 twin = DigitalTwin(model=water_tank())
 
-# Or learn from data (requires [torch] extra)
-twin = DigitalTwin(model="phnn", uq="ensemble")
-twin.fit(data, state_cols=["x1", "x2"], input_cols=["u"], time_col="t")
+# Forecast from an initial state x0 over a time grid t with inputs u
+x0 = np.array([1.0])
+t  = np.linspace(0, 10, 100)
+u  = np.zeros((100, 1))
+fc = twin.forecast(x0, t, u)
+print(fc["x"].shape)            # (100, 1)
 
-# Forecast with calibrated uncertainty
-forecast = twin.forecast(horizon=100, u=future_inputs, return_uncertainty=True)
-
-# Evaluate (temporal split + baselines by default)
+# Evaluate with a leakage-free protocol + mandatory baselines
 report = evaluate(twin, data, protocol="rolling_origin")
-print(report)  # Shows skill score (vs naive baseline) first
+print(report)                   # skill score vs naive baseline, first
 ```
 
-**Output:**
-```
-EvalReport (rolling_origin, 5 folds)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Skill Score (vs best baseline): 0.74 (26% better)
-Baseline: persistence
-
-Point Metrics:
-  RMSE:     0.0234 (baseline: 0.0316)
-  MAE:      0.0187
-  nRMSE:    0.0429
-  MASE:     0.68   (< 1.0 = better than naive)
-  Theil_U:  0.74   (< 1.0 = better than persistence)
-
-Probabilistic Metrics:
-  CRPS:     0.0156
-  PICP@90:  0.89   (target: 0.90, calibration: good)
-  MPIW:     0.0891
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
+Calibrated uncertainty (ensembles / GP) and the full **light-end** pipeline
+(empirical prior + bounded residual + conformal bands) are shown end-to-end in
+[`examples/battery_soh`](examples/battery_soh).
 
 ---
 
-## Why Port-Hamiltonian Systems?
+## The strong end: Port-Hamiltonian systems
 
 Traditional learned dynamics models (neural ODEs, LSTMs, generic regression) learn **unstructured** mappings. They work well in interpolation, but on **long horizons** or **out-of-distribution** inputs, they drift, violate conservation laws, and produce unphysical behavior.
 
@@ -130,6 +126,27 @@ dH/dt = −∇Hᵀ R ∇H + yᵀu  ≤  yᵀu
 With `u = 0`, energy is non-increasing. **No energy-creating drift, by algebra.**
 
 When you learn a `PortHamiltonianNN`, the network architecture *enforces* `J` skew and `R` PSD regardless of weights. The guarantee is structural.
+
+---
+
+## The light end: empirical laws
+
+When a system only degrades — capacity fade, wear, fatigue — there is no energy
+function to conserve. otwin uses a **transparent trend law** as the prior, learns a
+**bounded residual** on top, and quantifies uncertainty with **horizon-aware
+conformal intervals**:
+
+```
+SoH(n) = SoH0 · e^(-a·n)  +  g(n)                          # fade-law prior + learned residual
+[l(n), u(n)] = SoH(n) ± z·σ(n),   σ(n) = s0 + s1·(n - n0)  # band that widens with horizon
+```
+
+Same four-step pattern as the strong end — only the prior is lighter. This is
+demonstrated end-to-end on the NASA battery fleet in
+[`examples/battery_soh`](examples/battery_soh) (State-of-Health and
+Remaining-Useful-Life forecasting). A reusable light-end primitive
+(`otwin.systems.degradation`) is on the roadmap; today the pattern lives in the
+worked example.
 
 ---
 
@@ -188,7 +205,7 @@ Systems expressible as (irreversible) port-Hamiltonian / structured ODE state-sp
 
 ## Benchmarks
 
-*All numbers below are **generated** from `benchmarks/run_benchmarks.py` with rolling-origin protocol (5 folds). To reproduce: `cd benchmarks && python run_benchmarks.py`*
+*Water-tank numbers are generated from `benchmarks/run_benchmarks.py` (rolling-origin, 5 folds). Battery numbers are produced by the worked example in [`examples/battery_soh`](examples/battery_soh) and read from its `results.csv`.*
 
 ### Example: Water Tank (Structure-Preserving PHS)
 
@@ -201,17 +218,20 @@ Systems expressible as (irreversible) port-Hamiltonian / structured ODE state-sp
 - **Energy drift:** < 0.1% over 1000 steps (structure-preserving integrator)
 - **Calibration:** Coverage within 1% of nominal (evaluated, not assumed)
 
-### Example: Battery NASA (Temporal Split)
+### Example: Battery State-of-Health (NASA fleet, light end)
 
-| Model | RMSE (Ah) | MASE | Theil_U | PICP@90 |
-|-------|-----------|------|---------|---------|
-| Persistence | 0.0187 | 1.00 | 1.00 | — |
-| Drift (linear) | 0.0156 | 0.84 | 0.83 | — |
-| **PHNN (learned)** | **0.0134** | **0.72** | **0.72** | **0.91** |
+*Empirical fade-law prior + bounded learned residual + conformal bands. Temporal split (fit on early cycles, forecast the remainder). Source of truth: [`examples/battery_soh`](examples/battery_soh) (`results.csv`, `figure_data/`).*
 
-- **Skill score:** 0.72 (28% better than drift baseline)
-- **No physics violation:** Energy always decreases (capacity degradation)
-- **Coverage:** 91% vs 90% nominal (calibrated)
+| Cell (24 °C) | Hybrid RMSE (SoH) | Theil's U | CRPS |
+|---|---|---|---|
+| B0005 | 0.031 | 0.35 | 0.030 |
+| B0006 | 0.041 | 0.51 | 0.024 |
+| B0007 | 0.013 | 0.19 | 0.021 |
+| B0018 | 0.024 | 0.36 | 0.024 |
+
+- **Theil's U < 1** on all four 24 °C cells → the hybrid beats persistence over the horizon.
+- **Known limitation (reported as-is):** on the colder 4 °C cells (B0045–B0048) the hybrid does **not** yet beat persistence (Theil's U ≈ 1.1–1.8).
+- **MASE caveat:** SoH is near-flat cycle-to-cycle, so the one-step MASE denominator → 0 and inflates MASE; Theil's U over the horizon is the meaningful skill metric here.
 
 *All results: `benchmarks/results/*.json` (traceable to seed, data hash, split protocol)*
 
@@ -224,8 +244,8 @@ See `examples/` for full runnable code.
 ### 1. Water Tank (Analytic PHS)
 Demonstrates structure preservation (energy, dissipation) and UQ calibration.
 
-### 2. Battery NASA (Learned PHS from Data)
-The rebuilt v1 tutorial case: corrected loader, temporal split, generated metrics.
+### 2. Battery State-of-Health (light end: empirical law + residual)
+NASA battery fleet: SoH / Remaining-Useful-Life forecasting with a fade-law prior, a bounded learned residual, and conformal intervals. **Not** port-Hamiltonian — the light end of the spectrum.
 
 ### 3. CSTR Glucose↔Fructose (IPHS with Entropy)
 Irreversible thermodynamics with entropy production σ ≥ 0 (second-law guarantee).
