@@ -110,4 +110,4 @@ class Ensemble:
         :func:`PKG.evaluation.metrics.crps`.
         """
         trajs = self.forecast_trajectories(x0, t, u, method=method)  # (M, T, S)
-        return trajs[:, :, state].T  # (T, M)
+        return np.asarray(trajs[:, :, state].T, dtype=float)  # (T, M)

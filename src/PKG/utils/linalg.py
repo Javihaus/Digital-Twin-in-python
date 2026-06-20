@@ -22,7 +22,7 @@ def skew_symmetric(A: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         >>> np.allclose(J, -J.T)
         True
     """
-    return 0.5 * (A - A.T)
+    return np.asarray(0.5 * (A - A.T), dtype=float)
 
 
 def psd_from_cholesky(L: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
@@ -41,7 +41,7 @@ def psd_from_cholesky(L: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         >>> np.all(np.linalg.eigvalsh(R) >= -1e-10)
         True
     """
-    return L @ L.T
+    return np.asarray(L @ L.T, dtype=float)
 
 
 def numerical_gradient(
