@@ -66,9 +66,11 @@ dev = [
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "hypothesis>=6.0.0",
-    "mypy>=1.0.0",
-    "ruff>=0.1.0",
-    "black>=23.0.0",
+    # Linters/formatters/type-checker are pinned so CI enforcement is
+    # deterministic (a newer black/ruff could reformat or flag differently).
+    "mypy==2.1.0",
+    "ruff==0.15.18",
+    "black==26.5.1",
     "sphinx>=5.0.0",
     "sphinx-rtd-theme>=1.0.0",
 ]

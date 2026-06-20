@@ -31,22 +31,18 @@ jobs:
     - name: Run ruff linter
       run: |
         ruff check src/PKG
-      continue-on-error: true
 
     - name: Run black format check
       run: |
         black --check src/PKG tests
-      continue-on-error: true
 
     - name: Run mypy type checker (strict)
       run: |
         mypy --strict src/PKG
-      continue-on-error: true
 
     - name: Run tests with coverage
       run: |
-        pytest tests/ -v --cov=PKG --cov-report=term-missing --cov-report=xml
-      continue-on-error: false
+        pytest tests/ -v --cov=PKG --cov-report=term-missing --cov-report=xml --cov-fail-under=85
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
