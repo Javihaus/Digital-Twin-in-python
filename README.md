@@ -1,6 +1,6 @@
-# PKG — Port-Hamiltonian Digital Twins
+# PKG — Physics-informed digital twins with calibrated uncertainty
 
-> **Composable, physically-consistent (port-Hamiltonian) digital twins with calibrated uncertainty and rigorous evaluation by default — lightweight, CPU-first, for those without a cluster.**
+> **Composable, physics-informed digital twins with calibrated uncertainty and leakage-free evaluation by default — lightweight, CPU-first, for those without a cluster.**
 
 [![CI](https://github.com/Javihaus/Digital-Twin-in-python/workflows/CI%20v2/badge.svg)](https://github.com/Javihaus/Digital-Twin-in-python/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -15,11 +15,22 @@
 
 ## What is this?
 
-A lightweight Python library for building **digital twins** whose dynamics are structured as **port-Hamiltonian systems (PHS)** — mathematical frameworks that guarantee energy conservation, dissipation, and passivity **by construction**, not by hope.
+A lightweight Python library for **physics-informed digital twins**: pair a *structured physical prior* with a *learned correction*, attach *calibrated uncertainty*, and evaluate *without leakage*. One pattern, applied from full dynamical systems to slow degradation.
 
-**The two load-bearing differentiators:**
-1. **Structure by construction.** Learned dynamics are constrained to PHS form so that physical laws (conservation, dissipation, coupling) hold *algebraically*. This is the principled answer to long-horizon **drift**.
-2. **Rigorous evaluation by default.** The library makes it *hard to fool yourself*: temporal/rolling-origin splits, mandatory naive baselines, skill scores, and calibration metrics for uncertainty. You can't report a headline metric without a baseline and a declared split protocol.
+The physical prior spans a spectrum:
+
+- **Strong end — port-Hamiltonian systems (PHS).** For systems with known conservation structure, dynamics are constrained to PHS form so that conservation, dissipation, and passivity hold **by construction** — the principled answer to long-horizon **drift**. This is the rigorous core of the library.
+- **Light end — empirical/structured laws.** For aging and degradation (e.g. battery capacity fade), a transparent physical prior carries the trend and a bounded learned residual corrects it. Same hybrid pattern, lighter physics.
+
+**The three load-bearing differentiators:**
+
+1. **Physics as a prior, not a hope.** Structure (from PHS to empirical laws) keeps forecasts physically admissible far ahead, where black-box models drift.
+2. **Calibrated uncertainty as a first-class citizen.** Ensemble / GP predictions with conformal, horizon-aware intervals and calibration metrics (PICP, coverage, CRPS) — a stated 90% interval is checked to mean 90%.
+3. **Leakage-free evaluation by default.** Temporal / rolling-origin splits, mandatory naive baselines, skill scores. No headline metric without a baseline and a declared split protocol.
+
+**Flagship example:** battery State-of-Health & Remaining-Useful-Life forecasting for grid-scale storage — [`examples/battery_soh`](examples/battery_soh).
+
+> **Where this sits.** These are *observable-state, structure-known* dynamics models — the white-box end of the broader family that also includes latent-state ML *world models*. Same substrate (state, conservation, dissipation, coupling); opposite ends of the observable↔latent axis.
 
 ---
 
@@ -303,8 +314,3 @@ This v2 rebuild grew from a [Towards Data Science tutorial](https://towardsdatas
 
 The v1 tutorial code is preserved in `legacy_v1/` for continuity and educational value.
 
----
-
-**The moat:** Structure by construction + rigorous evaluation by default.
-**The promise:** No energy-creating drift. No fooling yourself.
-**The philosophy:** A library, not a tutorial. Provable, not hopeful.
