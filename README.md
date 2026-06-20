@@ -313,9 +313,3 @@ MIT License. See [LICENSE](LICENSE).
 This v2 rebuild grew from a [Towards Data Science tutorial](https://towardsdatascience.com/) on hybrid digital twins (v1) that gained traction. v2 is a complete rewrite prioritizing **scientific rigor** and **leakage-free evaluation**. See [legacy_v1/README.md](legacy_v1/README.md) for the migration notes.
 
 The v1 tutorial code is preserved in `legacy_v1/` for continuity and educational value.
-
----
-
-**The moat:** Structure by construction + rigorous evaluation by default.
-**The promise:** No energy-creating drift. No fooling yourself.
-**The philosophy:** A library, not a tutorial. Provable, not hopeful.
