@@ -1,8 +1,6 @@
 <div align="center">
 
-<img src="assets/otwin-icon.svg" alt="otwin logo" width="116" height="116">
-
-# otwin
+<img src="assets/otwin-logo.png" alt="otwin" width="340">
 
 **Physics-informed digital twins with calibrated uncertainty**
 
@@ -18,7 +16,6 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 [![Stars](https://img.shields.io/github/stars/Javihaus/otwin?style=flat-square&label=Stars)](https://github.com/Javihaus/otwin/stargazers)
 
 </div>
-
 ---
 
 ## What is this?
