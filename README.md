@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/otwin-woodmarko.png" alt="otwin" width="340">
+<img src="assets/otwin-woodmark.png" alt="otwin" width="340">
 
 **Physics-informed digital twins with calibrated uncertainty**
 
