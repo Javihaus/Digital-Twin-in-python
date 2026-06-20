@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="assets/otwin-logo.png" alt="otwin" width="340">
+<img src="assets/otwin-woodmark.png" alt="otwin" width="340">
 
-**Physics-informed digital twins with calibrated uncertainty**
+# Physics-informed digital twins with calibrated uncertainty
 
-Composable, physics-informed digital twins with calibrated uncertainty and leakage-free evaluation by default — lightweight, CPU-first, for those without a cluster.
+Composable, physics-informed digital twins with calibrated uncertainty and leakage-free evaluation by default — lightweight, CPU-first.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/Javihaus/otwin/ci.yml?style=flat-square&label=CI)](https://github.com/Javihaus/otwin/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
@@ -16,9 +16,9 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 [![Stars](https://img.shields.io/github/stars/Javihaus/otwin?style=flat-square&label=Stars)](https://github.com/Javihaus/otwin/stargazers)
 
 </div>
----
 
-## What is this?
+
+## What is otwin?
 
 otwin builds **digital twins** by pairing a *physical prior you trust* with a *learned correction*, then attaching **calibrated uncertainty** and grading itself only with leakage-free metrics. It is **one pattern**, applied across a spectrum — from full energy-conserving dynamics down to a slow degradation curve.
 
