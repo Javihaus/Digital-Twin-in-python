@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from PKG import DigitalTwin, evaluate, water_tank
-from PKG.utils import set_seed
+from otwin import DigitalTwin, evaluate, water_tank
+from otwin.utils import set_seed
 
 # Reproducibility
 set_seed(42)

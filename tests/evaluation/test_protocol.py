@@ -3,8 +3,8 @@
 import numpy as np
 import pytest
 
-from PKG.evaluation import evaluate
-from PKG.evaluation.report import EvalReport
+from otwin.evaluation import evaluate
+from otwin.evaluation.report import EvalReport
 
 
 class _MockModel:

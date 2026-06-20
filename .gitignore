@@ -132,3 +132,14 @@ logs/
 *.h5
 *.pth
 mlruns/
+
+# Personal positioning doc — not part of the library
+Posicionamiento Javier.md
+archive.zip
+data/nasa/
+data/raw_nasa/
+node_modules/
+examples/battery_soh/slides/node_modules/
+examples/battery_soh/slides/package*.json
+examples/battery_soh/slides/*.pdf
+examples/battery_soh/slides/slide-*.jpg

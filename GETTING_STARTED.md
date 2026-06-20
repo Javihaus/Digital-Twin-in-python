@@ -1,4 +1,4 @@
-# Getting Started with PKG v2
+# Getting Started with otwin v2
 
 > **Port-Hamiltonian Digital Twins with Structure by Construction**
 
@@ -32,10 +32,10 @@ pip install -e ".[dev]"    # For testing/linting/typing
 ### 1. Verify Installation
 
 ```bash
-python -c "import PKG; print(f'PKG version: {PKG.__version__}')"
+python -c "import otwin; print(f'otwin version: {otwin.__version__}')"
 ```
 
-Expected output: `PKG version: 2.0.0-alpha`
+Expected output: `otwin version: 2.0.0-alpha`
 
 ### 2. Run Water Tank Example
 
@@ -82,7 +82,7 @@ make format  # Black formatter
 ### Example 1: Water Tank (Analytic PHS)
 
 ```python
-from PKG import DigitalTwin, water_tank
+from otwin import DigitalTwin, water_tank
 import numpy as np
 
 # Create port-Hamiltonian system
@@ -119,7 +119,7 @@ print(f"Supplied: {pb['supplied']:.6f}")
 ### Example 2: Mass-Spring-Damper
 
 ```python
-from PKG import DigitalTwin, mass_spring_damper
+from otwin import DigitalTwin, mass_spring_damper
 import numpy as np
 
 # Create system
@@ -150,8 +150,8 @@ plt.show()
 ### Example 3: Rigorous Evaluation
 
 ```python
-from PKG import evaluate
-from PKG.evaluation import temporal_holdout
+from otwin import evaluate
+from otwin.evaluation import temporal_holdout
 import numpy as np
 
 # Generate synthetic data
@@ -230,7 +230,7 @@ dx = (J_θ(x) − R_θ(x)) ∇H_θ(x) + g_θ(x) u
 
 ### Default: Temporal Split
 ```python
-from PKG.evaluation import temporal_holdout
+from otwin.evaluation import temporal_holdout
 
 train, test = temporal_holdout(data, test_frac=0.2)
 # Last 20% is test (chronologically)
@@ -252,7 +252,7 @@ report = evaluate(
 
 ### Warning: Random Split
 ```python
-from PKG.evaluation import random_split
+from otwin.evaluation import random_split
 
 train, test = random_split(data, test_frac=0.2)
 # ⚠️  Emits LOUD WARNING:
@@ -285,7 +285,7 @@ This is shown **FIRST** in every evaluation report.
 
 ```
 Digital-Twin-in-python/
-├── src/PKG/              # Main package
+├── src/otwin/              # Main package
 │   ├── systems/          # PHS, IPHS, library
 │   ├── learn/            # Learned PHS (Phase 4)
 │   ├── integrate/        # Time integration
@@ -313,7 +313,7 @@ Digital-Twin-in-python/
 
 ### Verify Structure is Preserved
 ```python
-from PKG import water_tank
+from otwin import water_tank
 
 tank = water_tank()
 x = np.array([1.5])
@@ -345,7 +345,7 @@ assert abs(pb['dH_dt'] - (pb['dissipated'] + pb['supplied'])) < 1e-8
 
 ### Generate Evaluation Report
 ```python
-from PKG import evaluate
+from otwin import evaluate
 
 report = evaluate(
     model,
@@ -377,7 +377,7 @@ git checkout -b feature/my-feature
 
 ### 2. Make Changes
 ```bash
-# Edit code in src/PKG/
+# Edit code in src/otwin/
 # Add tests in tests/
 ```
 
@@ -460,7 +460,7 @@ pytest tests/systems/test_phs.py -v -s
 **Type errors:**
 ```bash
 # Check specific file
-mypy --strict src/PKG/systems/phs.py
+mypy --strict src/otwin/systems/phs.py
 ```
 
 ---
@@ -475,4 +475,4 @@ mypy --strict src/PKG/systems/phs.py
 
 ---
 
-**Welcome to PKG v2 — where structure is guaranteed, not hoped for! 🎉**
+**Welcome to otwin v2 — where structure is guaranteed, not hoped for! 🎉**

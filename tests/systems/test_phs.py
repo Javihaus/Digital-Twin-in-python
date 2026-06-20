@@ -6,8 +6,8 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import arrays
 
-from PKG.systems.library import mass_spring_damper, water_tank
-from PKG.systems.phs import PortHamiltonianSystem
+from otwin.systems.library import mass_spring_damper, water_tank
+from otwin.systems.phs import PortHamiltonianSystem
 
 
 @given(
@@ -141,7 +141,7 @@ def test_mass_spring_damper_energy_decay(q: float, p: float) -> None:
 
 def test_water_tank_trajectory_energy_decay() -> None:
     """Integration test: Energy monotonically decreases over trajectory with u=0."""
-    from PKG.integrate import integrate_with_inputs
+    from otwin.integrate import integrate_with_inputs
 
     tank = water_tank()
     x0 = np.array([2.0])  # Initial height 2m
@@ -166,7 +166,7 @@ def test_water_tank_trajectory_energy_decay() -> None:
 
 def test_mass_spring_damper_trajectory_energy_decay() -> None:
     """Integration test: Energy decreases with damping."""
-    from PKG.integrate import integrate_with_inputs
+    from otwin.integrate import integrate_with_inputs
 
     sys = mass_spring_damper(m=1.0, k=1.0, c=0.5)
     x0 = np.array([1.0, 0.0])  # Displaced, at rest

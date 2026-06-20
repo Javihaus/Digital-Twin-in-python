@@ -1,7 +1,7 @@
 # STATUS
 
 Single source of truth for project state. Mirrors the phase markers in
-`src/PKG/__init__.py`. If this file and the code disagree, the code wins and this
+`src/otwin/__init__.py`. If this file and the code disagree, the code wins and this
 file is the bug. No "all complete" claims live anywhere else.
 
 _Last updated: 2026-06-19._
@@ -22,7 +22,7 @@ _Last updated: 2026-06-19._
 
 - Default suite: **85 passed, 1 skipped** (`pip install -e . && pytest`).
 - Coverage **91.6%** (gate: 85%). ruff, black and `mypy --strict` all clean on
-  `src/PKG`.
+  `src/otwin`.
 - Skipped tests are optional-extra tests that skip cleanly when the extra is
   absent:
   - `tests/learn/test_phnn.py` — requires `[torch]`.
@@ -35,7 +35,7 @@ _Last updated: 2026-06-19._
 
 - **PHNN (`learn/phnn.py`) tests could not be executed in the build sandbox**
   (torch is not installable there). The implementation is complete and reviewed,
-  but run `pip install PKG[torch] && pytest tests/learn` locally to confirm the
+  but run `pip install otwin[torch] && pytest tests/learn` locally to confirm the
   structural guarantees (skew J, PSD R, energy decay) on your machine before
   relying on it.
 - `twin/compose.py` is a Phase-6 stub (`NotImplementedError`), not a silent fake.

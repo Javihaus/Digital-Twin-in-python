@@ -2,8 +2,8 @@
 
 import numpy as np
 
-from PKG.integrate import implicit_midpoint, integrate_phs, integrate_with_inputs
-from PKG.systems import water_tank
+from otwin.integrate import implicit_midpoint, integrate_phs, integrate_with_inputs
+from otwin.systems import water_tank
 
 
 def test_energy_is_monotonically_non_increasing() -> None:

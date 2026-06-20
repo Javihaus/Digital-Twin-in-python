@@ -3,9 +3,9 @@
 import numpy as np
 import pytest
 
-from PKG.systems import water_tank
-from PKG.twin import DigitalTwin
-from PKG.uq import Ensemble
+from otwin.systems import water_tank
+from otwin.twin import DigitalTwin
+from otwin.uq import Ensemble
 
 
 def test_return_uncertainty_without_uq_raises() -> None:

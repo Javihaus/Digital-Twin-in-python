@@ -25,13 +25,13 @@ jobs:
         pip install -e ".[dev,viz]"
 
     - name: Run ruff linter
-      run: ruff check src/PKG
+      run: ruff check src/otwin
 
     - name: Run black format check
-      run: black --check src/PKG tests
+      run: black --check src/otwin tests
 
     - name: Run mypy type checker (strict)
-      run: mypy --strict src/PKG
+      run: mypy --strict src/otwin
 
   test:
     name: Test Python ${{ matrix.python-version }}
@@ -56,7 +56,7 @@ jobs:
 
     - name: Run tests with coverage
       run: |
-        pytest tests/ -v --cov=PKG --cov-report=term-missing --cov-report=xml --cov-fail-under=85
+        pytest tests/ -v --cov=otwin --cov-report=term-missing --cov-report=xml --cov-fail-under=85
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3

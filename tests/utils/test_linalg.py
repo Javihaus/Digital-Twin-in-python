@@ -5,7 +5,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
-from PKG.utils.linalg import (
+from otwin.utils.linalg import (
     check_psd,
     check_skew_symmetric,
     numerical_gradient,

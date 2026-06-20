@@ -3,11 +3,11 @@
 import numpy as np
 import pytest
 
-from PKG import DigitalTwin, evaluate, water_tank
-from PKG.evaluation import temporal_holdout
-from PKG.integrate import integrate_with_inputs
-from PKG.systems.iphs import IrreversiblePHS
-from PKG.utils import set_seed
+from otwin import DigitalTwin, evaluate, water_tank
+from otwin.evaluation import temporal_holdout
+from otwin.integrate import integrate_with_inputs
+from otwin.systems.iphs import IrreversiblePHS
+from otwin.utils import set_seed
 
 
 def test_end_to_end_water_tank_workflow() -> None:
@@ -100,7 +100,7 @@ def test_iphs_entropy_production() -> None:
 
 def test_public_api_imports() -> None:
     """Integration: Verify public API is importable."""
-    from PKG import (
+    from otwin import (
         DigitalTwin,
         EvalReport,
         PortHamiltonianSystem,
@@ -156,7 +156,7 @@ def test_structure_preservation_over_long_horizon() -> None:
 
 def test_seeding_reproducibility() -> None:
     """Integration: Seeding produces reproducible results."""
-    from PKG.utils import set_seed
+    from otwin.utils import set_seed
 
     # First run
     set_seed(42)

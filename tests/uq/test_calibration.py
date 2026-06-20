@@ -2,7 +2,7 @@
 
 import numpy as np
 
-from PKG.uq import (
+from otwin.uq import (
     coverage_curve,
     expected_calibration_error,
     interval_score,

@@ -1,25 +1,36 @@
-# PKG — Port-Hamiltonian Digital Twins
+# otwin — Physics-informed digital twins with calibrated uncertainty
 
-> **Composable, physically-consistent (port-Hamiltonian) digital twins with calibrated uncertainty and rigorous evaluation by default — lightweight, CPU-first, for those without a cluster.**
+> **Composable, physics-informed digital twins with calibrated uncertainty and leakage-free evaluation by default — lightweight, CPU-first, for those without a cluster.**
 
-[![CI](https://github.com/Javihaus/Digital-Twin-in-python/workflows/CI%20v2/badge.svg)](https://github.com/Javihaus/Digital-Twin-in-python/actions)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Type checked: mypy](https://img.shields.io/badge/mypy-strict-blue.svg)](http://mypy-lang.org/)
-[![Linter: ruff](https://img.shields.io/badge/linter-ruff-red.svg)](https://github.com/astral-sh/ruff)
-[![Development Status](https://img.shields.io/badge/status-alpha-orange.svg)](https://github.com/Javihaus/Digital-Twin-in-python)
-[![GitHub stars](https://img.shields.io/github/stars/Javihaus/Digital-Twin-in-python.svg?style=social&label=Star)](https://github.com/Javihaus/Digital-Twin-in-python)
+[![CI](https://img.shields.io/github/actions/workflow/status/Javihaus/Digital-Twin-in-python/ci.yml?style=flat-square&label=CI)](https://github.com/Javihaus/Digital-Twin-in-python/actions)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000?style=flat-square)](https://github.com/psf/black)
+[![Typed: mypy](https://img.shields.io/badge/mypy-strict-blue?style=flat-square)](http://mypy-lang.org/)
+[![Linter: ruff](https://img.shields.io/badge/linter-ruff-red?style=flat-square)](https://github.com/astral-sh/ruff)
+[![Status: alpha](https://img.shields.io/badge/status-alpha-orange?style=flat-square)](https://github.com/Javihaus/Digital-Twin-in-python)
+[![Stars](https://img.shields.io/github/stars/Javihaus/Digital-Twin-in-python?style=flat-square&label=Stars)](https://github.com/Javihaus/Digital-Twin-in-python/stargazers)
 
 ---
 
 ## What is this?
 
-A lightweight Python library for building **digital twins** whose dynamics are structured as **port-Hamiltonian systems (PHS)** — mathematical frameworks that guarantee energy conservation, dissipation, and passivity **by construction**, not by hope.
+A lightweight Python library for **physics-informed digital twins**: pair a *structured physical prior* with a *learned correction*, attach *calibrated uncertainty*, and evaluate *without leakage*. One pattern, applied from full dynamical systems to slow degradation.
 
-**The two load-bearing differentiators:**
-1. **Structure by construction.** Learned dynamics are constrained to PHS form so that physical laws (conservation, dissipation, coupling) hold *algebraically*. This is the principled answer to long-horizon **drift**.
-2. **Rigorous evaluation by default.** The library makes it *hard to fool yourself*: temporal/rolling-origin splits, mandatory naive baselines, skill scores, and calibration metrics for uncertainty. You can't report a headline metric without a baseline and a declared split protocol.
+The physical prior spans a spectrum:
+
+- **Strong end — port-Hamiltonian systems (PHS).** For systems with known conservation structure, dynamics are constrained to PHS form so that conservation, dissipation, and passivity hold **by construction** — the principled answer to long-horizon **drift**. This is the rigorous core of the library.
+- **Light end — empirical/structured laws.** For aging and degradation (e.g. battery capacity fade), a transparent physical prior carries the trend and a bounded learned residual corrects it. Same hybrid pattern, lighter physics.
+
+**The three load-bearing differentiators:**
+
+1. **Physics as a prior, not a hope.** Structure (from PHS to empirical laws) keeps forecasts physically admissible far ahead, where black-box models drift.
+2. **Calibrated uncertainty as a first-class citizen.** Ensemble / GP predictions with conformal, horizon-aware intervals and calibration metrics (PICP, coverage, CRPS) — a stated 90% interval is checked to mean 90%.
+3. **Leakage-free evaluation by default.** Temporal / rolling-origin splits, mandatory naive baselines, skill scores. No headline metric without a baseline and a declared split protocol.
+
+**Flagship example:** battery State-of-Health & Remaining-Useful-Life forecasting for grid-scale storage — [`examples/battery_soh`](examples/battery_soh).
+
+> **Where this sits.** These are *observable-state, structure-known* dynamics models — the white-box end of the broader family that also includes latent-state ML *world models*. Same substrate (state, conservation, dissipation, coupling); opposite ends of the observable↔latent axis.
 
 ---
 
@@ -33,10 +44,10 @@ pip install git+https://github.com/Javihaus/Digital-Twin-in-python.git@v2
 
 **With optional extras:**
 ```bash
-pip install "PKG[torch]"  # For learned PHS (PortHamiltonianNN)
-pip install "PKG[gp]"     # For GP-PHS (Gaussian Process uncertainty)
-pip install "PKG[viz]"    # For matplotlib + plotly visualization
-pip install "PKG[dev]"    # For testing/linting/typing/docs
+pip install "otwin[torch]"  # For learned PHS (PortHamiltonianNN)
+pip install "otwin[gp]"     # For GP-PHS (Gaussian Process uncertainty)
+pip install "otwin[viz]"    # For matplotlib + plotly visualization
+pip install "otwin[dev]"    # For testing/linting/typing/docs
 ```
 
 **Requirements:**
@@ -49,8 +60,8 @@ pip install "PKG[dev]"    # For testing/linting/typing/docs
 ## Quick Start
 
 ```python
-from PKG import DigitalTwin, evaluate
-from PKG.systems.library import water_tank
+from otwin import DigitalTwin, evaluate
+from otwin.systems.library import water_tank
 
 # Use an analytic port-Hamiltonian system
 twin = DigitalTwin(model=water_tank())
@@ -275,11 +286,11 @@ pytest  # All tests should pass
 
 ## Citation
 
-If you use PKG in research, please cite:
+If you use otwin in research, please cite:
 
 ```bibtex
-@software{pkg_v2,
-  title = {PKG: Port-Hamiltonian Digital Twins},
+@software{otwin,
+  title = {otwin: Physics-informed digital twins with calibrated uncertainty},
   author = {Marin, Javier},
   year = {2025},
   version = {2.0.0-alpha},

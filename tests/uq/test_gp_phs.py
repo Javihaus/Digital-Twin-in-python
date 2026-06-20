@@ -5,7 +5,7 @@ import pytest
 
 pytest.importorskip("sklearn")
 
-from PKG.uq.gp_phs import GPPHS  # noqa: E402
+from otwin.uq.gp_phs import GPPHS  # noqa: E402
 
 
 def test_fit_predict_returns_mean_and_std() -> None:

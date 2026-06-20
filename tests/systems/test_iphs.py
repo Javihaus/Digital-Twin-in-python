@@ -5,7 +5,7 @@ import pytest
 from hypothesis import given, settings
 from hypothesis import strategies as st
 
-from PKG.systems.iphs import IrreversiblePHS
+from otwin.systems.iphs import IrreversiblePHS
 
 
 @given(

@@ -5,8 +5,8 @@ import warnings
 import numpy as np
 import pytest
 
-from PKG.evaluation import random_split, temporal_holdout
-from PKG.evaluation.report import EvalReport
+from otwin.evaluation import random_split, temporal_holdout
+from otwin.evaluation.report import EvalReport
 
 
 def test_random_split_emits_warning() -> None:

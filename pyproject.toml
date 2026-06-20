@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "PKG"
+name = "otwin"
 version = "2.0.0-alpha"
 description = "Composable, physically-consistent (port-Hamiltonian) digital twins with calibrated uncertainty and rigorous evaluation by default — lightweight, CPU-first"
 readme = "README.md"
@@ -113,7 +113,7 @@ extend-exclude = ["legacy_v1"]
 select = ["E", "F", "I", "N", "W", "UP"]
 # Math-heavy code: matrix/operator names (J, R, H, S, L, A, X, K, ...) are
 # intentionally uppercase, so pep8-naming N802/N803/N806 are disabled. N999 is
-# disabled because the package is deliberately named `PKG`. E501 (line length)
+# disabled because the package is deliberately named `otwin`. E501 (line length)
 # is delegated to black, which leaves only unsplittable strings/comments.
 ignore = ["E501", "N802", "N803", "N806", "N999"]
 
@@ -158,7 +158,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["src/PKG"]
+source = ["src/otwin"]
 omit = [
     "*/tests/*",
     "*/test_*.py",
@@ -166,11 +166,11 @@ omit = [
     "legacy_v1/*",
     # Optional-extra modules: covered by their own gated tests only when the
     # extra is installed ([torch], [gp]); excluded from the core coverage gate.
-    "src/PKG/learn/phnn.py",
-    "src/PKG/learn/losses.py",
-    "src/PKG/uq/gp_phs.py",
+    "src/otwin/learn/phnn.py",
+    "src/otwin/learn/losses.py",
+    "src/otwin/uq/gp_phs.py",
     # Phase-6 stub (documented NotImplementedError, not yet implemented).
-    "src/PKG/twin/compose.py",
+    "src/otwin/twin/compose.py",
 ]
 
 [tool.coverage.report]

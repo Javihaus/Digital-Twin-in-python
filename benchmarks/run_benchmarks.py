@@ -1,14 +1,14 @@
-"""Generate reproducible benchmarks for PKG v2."""
+"""Generate reproducible benchmarks for otwin v2."""
 
 import json
 from pathlib import Path
 
 import numpy as np
 
-from PKG import water_tank
-from PKG.evaluation import evaluate, EvalReport
-from PKG.integrate import integrate_with_inputs
-from PKG.utils import set_seed
+from otwin import water_tank
+from otwin.evaluation import evaluate, EvalReport
+from otwin.integrate import integrate_with_inputs
+from otwin.utils import set_seed
 
 # Ensure results directory exists
 RESULTS_DIR = Path(__file__).parent / "results"
@@ -194,7 +194,7 @@ def generate_benchmark_summary() -> None:
 
 
 if __name__ == "__main__":
-    print("PKG v2 - Reproducible Benchmarks")
+    print("otwin v2 - Reproducible Benchmarks")
     print("=" * 60)
     print()
 

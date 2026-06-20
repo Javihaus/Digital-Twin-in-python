@@ -3,10 +3,10 @@
 import numpy as np
 import pytest
 
-from PKG.evaluation.metrics import crps
-from PKG.systems import water_tank
-from PKG.twin import DigitalTwin
-from PKG.uq import Ensemble
+from otwin.evaluation.metrics import crps
+from otwin.systems import water_tank
+from otwin.twin import DigitalTwin
+from otwin.uq import Ensemble
 
 
 def _ensemble():

@@ -53,12 +53,12 @@ Any deliverable that violates RULE 0 is rejected.
 2. Write `STATUS.md` with a per-phase table (done/in-progress/not-started),
    current test count, and a list of any skipped tests with the reason
    (e.g. "requires `[torch]` extra").
-3. Make `PKG/__init__.py` phase comments the single source of truth that
+3. Make `otwin/__init__.py` phase comments the single source of truth that
    `STATUS.md` mirrors.
 
 **Gate A:** `grep -ri "all phases complete\|production/stable\|95% coverage" .`
 returns nothing outside `legacy_v1/`. `STATUS.md` exists and matches
-`PKG/__init__.py`.
+`otwin/__init__.py`.
 
 ---
 
@@ -73,7 +73,7 @@ returns nothing outside `legacy_v1/`. `STATUS.md` exists and matches
 4. Move v1 packaging cruft to `legacy_v1/` or delete: `pyproject_v1_backup.toml`,
    `README_v1.md`, `.gitignore_v2`, v1 `Dockerfile`, v1 `config/`.
 5. Add a short `legacy_v1/README.md`: "This is the original tutorial. Known issues
-   documented; kept for provenance. Use v2 (PKG)."
+   documented; kept for provenance. Use v2 (otwin)."
 
 **Gate B:** `pytest` (default invocation, no ignores) collects **0** v1 tests and
 **0** import errors. `pip install -e .` then `pytest` is green with no `joblib`/
@@ -163,7 +163,7 @@ but `L` is arbitrary and unchecked — the test only passes because its `L` is P
   cleanly when extras absent.
 - No fabricated values in any code path (grep for `placeholder`, `zero
   uncertainty`, hardcoded `dt`).
-- `STATUS.md` exists and matches `PKG/__init__.py`.
+- `STATUS.md` exists and matches `otwin/__init__.py`.
 - No "complete"/"production-stable"/"95% coverage" claims anywhere outside
   `legacy_v1/`.
 - Every doc number is script-generated; every citation is verified or marked

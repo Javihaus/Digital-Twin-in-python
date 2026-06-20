@@ -4,7 +4,7 @@ This is the **original** tutorial code (the "Hybrid Digital Twin for Li-ion
 battery modeling") that the repository started as. It is kept here for
 provenance and to honour the project's history, **not** for active use.
 
-Use the v2 library (`PKG/`) instead. See `../STATUS.md` and `../README.md`.
+Use the v2 library (`otwin/`) instead. See `../STATUS.md` and `../README.md`.
 
 ## Known issues in this legacy code (documented, not fixed)
 

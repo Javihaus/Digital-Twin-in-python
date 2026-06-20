@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from PKG.evaluation.metrics import (
+from otwin.evaluation.metrics import (
     crps,
     mae,
     mase,

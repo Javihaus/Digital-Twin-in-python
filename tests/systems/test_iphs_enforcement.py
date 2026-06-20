@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from PKG.systems.iphs import IrreversiblePHS
+from otwin.systems.iphs import IrreversiblePHS
 
 
 def _valid_iphs(validate=True):

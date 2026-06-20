@@ -5,7 +5,7 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from PKG.learn import PortHamiltonianNN  # noqa: E402
+from otwin.learn import PortHamiltonianNN  # noqa: E402
 
 
 def test_structure_holds_by_construction() -> None:
@@ -20,7 +20,7 @@ def test_structure_holds_by_construction() -> None:
 
 def test_energy_non_increasing_with_zero_input() -> None:
     model = PortHamiltonianNN(n_states=2, n_inputs=0, hidden=16, seed=1)
-    from PKG.integrate import integrate_phs
+    from otwin.integrate import integrate_phs
 
     t = np.linspace(0, 5, 100)
     res = integrate_phs(model, np.array([1.0, -0.5]), t)
