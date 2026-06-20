@@ -87,11 +87,18 @@ def integrate_with_inputs(
         >>> result['success']
         True
     """
-    # Interpolate inputs for arbitrary time points
-    from scipy.interpolate import interp1d
-
     if u.ndim == 1:
         u = u.reshape(-1, 1)
+
+    # Structure-preserving path: dispatch to the implicit-midpoint integrator,
+    # which respects the PHS energy balance (no spurious energy injection).
+    if method in ("implicit_midpoint", "implicit-midpoint"):
+        from PKG.integrate.structure_preserving import implicit_midpoint
+
+        return implicit_midpoint(dynamics, x0, t_eval, u, **kwargs)
+
+    # Interpolate inputs for arbitrary time points
+    from scipy.interpolate import interp1d
 
     # Create interpolator for each input dimension
     u_interp = interp1d(

@@ -1,8 +1,30 @@
-"""Uncertainty quantification for digital twins."""
+"""Uncertainty quantification for digital twins.
 
-# Placeholder for Phase 4
-# - ensemble.py: Deep ensembles for PHNN
-# - gp_phs.py: Gaussian Process PHS (requires [gp] extra)
-# - calibration.py: Coverage, PIT, recalibration
+Core (numpy-only):
+    - ensemble.py: ensemble forecasts, mean/std and quantile prediction intervals
+    - calibration.py: PIT, coverage curves, calibration error, interval score,
+      recalibration
 
-__all__ = []  # Will be populated in Phase 4 completion
+Optional extra (``[gp]``):
+    - gp_phs.py: GP residual surrogate with calibrated predictive variance
+"""
+
+from PKG.uq.calibration import (
+    coverage_curve,
+    expected_calibration_error,
+    interval_score,
+    pit_values,
+    recalibrate,
+    sharpness,
+)
+from PKG.uq.ensemble import Ensemble
+
+__all__ = [
+    "Ensemble",
+    "pit_values",
+    "coverage_curve",
+    "expected_calibration_error",
+    "interval_score",
+    "recalibrate",
+    "sharpness",
+]

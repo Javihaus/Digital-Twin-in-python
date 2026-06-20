@@ -1,6 +1,10 @@
-"""Learning port-Hamiltonian dynamics from data."""
+"""Learning port-Hamiltonian dynamics from data.
 
-# Placeholder - requires torch extra
-# from PKG.learn.phnn import PortHamiltonianNN
+The classes import torch lazily (only when instantiated), so importing this
+package does not require the ``[torch]`` extra — constructing a
+:class:`PortHamiltonianNN` does.
+"""
 
-__all__ = []  # Will be populated when torch implementation complete
+from PKG.learn.phnn import PortHamiltonianNN
+
+__all__ = ["PortHamiltonianNN"]

@@ -8,47 +8,72 @@ import numpy.typing as npt
 from PKG.integrate import integrate_with_inputs
 from PKG.systems.phs import PortHamiltonianSystem
 
+_VALID_UQ = ("none", "ensemble")
+
 
 class DigitalTwin:
     """
     Digital Twin with port-Hamiltonian structure.
 
-    Supports analytic PHS models. Learned models (Phase 4) will be added later.
+    Supports analytic PHS models with structure-preserving forecasting and,
+    optionally, ensemble-based uncertainty quantification.
 
     Args:
-        model: PortHamiltonianSystem or model type string ('phnn', 'gp-phs')
-        uq: Uncertainty quantification method ('none', 'ensemble', 'gp')
+        model: PortHamiltonianSystem, or a model-type string ('phnn', 'gp-phs')
+            for learned models (require the corresponding extra).
+        uq: Uncertainty quantification method ('none' or 'ensemble').
+        ensemble: Optional :class:`PKG.uq.Ensemble` instance. Required when
+            ``uq='ensemble'``.
 
     Example:
         >>> from PKG.systems import water_tank
         >>> twin = DigitalTwin(model=water_tank())
-        >>> # Forecast future states
         >>> x0 = np.array([1.0])
         >>> u = np.zeros((100, 1))
         >>> t = np.linspace(0, 10, 100)
         >>> forecast = twin.forecast(x0, t, u)
+        >>> forecast["x"].shape
+        (100, 1)
     """
 
     def __init__(
         self,
         model: Union[PortHamiltonianSystem, str] = "phnn",
         uq: str = "none",
+        ensemble: Optional[Any] = None,
     ) -> None:
         if isinstance(model, PortHamiltonianSystem):
             self.model = model
             self.model_type = "analytic"
         elif isinstance(model, str):
-            # Placeholder for learned models (Phase 4)
+            # Learned models live behind optional extras (Phase 4 modules).
             if model == "phnn":
-                raise NotImplementedError("Learned PHNN will be implemented in Phase 4")
+                from PKG.learn.phnn import PortHamiltonianNN  # noqa: F401
+
+                raise NotImplementedError(
+                    "Pass a fitted PortHamiltonianNN (or a PortHamiltonianSystem) "
+                    "as `model`; constructing a twin from the string 'phnn' is not "
+                    "supported. Install the learning extra with: pip install PKG[torch]"
+                )
             elif model == "gp-phs":
-                raise NotImplementedError("GP-PHS will be implemented in Phase 4")
+                raise NotImplementedError(
+                    "Pass a fitted GP-PHS model as `model`. "
+                    "Install the GP extra with: pip install PKG[gp]"
+                )
             else:
                 raise ValueError(f"Unknown model type: {model}")
         else:
-            raise TypeError(f"Model must be PortHamiltonianSystem or str, got {type(model)}")
+            raise TypeError(
+                f"Model must be PortHamiltonianSystem or str, got {type(model)}"
+            )
+
+        if uq not in _VALID_UQ:
+            raise ValueError(f"uq must be one of {_VALID_UQ}, got {uq!r}")
+        if uq == "ensemble" and ensemble is None:
+            raise ValueError("uq='ensemble' requires an `ensemble` argument")
 
         self.uq = uq
+        self.ensemble = ensemble
         self._is_fitted = False
 
     def fit(
@@ -63,22 +88,14 @@ class DigitalTwin:
 
         For analytic models, this is a no-op.
 
-        Args:
-            data: Training data
-            state_cols: State column names (for pandas DataFrames)
-            input_cols: Input column names
-            time_col: Time column name
-
         Returns:
-            Fit metrics
+            Fit metrics.
         """
         if self.model_type == "analytic":
-            # Analytic models don't need fitting
             self._is_fitted = True
             return {"message": "Analytic model requires no fitting"}
 
-        # Placeholder for learned models
-        raise NotImplementedError("Learned model fitting in Phase 4")
+        raise NotImplementedError("Learned model fitting lives on the learned model")
 
     def forecast(
         self,
@@ -86,78 +103,93 @@ class DigitalTwin:
         t: npt.NDArray[np.floating],
         u: npt.NDArray[np.floating],
         return_uncertainty: bool = False,
+        level: float = 0.9,
+        method: str = "implicit_midpoint",
     ) -> dict[str, npt.NDArray[np.floating]]:
         """
-        Forecast future states given initial condition and inputs.
+        Forecast future states given an initial condition and inputs.
+
+        By default uses the structure-preserving implicit-midpoint integrator so
+        the PHS energy balance is respected over long horizons.
 
         Args:
-            x0: Initial state (n_states,)
-            t: Time points (n_points,)
-            u: Input trajectory (n_points, n_inputs)
-            return_uncertainty: Whether to return uncertainty bounds
+            x0: Initial state (n_states,).
+            t: Time points (n_points,).
+            u: Input trajectory (n_points, n_inputs).
+            return_uncertainty: Whether to return uncertainty bounds. Requires
+                ``uq != 'none'`` — otherwise this raises (no fake zero-width bands).
+            level: Nominal coverage level for the prediction interval (0, 1).
+            method: Integration method ('implicit_midpoint' by default, or any
+                method accepted by the integrator, e.g. 'RK45').
 
         Returns:
-            Dictionary with:
-                - 'x': State trajectory (n_points, n_states)
-                - 't': Time points
-                - 'lower': Lower uncertainty bound (if return_uncertainty=True)
-                - 'upper': Upper uncertainty bound (if return_uncertainty=True)
+            Dict with 'x' (n_points, n_states), 't', 'success', and — when
+            ``return_uncertainty`` — 'lower' and 'upper' bounds plus 'std'.
 
-        Example:
-            >>> x0 = np.array([1.0])
-            >>> t = np.linspace(0, 10, 100)
-            >>> u = np.zeros((100, 1))
-            >>> result = twin.forecast(x0, t, u)
-            >>> result['x'].shape
-            (100, 1)
+        Raises:
+            ValueError: If ``return_uncertainty=True`` while ``uq='none'``.
+            RuntimeError: If integration fails.
         """
-        # Define dynamics wrapper
-        def dynamics(t_val: float, x: npt.NDArray[np.floating], u_val: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+        if return_uncertainty and self.uq == "none":
+            raise ValueError(
+                "return_uncertainty=True requires a UQ method. Construct the twin "
+                "with uq='ensemble' (and an `ensemble`). Returning zero-width "
+                "uncertainty is intentionally disallowed."
+            )
+
+        def dynamics(
+            t_val: float,
+            x: npt.NDArray[np.floating],
+            u_val: npt.NDArray[np.floating],
+        ) -> npt.NDArray[np.floating]:
             return self.model.dynamics(x, u_val, t_val)
 
-        # Integrate
-        result = integrate_with_inputs(dynamics, x0, t, u)
+        result = integrate_with_inputs(dynamics, x0, t, u, method=method)
 
         if not result["success"]:
             raise RuntimeError(f"Integration failed: {result['message']}")
 
-        forecast_result = {
+        forecast_result: dict[str, Any] = {
             "x": result["x"],
             "t": result["t"],
+            "success": result["success"],
         }
 
         if return_uncertainty:
-            if self.uq == "none":
-                # Return zero uncertainty (placeholder)
-                # Phase 4 will implement real UQ
-                forecast_result["lower"] = result["x"]
-                forecast_result["upper"] = result["x"]
-            else:
-                raise NotImplementedError(f"UQ method '{self.uq}' in Phase 4")
+            # uq == 'ensemble' is the only valid path here (guarded above).
+            band = self.ensemble.forecast_interval(x0, t, u, level=level, method=method)
+            forecast_result["mean"] = band["mean"]
+            forecast_result["std"] = band["std"]
+            forecast_result["lower"] = band["lower"]
+            forecast_result["upper"] = band["upper"]
 
         return forecast_result
 
-    def predict(self, X: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+    def predict(
+        self,
+        X: npt.NDArray[np.floating],
+        dt: float = 1.0,
+    ) -> npt.NDArray[np.floating]:
         """
-        Predict method for compatibility with evaluation framework.
+        One-step-ahead prediction for the evaluation framework.
 
-        For time-series forecasting evaluation, this assumes X contains
-        initial states and returns next-step predictions.
+        Treats each row of ``X`` as a state and advances it by one explicit-Euler
+        step of size ``dt`` with zero input. ``dt`` is explicit (no hidden
+        placeholder); pass the sampling interval of your series.
 
         Args:
-            X: Input data (n_samples, n_features)
+            X: States (n_samples, n_states).
+            dt: Time step for the one-step advance.
 
         Returns:
-            Predictions (n_samples, n_features)
+            Next-step states (n_samples, n_states).
         """
-        # Simple one-step prediction using model dynamics with zero input
+        X = np.atleast_2d(X)
         predictions = []
         for x in X:
             u = np.zeros(self.model.n_inputs)
             dx = self.model.dynamics(x, u)
-            x_next = x + dx * 0.1  # Assume dt=0.1 (placeholder)
-            predictions.append(x_next)
-
+            predictions.append(x + dx * dt)
         return np.array(predictions)
 
     def assimilate(
@@ -165,23 +197,48 @@ class DigitalTwin:
         x_prior: npt.NDArray[np.floating],
         observation: npt.NDArray[np.floating],
         obs_noise: float = 0.1,
-    ) -> npt.NDArray[np.floating]:
+        prior_noise: float = 1.0,
+        H: Optional[npt.NDArray[np.floating]] = None,
+    ) -> dict[str, npt.NDArray[np.floating]]:
         """
-        Data assimilation (simple Kalman-like update).
+        Linear-Gaussian (Kalman) measurement update of a state estimate.
 
-        Placeholder for Phase 3. Full implementation would use
-        Extended Kalman Filter or Ensemble Kalman Filter.
+        Implements the standard scalar/diagonal Kalman correction
+
+            K = P Hᵀ (H P Hᵀ + R)⁻¹
+            x⁺ = x⁻ + K (y − H x⁻)
+            P⁺ = (I − K H) P
+
+        with isotropic prior covariance ``P = prior_noise² I`` and measurement
+        covariance ``R = obs_noise² I``. This is a real update — not a fixed
+        weighted average.
 
         Args:
-            x_prior: Prior state estimate
-            observation: Observed measurement
-            obs_noise: Observation noise standard deviation
+            x_prior: Prior state estimate (n_states,).
+            observation: Measurement (n_obs,).
+            obs_noise: Measurement noise std (> 0).
+            prior_noise: Prior state noise std (> 0).
+            H: Observation matrix (n_obs, n_states). Defaults to identity
+                (direct observation of the full state).
 
         Returns:
-            Posterior state estimate
+            Dict with 'x' (posterior mean) and 'gain' (Kalman gain matrix).
         """
-        # Simple weighted average (placeholder)
-        # Real implementation would use covariance matrices
-        weight = 0.5  # Equal weight to prior and observation
-        x_posterior = weight * x_prior + (1 - weight) * observation
-        return x_posterior
+        if obs_noise <= 0 or prior_noise <= 0:
+            raise ValueError("obs_noise and prior_noise must be positive")
+
+        x_prior = np.asarray(x_prior, dtype=float)
+        observation = np.asarray(observation, dtype=float)
+        n = x_prior.size
+
+        if H is None:
+            H = np.eye(n)
+        H = np.atleast_2d(H)
+
+        P = (prior_noise**2) * np.eye(n)
+        R = (obs_noise**2) * np.eye(H.shape[0])
+
+        S = H @ P @ H.T + R
+        K = P @ H.T @ np.linalg.inv(S)
+        x_post = x_prior + K @ (observation - H @ x_prior)
+        return {"x": x_post, "gain": K}

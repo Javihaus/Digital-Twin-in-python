@@ -133,7 +133,9 @@ def test_structure_preservation_over_long_horizon() -> None:
     def dynamics(t_val: float, x: np.ndarray, u_val: np.ndarray) -> np.ndarray:
         return tank.dynamics(x, u_val)
 
-    result = integrate_with_inputs(dynamics, x0, t, u)
+    # Structure preservation is the job of the structure-preserving integrator,
+    # not of a generic explicit solver (RK45 can inject energy near equilibrium).
+    result = integrate_with_inputs(dynamics, x0, t, u, method="implicit_midpoint")
 
     # Check structure at many points
     for i in range(0, 500, 50):

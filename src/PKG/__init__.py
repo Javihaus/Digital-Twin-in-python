@@ -20,9 +20,15 @@ from PKG.evaluation import evaluate, EvalReport
 # Phase 3: DigitalTwin ✅
 from PKG.twin import DigitalTwin
 
-# Phase 4: Learned PHS + UQ (pending)
-# Phase 5: IPHS (pending)
-# Phase 6: Composition + GP-PHS (pending)
+# Phase 4: Learned PHS + UQ ✅ (core: Ensemble + calibration; PHNN behind [torch])
+from PKG.uq import Ensemble
+from PKG.learn import PortHamiltonianNN  # constructs lazily; needs [torch] at use
+
+# Phase 5: IPHS ✅ (entropy production, second-law enforcement)
+from PKG.systems.iphs import IrreversiblePHS
+
+# Phase 6: Composition + GP-PHS (in-progress: GP-PHS done behind [gp];
+#          twin/compose.py still a stub)
 
 __all__ = [
     "__version__",
@@ -32,4 +38,7 @@ __all__ = [
     "PortHamiltonianSystem",
     "water_tank",
     "mass_spring_damper",
+    "Ensemble",
+    "PortHamiltonianNN",
+    "IrreversiblePHS",
 ]
