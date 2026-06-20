@@ -76,10 +76,10 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Javihaus/Digital-Twin-in-python"
-Documentation = "https://github.com/Javihaus/Digital-Twin-in-python/docs"
-Repository = "https://github.com/Javihaus/Digital-Twin-in-python.git"
-Issues = "https://github.com/Javihaus/Digital-Twin-in-python/issues"
+Homepage = "https://github.com/Javihaus/otwin"
+Documentation = "https://github.com/Javihaus/otwin/docs"
+Repository = "https://github.com/Javihaus/otwin.git"
+Issues = "https://github.com/Javihaus/otwin/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

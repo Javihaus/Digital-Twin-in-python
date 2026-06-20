@@ -2,14 +2,14 @@
 
 > **Composable, physics-informed digital twins with calibrated uncertainty and leakage-free evaluation by default — lightweight, CPU-first, for those without a cluster.**
 
-[![CI](https://img.shields.io/github/actions/workflow/status/Javihaus/Digital-Twin-in-python/ci.yml?style=flat-square&label=CI)](https://github.com/Javihaus/Digital-Twin-in-python/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/Javihaus/otwin/ci.yml?style=flat-square&label=CI)](https://github.com/Javihaus/otwin/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000?style=flat-square)](https://github.com/psf/black)
 [![Typed: mypy](https://img.shields.io/badge/mypy-strict-blue?style=flat-square)](http://mypy-lang.org/)
 [![Linter: ruff](https://img.shields.io/badge/linter-ruff-red?style=flat-square)](https://github.com/astral-sh/ruff)
-[![Status: alpha](https://img.shields.io/badge/status-alpha-orange?style=flat-square)](https://github.com/Javihaus/Digital-Twin-in-python)
-[![Stars](https://img.shields.io/github/stars/Javihaus/Digital-Twin-in-python?style=flat-square&label=Stars)](https://github.com/Javihaus/Digital-Twin-in-python/stargazers)
+[![Status: alpha](https://img.shields.io/badge/status-alpha-orange?style=flat-square)](https://github.com/Javihaus/otwin)
+[![Stars](https://img.shields.io/github/stars/Javihaus/otwin?style=flat-square&label=Stars)](https://github.com/Javihaus/otwin/stargazers)
 
 ---
 
@@ -39,7 +39,7 @@ The physical prior spans a spectrum:
 **Core (numpy + scipy only):**
 ```bash
 # For now, until first release:
-pip install git+https://github.com/Javihaus/Digital-Twin-in-python.git@v2
+pip install git+https://github.com/Javihaus/otwin.git@v2
 ```
 
 **With optional extras:**
@@ -267,8 +267,8 @@ Contributions welcome! See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Development setup:**
 ```bash
-git clone https://github.com/Javihaus/Digital-Twin-in-python.git
-cd Digital-Twin-in-python
+git clone https://github.com/Javihaus/otwin.git
+cd otwin
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -e ".[dev]"
@@ -294,7 +294,7 @@ If you use otwin in research, please cite:
   author = {Marin, Javier},
   year = {2025},
   version = {2.0.0-alpha},
-  url = {https://github.com/Javihaus/Digital-Twin-in-python}
+  url = {https://github.com/Javihaus/otwin}
 }
 ```
 

@@ -8,7 +8,7 @@
 
 ### Core (numpy + scipy only)
 ```bash
-cd Digital-Twin-in-python
+cd otwin
 pip install -e .
 ```
 
@@ -284,7 +284,7 @@ This is shown **FIRST** in every evaluation report.
 ## File Structure
 
 ```
-Digital-Twin-in-python/
+otwin/
 ├── src/otwin/              # Main package
 │   ├── systems/          # PHS, IPHS, library
 │   ├── learn/            # Learned PHS (Phase 4)
@@ -439,7 +439,7 @@ make test-coverage
 **Import error:**
 ```bash
 # Make sure you're in the repo root
-cd Digital-Twin-in-python
+cd otwin
 
 # Install in development mode
 pip install -e .
