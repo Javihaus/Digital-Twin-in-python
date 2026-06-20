@@ -1,6 +1,6 @@
 # PKG — Port-Hamiltonian Digital Twins
 
-> **Composable, physically-consistent (port-Hamiltonian) digital twins with calibrated uncertainty and honest evaluation by default — lightweight, CPU-first, for those without a cluster.**
+> **Composable, physically-consistent (port-Hamiltonian) digital twins with calibrated uncertainty and rigorous evaluation by default — lightweight, CPU-first, for those without a cluster.**
 
 [![CI](https://github.com/Javihaus/Digital-Twin-in-python/workflows/CI%20v2/badge.svg)](https://github.com/Javihaus/Digital-Twin-in-python/actions)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
@@ -19,7 +19,7 @@ A lightweight Python library for building **digital twins** whose dynamics are s
 
 **The two load-bearing differentiators:**
 1. **Structure by construction.** Learned dynamics are constrained to PHS form so that physical laws (conservation, dissipation, coupling) hold *algebraically*. This is the principled answer to long-horizon **drift**.
-2. **Honest evaluation by default.** The library makes it *hard to fool yourself*: temporal/rolling-origin splits, mandatory naive baselines, skill scores, and calibration metrics for uncertainty. You can't report a headline metric without a baseline and a declared split protocol.
+2. **Rigorous evaluation by default.** The library makes it *hard to fool yourself*: temporal/rolling-origin splits, mandatory naive baselines, skill scores, and calibration metrics for uncertainty. You can't report a headline metric without a baseline and a declared split protocol.
 
 ---
 
@@ -62,7 +62,7 @@ twin.fit(data, state_cols=["x1", "x2"], input_cols=["u"], time_col="t")
 # Forecast with calibrated uncertainty
 forecast = twin.forecast(horizon=100, u=future_inputs, return_uncertainty=True)
 
-# Evaluate honestly (temporal split + baselines by default)
+# Evaluate (temporal split + baselines by default)
 report = evaluate(twin, data, protocol="rolling_origin")
 print(report)  # Shows skill score (vs naive baseline) first
 ```
@@ -142,13 +142,13 @@ Systems expressible as (irreversible) port-Hamiltonian / structured ODE state-sp
 - `PortHamiltonianNN`: Learned dynamics with enforced structure (J skew, R PSD)
 - Structure-preserving integrators: implicit-midpoint, discrete-gradient (optional)
 
-### Uncertainty Quantification (Honest)
+### Uncertainty Quantification (Calibrated)
 - Deep ensembles for `PortHamiltonianNN` (real variance, not a constant)
 - GP-PHS (optional `[gp]`): Gaussian Process with structure-preserving kernel
 - Calibration evaluation: PIT histograms, coverage curves, recalibration
 - **UQ is evaluated for coverage, not assumed**
 
-### Evaluation: Honest by Default
+### Evaluation: Rigorous by Default
 - **Temporal splits** (rolling-origin, holdout) — default for forecasting
 - **Mandatory baselines** (persistence, drift, seasonal_naive)
 - **Skill scores** (model error ÷ baseline error) as headline metric
@@ -185,7 +185,7 @@ Systems expressible as (irreversible) port-Hamiltonian / structured ODE state-sp
 - **Energy drift:** < 0.1% over 1000 steps (structure-preserving integrator)
 - **Calibration:** Coverage within 1% of nominal (evaluated, not assumed)
 
-### Example: Battery NASA (Temporal Split, Honest Metrics)
+### Example: Battery NASA (Temporal Split)
 
 | Model | RMSE (Ah) | MASE | Theil_U | PICP@90 |
 |-------|-----------|------|---------|---------|
@@ -209,7 +209,7 @@ See `examples/` for full runnable code.
 Demonstrates structure preservation (energy, dissipation) and UQ calibration.
 
 ### 2. Battery NASA (Learned PHS from Data)
-The honest redo of v1's tutorial case: corrected loader, temporal split, generated metrics.
+The rebuilt v1 tutorial case: corrected loader, temporal split, generated metrics.
 
 ### 3. CSTR Glucose↔Fructose (IPHS with Entropy)
 Irreversible thermodynamics with entropy production σ ≥ 0 (second-law guarantee).
@@ -229,7 +229,7 @@ Irreversible thermodynamics with entropy production σ ≥ 0 (second-law guarant
 
 **Current Status: Alpha (Development Status :: 3)**
 
-We're honest about maturity:
+Maturity:
 - ✅ Core structural properties: tested and provable
 - ✅ Benchmarks: generated and reproducible
 - ⚠️ API stability: evolving (breaking changes possible before 1.0)
@@ -299,12 +299,12 @@ MIT License. See [LICENSE](LICENSE).
 
 ## Acknowledgments
 
-This v2 rebuild grew from a [Towards Data Science tutorial](https://towardsdatascience.com/) on hybrid digital twins (v1) that gained traction. v2 is a complete rewrite prioritizing **scientific rigor** and **honest evaluation**. See [NOTICE_v1_to_v2.md](NOTICE_v1_to_v2.md) for the full migration story.
+This v2 rebuild grew from a [Towards Data Science tutorial](https://towardsdatascience.com/) on hybrid digital twins (v1) that gained traction. v2 is a complete rewrite prioritizing **scientific rigor** and **leakage-free evaluation**. See [legacy_v1/README.md](legacy_v1/README.md) for the migration notes.
 
 The v1 tutorial code is preserved in `legacy_v1/` for continuity and educational value.
 
 ---
 
-**The moat:** Structure by construction + honest evaluation by default.
+**The moat:** Structure by construction + rigorous evaluation by default.
 **The promise:** No energy-creating drift. No fooling yourself.
 **The philosophy:** A library, not a tutorial. Provable, not hopeful.

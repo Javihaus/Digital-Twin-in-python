@@ -55,7 +55,7 @@ noise_std = 0.01
 observed_data = forecast["x"] + np.random.randn(*forecast["x"].shape) * noise_std
 
 # Evaluate using temporal holdout
-print("\nEvaluating forecast accuracy with honest evaluation...")
+print("\nEvaluating forecast accuracy (temporal split + baselines)...")
 
 # Simple wrapper for evaluation compatibility
 class TwinWrapper:
@@ -77,7 +77,7 @@ wrapper = TwinWrapper(twin, x0, t)
 try:
     report = evaluate(wrapper, observed_data, protocol="temporal_holdout", test_frac=0.2)
     print(report)
-    print("\n✅ Evaluation completed with honest protocol")
+    print("\n✅ Evaluation completed")
 except Exception as e:
     print(f"Note: Evaluation requires fit() method. Skipping for analytic model demo.")
     print(f"(This will work properly in Phase 4 with learned models)")
@@ -90,4 +90,4 @@ print("  ✓ Port-Hamiltonian structure (J skew, R PSD)")
 print("  ✓ Energy decay (passivity by construction)")
 print("  ✓ Power balance identity (dH/dt = dissipated + supplied)")
 print("  ✓ Structure-preserving integration")
-print("  ✓ Honest evaluation framework")
+print("  ✓ Rigorous evaluation framework")

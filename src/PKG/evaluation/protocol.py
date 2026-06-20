@@ -1,4 +1,4 @@
-"""High-level evaluation protocol (honest by default)."""
+"""High-level evaluation protocol (rigorous by default)."""
 
 import hashlib
 from typing import Any
@@ -24,7 +24,7 @@ def evaluate(
     seed: int = 42,
 ) -> EvalReport:
     """
-    Evaluate forecasting model with honest protocol (baselines + temporal split).
+    Evaluate forecasting model rigorously (baselines + temporal split).
 
     This is the ONE ENTRY POINT for evaluation. It enforces:
     - Temporal split (default) or rolling-origin

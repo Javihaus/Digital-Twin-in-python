@@ -1,4 +1,4 @@
-"""Evaluation harness for honest forecasting assessment."""
+"""Evaluation harness for leakage-free forecasting assessment."""
 
 from PKG.evaluation.baselines import drift, mean_forecast, persistence, seasonal_naive
 from PKG.evaluation.metrics import (

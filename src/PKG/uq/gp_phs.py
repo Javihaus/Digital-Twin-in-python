@@ -5,7 +5,7 @@ implementation that runs when the ``[gp]`` extra (scikit-learn) is installed, an
 raises a clear :class:`ImportError` otherwise.
 
 A GP gives a principled predictive variance, which is the point of using it for
-uncertainty quantification. To keep the port-Hamiltonian structure honest, the GP
+uncertainty quantification. To keep the port-Hamiltonian structure consistent, the GP
 is used to learn the *residual* between a structured analytic prior (a PHS vector
 field) and observed derivatives, so the mean stays close to a physically
 consistent model while the GP supplies calibrated uncertainty on the correction.

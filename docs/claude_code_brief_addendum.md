@@ -45,7 +45,7 @@ Any deliverable that violates RULE 0 is rejected.
 
 ---
 
-## Task A — Kill the false docs, write the honest STATUS. (blocking)
+## Task A — Kill the false docs, write the STATUS. (blocking)
 
 1. Delete: `ALL_PHASES_COMPLETE.md`, `CI_FIXED.md`, `CI_FIXES_NEEDED.md`,
    `V2_ACTIVATION_SUMMARY.md`, `RELEASE_CHECKLIST.md`, `NOTICE_v1_to_v2.md`
@@ -163,7 +163,7 @@ but `L` is arbitrary and unchecked — the test only passes because its `L` is P
   cleanly when extras absent.
 - No fabricated values in any code path (grep for `placeholder`, `zero
   uncertainty`, hardcoded `dt`).
-- `STATUS.md` exists, is honest, and matches `PKG/__init__.py`.
+- `STATUS.md` exists and matches `PKG/__init__.py`.
 - No "complete"/"production-stable"/"95% coverage" claims anywhere outside
   `legacy_v1/`.
 - Every doc number is script-generated; every citation is verified or marked

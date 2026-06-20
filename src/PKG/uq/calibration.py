@@ -1,6 +1,6 @@
 """Calibration diagnostics for probabilistic forecasts.
 
-Point metrics (RMSE, MAE) say nothing about whether the *uncertainty* is honest.
+Point metrics (RMSE, MAE) say nothing about whether the *uncertainty* is well-calibrated.
 These functions test that: does a stated 90% interval actually contain the truth
 ~90% of the time? Are the predictive CDFs uniform under the PIT? They reuse the
 interval metrics in :mod:`PKG.evaluation.metrics` rather than reimplementing them.

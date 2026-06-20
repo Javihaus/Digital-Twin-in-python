@@ -1,4 +1,4 @@
-"""Evaluation report with mandatory baselines and honest metrics."""
+"""Evaluation report with mandatory baselines and calibrated metrics."""
 
 import json
 from dataclasses import dataclass, field
@@ -8,7 +8,7 @@ from typing import Any
 @dataclass
 class EvalReport:
     """
-    Evaluation report enforcing honest forecasting evaluation.
+    Evaluation report enforcing leakage-free forecasting evaluation.
 
     GUARDS (enforced by construction):
     - Cannot be created without a split protocol

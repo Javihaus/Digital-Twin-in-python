@@ -1,4 +1,4 @@
-"""Data splitting strategies for honest evaluation."""
+"""Data splitting strategies for leakage-free evaluation."""
 
 import warnings
 from collections.abc import Iterator
@@ -135,7 +135,7 @@ def random_split(
         "⚠️  RANDOM SPLIT USED FOR TIME SERIES ⚠️\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
         "Random splits measure INTERPOLATION, not FORECASTING.\n"
-        "For honest forecasting evaluation, use:\n"
+        "For leakage-free forecasting evaluation, use:\n"
         "  - temporal_holdout() (default)\n"
         "  - rolling_origin() (recommended for skill reporting)\n"
         "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n",

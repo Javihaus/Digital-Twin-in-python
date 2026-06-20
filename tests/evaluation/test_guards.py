@@ -1,4 +1,4 @@
-"""Tests for evaluation guards (enforcing honest evaluation)."""
+"""Tests for evaluation guards (enforcing leakage-free evaluation)."""
 
 import warnings
 

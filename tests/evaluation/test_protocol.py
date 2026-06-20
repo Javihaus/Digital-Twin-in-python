@@ -1,4 +1,4 @@
-"""Tests for the honest evaluation protocol (the core differentiator)."""
+"""Tests for the evaluation protocol (the core differentiator)."""
 
 import numpy as np
 import pytest

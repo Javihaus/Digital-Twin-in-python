@@ -1,4 +1,4 @@
-"""Naive baseline predictors for forecasting (mandatory for honest evaluation)."""
+"""Naive baseline predictors for forecasting (mandatory for leakage-free evaluation)."""
 
 import numpy as np
 import numpy.typing as npt

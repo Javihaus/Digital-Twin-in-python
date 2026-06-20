@@ -12,7 +12,7 @@ _Last updated: 2026-06-19._
 |------|-------|--------|-------|
 | 0 | Packaging, seeding, linalg utils | **done** | numpy+scipy core; extras `[torch]`, `[gp]`, `[viz]`, `[dev]` |
 | 1 | PHS core (`systems/phs.py`, library) | **done** | skew-J / PSD-R checks, power balance |
-| 2 | Honest evaluation harness | **done** | RMSE/MAE/nRMSE/MASE/Theil's U/CRPS/PICP/MPIW/skill; temporal split default; R² not in headline |
+| 2 | Evaluation harness | **done** | RMSE/MAE/nRMSE/MASE/Theil's U/CRPS/PICP/MPIW/skill; temporal split default; R² not in headline |
 | 3 | `DigitalTwin` | **done** | structure-preserving forecast; real Kalman `assimilate`; explicit `dt` in `predict` |
 | 4 | Learned PHS + UQ | **done (core)** | `uq/ensemble.py`, `uq/calibration.py` implemented + tested. `learn/phnn.py` (PHNN) requires `[torch]`; `uq/gp_phs.py` (GP-PHS) requires `[gp]` |
 | 5 | IPHS (irreversible, entropy production) | **done** | second-law guarantee **enforced** (L validated PSD), not just documented |
@@ -31,7 +31,7 @@ _Last updated: 2026-06-19._
   `uq/gp_phs.py`) and the Phase-6 stub (`twin/compose.py`); they are covered by
   their own gated tests when the extra is installed.
 
-## Known limitations / honest caveats
+## Known limitations / caveats
 
 - **PHNN (`learn/phnn.py`) tests could not be executed in the build sandbox**
   (torch is not installable there). The implementation is complete and reviewed,

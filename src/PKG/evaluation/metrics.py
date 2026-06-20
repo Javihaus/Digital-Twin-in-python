@@ -1,4 +1,4 @@
-"""Evaluation metrics for forecasting (honest, calibrated, scale-free)."""
+"""Evaluation metrics for forecasting (calibrated, scale-free)."""
 
 import numpy as np
 import numpy.typing as npt

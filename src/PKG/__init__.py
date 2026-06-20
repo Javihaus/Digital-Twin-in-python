@@ -1,10 +1,10 @@
 """
 PKG: Composable, physically-consistent (port-Hamiltonian) digital twins
-with calibrated uncertainty and honest evaluation by default.
+with calibrated uncertainty and rigorous evaluation by default.
 
 Public API (stable):
 - DigitalTwin: Main twin interface
-- evaluate: Honest evaluation protocol
+- evaluate: Evaluation protocol
 - PortHamiltonianSystem: Analytic PHS
 - systems.library: Reference systems (water_tank, mass_spring_damper)
 """

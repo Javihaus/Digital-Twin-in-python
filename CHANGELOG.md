@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Structure by construction:** Skew-symmetric J, PSD R, guaranteed power balance and passivity
 - **Irreversible PHS (IPHS):** Entropy production with σ ≥ 0 guarantee (second law)
 - **Learned PHS:** `PortHamiltonianNN` with structurally constrained neural networks
-- **Honest evaluation harness:** Temporal splits, mandatory baselines, skill scores, calibration metrics
+- **Evaluation harness:** Temporal splits, mandatory baselines, skill scores, calibration metrics
 - **Uncertainty quantification:** Deep ensembles and GP-PHS (optional) with evaluated coverage
 - **Structure-preserving integrators:** Implicit-midpoint and discrete-gradient methods (optional)
 - **Composable twins:** Port interconnection for multi-physics systems
@@ -20,7 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Property-based testing:** Hypothesis-driven tests for structural guarantees
 - **Gating CI:** Tests, mypy --strict, ruff, coverage ≥ 85% all enforced (no swallowing)
 - **Reference examples:**
-  - Battery NASA (corrected, temporal split, honest metrics)
+  - Battery NASA (corrected, temporal split, generated metrics)
   - Water tank PHS (structure preservation + UQ calibration demo)
   - CSTR glucose↔fructose (IPHS with entropy production)
 - **CITATIONS.md:** All references tracked with VERIFIED/UNVERIFIED status
@@ -30,7 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Dependency discipline:** Core = numpy + scipy; torch/gp/viz are optional extras
 - **Python ≥ 3.10 required** (dropped 3.8, 3.9 to avoid unsatisfiable dependency matrix)
 - **No TensorFlow:** Replaced with optional CPU PyTorch for learned models
-- **Development Status:** Alpha (honest about maturity)
+- **Development Status:** Alpha
 - **Metrics focus:** Skill scores (vs baselines) and MASE/Theil_U replace R² as headline
 - **Split protocol:** Temporal/rolling-origin default; random split opt-in with loud warning
 
@@ -46,7 +46,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - TensorFlow dependency
-- Production/Stable status claim (reverting to honest Alpha)
+- Production/Stable status claim (reverting to Alpha)
 - Hand-typed benchmark tables
 - Random-split-as-forecasting examples
 - Mock-only tests

@@ -147,7 +147,7 @@ plt.grid(True)
 plt.show()
 ```
 
-### Example 3: Honest Evaluation
+### Example 3: Rigorous Evaluation
 
 ```python
 from PKG import evaluate
@@ -166,7 +166,7 @@ class SimpleModel:
 
 model = SimpleModel()
 
-# Evaluate with honest protocol
+# Evaluate with temporal split + baselines
 report = evaluate(
     model,
     data,
@@ -226,7 +226,7 @@ dx = (J_θ(x) − R_θ(x)) ∇H_θ(x) + g_θ(x) u
 
 ---
 
-## Honest Evaluation
+## Rigorous Evaluation
 
 ### Default: Temporal Split
 ```python
@@ -291,7 +291,7 @@ Digital-Twin-in-python/
 │   ├── integrate/        # Time integration
 │   ├── uq/               # Uncertainty quantification
 │   ├── twin/             # DigitalTwin interface
-│   ├── evaluation/       # Honest evaluation harness
+│   ├── evaluation/       # Evaluation harness
 │   ├── data/             # Data loaders
 │   └── utils/            # Utilities
 ├── tests/                # Comprehensive tests
@@ -471,7 +471,7 @@ mypy --strict src/PKG/systems/phs.py
 2. **Read the phase reports** to understand the design
 3. **Explore the tests** to see usage patterns
 4. **Try your own PHS** using the library functions
-5. **Evaluate honestly** with the evaluation harness
+5. **Evaluate** with the evaluation harness (temporal split + baselines)
 
 ---
 
