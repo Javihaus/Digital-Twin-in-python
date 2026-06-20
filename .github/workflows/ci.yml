@@ -70,7 +70,9 @@ jobs:
     - name: Install core dependencies only
       run: |
         python -m pip install --upgrade pip setuptools wheel
+        # Core runtime (numpy+scipy) plus only the test runner — no torch/gp/viz.
         pip install -e .
+        pip install pytest hypothesis
 
     - name: Run core tests (no torch/gp/viz)
       run: |
