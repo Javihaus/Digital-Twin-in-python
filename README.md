@@ -2,7 +2,7 @@
 
 <img src="assets/otwin-woodmark.png" alt="otwin" width="340">
 
-**Physics-informed digital twins with calibrated uncertainty**
+# Physics-informed digital twins with calibrated uncertainty
 
 Composable, physics-informed digital twins with calibrated uncertainty and leakage-free evaluation by default — lightweight, CPU-first, for those without a cluster.
 
@@ -16,9 +16,9 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 [![Stars](https://img.shields.io/github/stars/Javihaus/otwin?style=flat-square&label=Stars)](https://github.com/Javihaus/otwin/stargazers)
 
 </div>
----
 
-## What is this?
+
+## What is otwin?
 
 A lightweight Python library for **physics-informed digital twins**: pair a *structured physical prior* with a *learned correction*, attach *calibrated uncertainty*, and evaluate *without leakage*. One pattern, applied from full dynamical systems to slow degradation.
 
