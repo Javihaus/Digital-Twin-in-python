@@ -4,7 +4,7 @@
 
 # Physics-informed digital twins with calibrated uncertainty
 
-Composable, physics-informed digital twins with calibrated uncertainty and leakage-free evaluation by default — lightweight, CPU-first, for those without a cluster.
+Composable, physics-informed digital twins with calibrated uncertainty and leakage-free evaluation by default — lightweight, CPU-first.
 
 [![CI](https://img.shields.io/github/actions/workflow/status/Javihaus/otwin/ci.yml?style=flat-square&label=CI)](https://github.com/Javihaus/otwin/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
