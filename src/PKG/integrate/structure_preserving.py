@@ -22,7 +22,8 @@ For non-quadratic ``H`` the equality above holds only to second order; use a
 discrete-gradient method if exact decay is required there.
 """
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -99,12 +100,19 @@ def implicit_midpoint(
 
         def residual(x_next: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
             x_mid = 0.5 * (x_n + x_next)
-            return x_next - x_n - dt * np.asarray(dynamics(t_mid, x_mid, u_mid))
+            return np.asarray(
+                x_next - x_n - dt * np.asarray(dynamics(t_mid, x_mid, u_mid)),
+                dtype=float,
+            )
 
         # Explicit-Euler predictor as a warm start, then solve the implicit step.
         x_guess = x_n + dt * np.asarray(dynamics(t_eval[n], x_n, u[n]))
         x_next, info, ier, msg = fsolve(
-            residual, x_guess, full_output=True, xtol=newton_tol, maxfev=max_iter * (n_states + 1)
+            residual,
+            x_guess,
+            full_output=True,
+            xtol=newton_tol,
+            maxfev=max_iter * (n_states + 1),
         )
         # fsolve may flag non-convergence near non-smooth points (e.g. sqrt(h)
         # at h->0) even when the residual is effectively zero. Accept on a small
@@ -128,7 +136,7 @@ def integrate_phs(
     phs: Any,
     x0: npt.NDArray[np.floating],
     t_eval: npt.NDArray[np.floating],
-    u: Optional[npt.NDArray[np.floating]] = None,
+    u: npt.NDArray[np.floating] | None = None,
     **kwargs: Any,
 ) -> dict[str, Any]:
     """Structure-preserving integration of a PHS / IPHS object.
@@ -150,7 +158,9 @@ def integrate_phs(
     if u is None:
         u = np.zeros((t_eval.size, getattr(phs, "n_inputs", 1)))
 
-    def dynamics(t: float, x: npt.NDArray[np.floating], u_val: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
-        return phs.dynamics(x, u_val, t)
+    def dynamics(
+        t: float, x: npt.NDArray[np.floating], u_val: npt.NDArray[np.floating]
+    ) -> npt.NDArray[np.floating]:
+        return np.asarray(phs.dynamics(x, u_val, t), dtype=float)
 
     return implicit_midpoint(dynamics, x0, t_eval, u, **kwargs)

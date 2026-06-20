@@ -2,10 +2,7 @@
 
 import json
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
-
-import numpy as np
-import numpy.typing as npt
+from typing import Any
 
 
 @dataclass
@@ -40,25 +37,25 @@ class EvalReport:
     split_protocol: str
     n_folds: int
     baseline_name: str
-    baseline_metrics: Dict[str, float]
+    baseline_metrics: dict[str, float]
 
     # Model metrics (filled by add_* methods)
-    point_metrics: Dict[str, float] = field(default_factory=dict)
-    probabilistic_metrics: Dict[str, float] = field(default_factory=dict)
+    point_metrics: dict[str, float] = field(default_factory=dict)
+    probabilistic_metrics: dict[str, float | str] = field(default_factory=dict)
 
     # Metadata
-    data_hash: Optional[str] = None
-    model_name: Optional[str] = None
-    seed: Optional[int] = None
+    data_hash: str | None = None
+    model_name: str | None = None
+    seed: int | None = None
     version: str = "2.0.0-alpha"
 
     def add_point_metrics(
         self,
         rmse: float,
         mae: float,
-        nrmse: Optional[float] = None,
-        mase: Optional[float] = None,
-        theil_u: Optional[float] = None,
+        nrmse: float | None = None,
+        mase: float | None = None,
+        theil_u: float | None = None,
     ) -> None:
         """Add point forecast metrics."""
         self.point_metrics["rmse"] = rmse
@@ -73,9 +70,9 @@ class EvalReport:
 
     def add_probabilistic_metrics(
         self,
-        crps: Optional[float] = None,
-        picp: Optional[float] = None,
-        mpiw: Optional[float] = None,
+        crps: float | None = None,
+        picp: float | None = None,
+        mpiw: float | None = None,
         nominal_level: float = 0.90,
     ) -> None:
         """Add probabilistic forecast metrics."""
@@ -130,7 +127,9 @@ class EvalReport:
         "Are we better than a trivial baseline?"
         """
         lines = []
-        lines.append(f"EvalReport ({self.split_protocol}, {self.n_folds} fold{'s' if self.n_folds > 1 else ''})")
+        lines.append(
+            f"EvalReport ({self.split_protocol}, {self.n_folds} fold{'s' if self.n_folds > 1 else ''})"
+        )
         lines.append("━" * 64)
 
         # HEADLINE: Skill score
@@ -138,12 +137,16 @@ class EvalReport:
             ss = self.skill_score("rmse")
             if ss > 0:
                 pct_better = int(ss * 100)
-                lines.append(f"Skill Score (vs best baseline): {ss:.2f} ({pct_better}% better)")
+                lines.append(
+                    f"Skill Score (vs best baseline): {ss:.2f} ({pct_better}% better)"
+                )
             elif ss == 0:
                 lines.append("Skill Score: 0.00 (same as baseline)")
             else:
                 pct_worse = int(-ss * 100)
-                lines.append(f"Skill Score: {ss:.2f} ({pct_worse}% WORSE than baseline)")
+                lines.append(
+                    f"Skill Score: {ss:.2f} ({pct_worse}% WORSE than baseline)"
+                )
 
         lines.append(f"Baseline: {self.baseline_name}")
         lines.append("")
@@ -154,7 +157,9 @@ class EvalReport:
             for key, val in self.point_metrics.items():
                 if key in self.baseline_metrics:
                     baseline_val = self.baseline_metrics[key]
-                    lines.append(f"  {key.upper():8s}  {val:.4f} (baseline: {baseline_val:.4f})")
+                    lines.append(
+                        f"  {key.upper():8s}  {val:.4f} (baseline: {baseline_val:.4f})"
+                    )
                 else:
                     lines.append(f"  {key.upper():8s}  {val:.4f}")
             lines.append("")
@@ -162,23 +167,27 @@ class EvalReport:
         # Probabilistic metrics
         if self.probabilistic_metrics:
             lines.append("Probabilistic Metrics:")
-            for key, val in self.probabilistic_metrics.items():
+            for key, mval in self.probabilistic_metrics.items():
                 if key == "nominal_level":
                     continue  # Shown with PICP
                 elif key == "picp":
-                    nominal = self.probabilistic_metrics.get("nominal_level", 0.90)
-                    calibration = self.probabilistic_metrics.get("calibration", "unknown")
+                    nominal = float(
+                        self.probabilistic_metrics.get("nominal_level", 0.90)
+                    )
+                    calibration = self.probabilistic_metrics.get(
+                        "calibration", "unknown"
+                    )
                     lines.append(
-                        f"  PICP@{int(nominal*100):02d}  {val:.2f}   "
+                        f"  PICP@{int(nominal * 100):02d}  {float(mval):.2f}   "
                         f"(target: {nominal:.2f}, calibration: {calibration})"
                     )
                 elif key != "calibration":
-                    lines.append(f"  {key.upper():8s}  {val:.4f}")
+                    lines.append(f"  {key.upper():8s}  {float(mval):.4f}")
 
         lines.append("━" * 64)
         return "\n".join(lines)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary for JSON serialization."""
         return {
             "split_protocol": self.split_protocol,
@@ -187,7 +196,9 @@ class EvalReport:
             "baseline_metrics": self.baseline_metrics,
             "point_metrics": self.point_metrics,
             "probabilistic_metrics": self.probabilistic_metrics,
-            "skill_score_rmse": self.skill_score("rmse") if "rmse" in self.point_metrics else None,
+            "skill_score_rmse": (
+                self.skill_score("rmse") if "rmse" in self.point_metrics else None
+            ),
             "data_hash": self.data_hash,
             "model_name": self.model_name,
             "seed": self.seed,
@@ -202,7 +213,7 @@ class EvalReport:
     @classmethod
     def from_json(cls, filepath: str) -> "EvalReport":
         """Load report from JSON file."""
-        with open(filepath, "r") as f:
+        with open(filepath) as f:
             data = json.load(f)
 
         report = cls(
@@ -226,7 +237,9 @@ class EvalReport:
         lines = []
         lines.append(f"## Evaluation Report: {self.model_name or 'Model'}")
         lines.append("")
-        lines.append(f"**Split Protocol:** {self.split_protocol} ({self.n_folds} folds)")
+        lines.append(
+            f"**Split Protocol:** {self.split_protocol} ({self.n_folds} folds)"
+        )
         lines.append(f"**Baseline:** {self.baseline_name}")
         lines.append("")
 

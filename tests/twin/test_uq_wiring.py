@@ -57,6 +57,8 @@ def test_assimilate_is_a_real_kalman_update() -> None:
     # Very precise observation -> posterior close to obs; very precise prior ->
     # posterior close to prior. A fixed 50/50 average could not do both.
     post_trust_obs = twin.assimilate(x_prior, obs, obs_noise=1e-3, prior_noise=1.0)["x"]
-    post_trust_prior = twin.assimilate(x_prior, obs, obs_noise=1.0, prior_noise=1e-3)["x"]
+    post_trust_prior = twin.assimilate(x_prior, obs, obs_noise=1.0, prior_noise=1e-3)[
+        "x"
+    ]
     assert abs(post_trust_obs[0] - 1.0) < 1e-2
     assert abs(post_trust_prior[0] - 2.0) < 1e-2

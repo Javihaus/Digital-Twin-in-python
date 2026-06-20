@@ -8,7 +8,7 @@ interval metrics in :mod:`PKG.evaluation.metrics` rather than reimplementing the
 All functions are core (numpy only).
 """
 
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 import numpy.typing as npt
@@ -37,7 +37,7 @@ def pit_values(
     ensemble = np.asarray(ensemble, dtype=float)
     if ensemble.ndim != 2 or ensemble.shape[0] != y_true.shape[0]:
         raise ValueError("ensemble must have shape (n, n_members) matching y_true")
-    return (ensemble <= y_true[:, None]).mean(axis=1)
+    return np.asarray((ensemble <= y_true[:, None]).mean(axis=1), dtype=float)
 
 
 def coverage_curve(
@@ -135,7 +135,9 @@ def recalibrate(
 
     def _map(p: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         p_arr = np.atleast_1d(np.asarray(p, dtype=float))
-        return np.interp(p_arr, pit_sorted, ecdf_y, left=0.0, right=1.0)
+        return np.asarray(
+            np.interp(p_arr, pit_sorted, ecdf_y, left=0.0, right=1.0), dtype=float
+        )
 
     return _map
 

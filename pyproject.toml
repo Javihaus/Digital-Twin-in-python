@@ -109,7 +109,11 @@ extend-exclude = ["legacy_v1"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
-ignore = []
+# Math-heavy code: matrix/operator names (J, R, H, S, L, A, X, K, ...) are
+# intentionally uppercase, so pep8-naming N802/N803/N806 are disabled. N999 is
+# disabled because the package is deliberately named `PKG`. E501 (line length)
+# is delegated to black, which leaves only unsplittable strings/comments.
+ignore = ["E501", "N802", "N803", "N806", "N999"]
 
 [tool.mypy]
 python_version = "3.10"
@@ -134,6 +138,7 @@ module = [
     "sklearn.*",
     "plotly.*",
     "matplotlib.*",
+    "scipy.*",
 ]
 ignore_missing_imports = true
 
@@ -157,6 +162,13 @@ omit = [
     "*/test_*.py",
     "*/__pycache__/*",
     "legacy_v1/*",
+    # Optional-extra modules: covered by their own gated tests only when the
+    # extra is installed ([torch], [gp]); excluded from the core coverage gate.
+    "src/PKG/learn/phnn.py",
+    "src/PKG/learn/losses.py",
+    "src/PKG/uq/gp_phs.py",
+    # Phase-6 stub (documented NotImplementedError, not yet implemented).
+    "src/PKG/twin/compose.py",
 ]
 
 [tool.coverage.report]

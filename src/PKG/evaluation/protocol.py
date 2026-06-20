@@ -1,13 +1,13 @@
 """High-level evaluation protocol (honest by default)."""
 
 import hashlib
-from typing import Any, Callable, Optional
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
 
 from PKG.evaluation.baselines import get_best_baseline
-from PKG.evaluation.metrics import crps, mae, mase, mpiw, picp, nrmse, rmse, theil_u
+from PKG.evaluation.metrics import crps, mae, mase, mpiw, nrmse, picp, rmse, theil_u
 from PKG.evaluation.report import EvalReport
 from PKG.evaluation.splitters import rolling_origin, temporal_holdout
 
@@ -20,7 +20,7 @@ def evaluate(
     n_folds: int = 5,
     horizon: int = 10,
     return_uncertainty: bool = False,
-    seasonal_period: Optional[int] = None,
+    seasonal_period: int | None = None,
     seed: int = 42,
 ) -> EvalReport:
     """
@@ -60,11 +60,15 @@ def evaluate(
 
     elif protocol == "rolling_origin":
         min_train = max(50, len(data) // 4)  # At least 50 or 25% of data
-        folds = list(rolling_origin(data, n_folds=n_folds, min_train=min_train, horizon=horizon))
+        folds = list(
+            rolling_origin(data, n_folds=n_folds, min_train=min_train, horizon=horizon)
+        )
         n_folds_actual = len(folds)
 
     else:
-        raise ValueError(f"Unknown protocol: {protocol}. Use 'temporal_holdout' or 'rolling_origin'.")
+        raise ValueError(
+            f"Unknown protocol: {protocol}. Use 'temporal_holdout' or 'rolling_origin'."
+        )
 
     # Accumulate metrics across folds
     model_rmse_vals = []
@@ -104,7 +108,9 @@ def evaluate(
         baseline_mae_vals.append(mae(test, baseline_pred))
 
         # Scale-free metrics
-        mase_vals.append(mase(test, y_pred, train, seasonal_period=seasonal_period or 1))
+        mase_vals.append(
+            mase(test, y_pred, train, seasonal_period=seasonal_period or 1)
+        )
         theil_u_vals.append(theil_u(test, y_pred, train))
 
         # Probabilistic metrics (if requested)
@@ -146,7 +152,11 @@ def evaluate(
     report.add_point_metrics(
         rmse=model_rmse_mean,
         mae=model_mae_mean,
-        nrmse=float(np.mean([nrmse(t, model.predict(t)) for _, t in folds])) if hasattr(model, "predict") else None,
+        nrmse=(
+            float(np.mean([nrmse(t, model.predict(t)) for _, t in folds]))
+            if hasattr(model, "predict")
+            else None
+        ),
         mase=float(np.mean(mase_vals)) if mase_vals else None,
         theil_u=float(np.mean(theil_u_vals)) if theil_u_vals else None,
     )
@@ -163,6 +173,8 @@ def evaluate(
     # Metadata
     report.seed = seed
     report.data_hash = hashlib.sha256(data.tobytes()).hexdigest()[:16]
-    report.model_name = model.__class__.__name__ if hasattr(model, "__class__") else "Unknown"
+    report.model_name = (
+        model.__class__.__name__ if hasattr(model, "__class__") else "Unknown"
+    )
 
     return report

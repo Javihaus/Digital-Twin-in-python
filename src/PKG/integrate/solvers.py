@@ -1,6 +1,7 @@
 """Time integration solvers for dynamical systems."""
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -11,7 +12,7 @@ def integrate(
     dynamics: Callable[[float, npt.NDArray[np.floating]], npt.NDArray[np.floating]],
     x0: npt.NDArray[np.floating],
     t_span: tuple[float, float],
-    t_eval: Optional[npt.NDArray[np.floating]] = None,
+    t_eval: npt.NDArray[np.floating] | None = None,
     method: str = "RK45",
     **kwargs: Any,
 ) -> dict[str, npt.NDArray[np.floating]]:
@@ -106,9 +107,13 @@ def integrate_with_inputs(
     )
 
     # Wrapper that looks up input at time t
-    def dynamics_wrapper(t: float, x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+    def dynamics_wrapper(
+        t: float, x: npt.NDArray[np.floating]
+    ) -> npt.NDArray[np.floating]:
         u_t = u_interp(t)
         return dynamics(t, x, u_t)
 
     t_span = (t_eval[0], t_eval[-1])
-    return integrate(dynamics_wrapper, x0, t_span, t_eval=t_eval, method=method, **kwargs)
+    return integrate(
+        dynamics_wrapper, x0, t_span, t_eval=t_eval, method=method, **kwargs
+    )

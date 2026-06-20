@@ -11,7 +11,8 @@ field) and observed derivatives, so the mean stays close to a physically
 consistent model while the GP supplies calibrated uncertainty on the correction.
 """
 
-from typing import Any, Callable, Optional
+from collections.abc import Callable
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -46,9 +47,13 @@ class GPPHS:
         self,
         n_states: int,
         n_inputs: int = 0,
-        prior_dynamics: Optional[
-            Callable[[npt.NDArray[np.floating], npt.NDArray[np.floating]], npt.NDArray[np.floating]]
-        ] = None,
+        prior_dynamics: (
+            Callable[
+                [npt.NDArray[np.floating], npt.NDArray[np.floating]],
+                npt.NDArray[np.floating],
+            ]
+            | None
+        ) = None,
     ) -> None:
         GaussianProcessRegressor, ConstantKernel, RBF, WhiteKernel = _require_sklearn()
         self.n_states = n_states
@@ -57,13 +62,15 @@ class GPPHS:
         kernel = ConstantKernel(1.0) * RBF(length_scale=1.0) + WhiteKernel(1e-3)
         # One GP per state dimension.
         self._gps = [
-            GaussianProcessRegressor(kernel=kernel, normalize_y=True, n_restarts_optimizer=2)
+            GaussianProcessRegressor(
+                kernel=kernel, normalize_y=True, n_restarts_optimizer=2
+            )
             for _ in range(n_states)
         ]
         self._fitted = False
 
     def _features(
-        self, X: npt.NDArray[np.floating], U: Optional[npt.NDArray[np.floating]]
+        self, X: npt.NDArray[np.floating], U: npt.NDArray[np.floating] | None
     ) -> npt.NDArray[np.floating]:
         X = np.atleast_2d(X)
         if U is None or self.n_inputs == 0:
@@ -74,7 +81,7 @@ class GPPHS:
         self,
         X: npt.NDArray[np.floating],
         dXdt: npt.NDArray[np.floating],
-        U: Optional[npt.NDArray[np.floating]] = None,
+        U: npt.NDArray[np.floating] | None = None,
     ) -> "GPPHS":
         """Fit the GP to (state[, input]) -> derivative residual data."""
         X = np.atleast_2d(X)
@@ -98,7 +105,7 @@ class GPPHS:
     def predict(
         self,
         X: npt.NDArray[np.floating],
-        U: Optional[npt.NDArray[np.floating]] = None,
+        U: npt.NDArray[np.floating] | None = None,
         return_std: bool = True,
     ) -> Any:
         """Predict derivatives with optional per-dimension predictive std."""

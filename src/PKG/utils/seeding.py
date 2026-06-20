@@ -39,6 +39,7 @@ def set_seed(seed: int) -> dict[str, Any]:
     # Optionally seed torch if available
     try:
         import torch
+
         torch.manual_seed(seed)
         result["torch"] = True
     except ImportError:

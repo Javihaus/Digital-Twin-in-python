@@ -74,8 +74,7 @@ jobs:
 
     - name: Run core tests (no torch/gp/viz)
       run: |
-        pytest tests/systems/ tests/integrate/ tests/evaluation/ tests/utils/ -v
-      continue-on-error: true
+        pytest tests/systems/ tests/integrate/ tests/evaluation/ tests/utils/ tests/uq/ tests/twin/ -v
 
   examples:
     name: Run examples

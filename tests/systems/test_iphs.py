@@ -15,7 +15,7 @@ from PKG.systems.iphs import IrreversiblePHS
 def test_entropy_production_nonnegative(x_val: float) -> None:
     """Property: Entropy production σ ≥ 0 (second law)."""
     # Simple 1D IPHS
-    H = lambda x: 0.5 * x[0]**2
+    H = lambda x: 0.5 * x[0] ** 2
     S = lambda x: -x[0]  # Entropy increases as energy decreases
     J = lambda x: np.zeros((1, 1))
     R = lambda x: np.array([[0.1]])
@@ -35,7 +35,7 @@ def test_entropy_production_nonnegative(x_val: float) -> None:
 
 def test_iphs_reduces_to_phs_when_L_zero() -> None:
     """When L = 0, IPHS reduces to PHS."""
-    H = lambda x: 0.5 * x[0]**2
+    H = lambda x: 0.5 * x[0] ** 2
     S = lambda x: 0.0  # Dummy entropy
     J = lambda x: np.zeros((1, 1))
     R = lambda x: np.array([[0.1]])
@@ -56,8 +56,8 @@ def test_iphs_reduces_to_phs_when_L_zero() -> None:
 
 def test_entropy_production_zero_at_equilibrium() -> None:
     """At equilibrium (∇S = 0), entropy production is zero."""
-    H = lambda x: 0.5 * x[0]**2
-    S = lambda x: x[0]**2 - 1.0  # Minimum at x = 0 (∇S = 0 there)
+    H = lambda x: 0.5 * x[0] ** 2
+    S = lambda x: x[0] ** 2 - 1.0  # Minimum at x = 0 (∇S = 0 there)
     J = lambda x: np.zeros((1, 1))
     R = lambda x: np.array([[0.1]])
     L = lambda x: np.array([[0.05]])

@@ -1,10 +1,7 @@
 """Evaluation metrics for forecasting (honest, calibrated, scale-free)."""
 
-from typing import Optional, Union
-
 import numpy as np
 import numpy.typing as npt
-from scipy import stats
 
 
 def rmse(
@@ -138,7 +135,7 @@ def mase(
 def theil_u(
     y_true: npt.NDArray[np.floating],
     y_pred: npt.NDArray[np.floating],
-    y_train: Optional[npt.NDArray[np.floating]] = None,
+    y_train: npt.NDArray[np.floating] | None = None,
 ) -> float:
     """
     Theil's U statistic (forecast accuracy relative to naive forecast).

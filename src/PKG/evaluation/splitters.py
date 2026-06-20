@@ -1,7 +1,7 @@
 """Data splitting strategies for honest evaluation."""
 
 import warnings
-from typing import Iterator, Union
+from collections.abc import Iterator
 
 import numpy as np
 import numpy.typing as npt

@@ -1,6 +1,6 @@
 """Port-Hamiltonian System (PHS) implementation."""
 
-from typing import Callable, Optional
+from collections.abc import Callable
 
 import numpy as np
 import numpy.typing as npt
@@ -58,9 +58,9 @@ class PortHamiltonianSystem:
         g: Callable[[npt.NDArray[np.floating]], npt.NDArray[np.floating]],
         n_states: int,
         n_inputs: int,
-        grad_H: Optional[
-            Callable[[npt.NDArray[np.floating]], npt.NDArray[np.floating]]
-        ] = None,
+        grad_H: (
+            Callable[[npt.NDArray[np.floating]], npt.NDArray[np.floating]] | None
+        ) = None,
     ) -> None:
         self.H = H
         self.J = J
@@ -103,7 +103,7 @@ class PortHamiltonianSystem:
         g_mat = self.g(x)
 
         dx = (J_mat - R_mat) @ grad_H + g_mat @ u
-        return dx
+        return np.asarray(dx, dtype=float)
 
     def output(self, x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         """
@@ -117,7 +117,7 @@ class PortHamiltonianSystem:
         """
         grad_H = self.grad_H(x)
         g_mat = self.g(x)
-        return g_mat.T @ grad_H
+        return np.asarray(g_mat.T @ grad_H, dtype=float)
 
     def power_balance(
         self, x: npt.NDArray[np.floating], u: npt.NDArray[np.floating]

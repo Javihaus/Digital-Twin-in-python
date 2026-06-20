@@ -56,7 +56,7 @@ def water_tank(
     def H(x: npt.NDArray[np.floating]) -> float:
         """Potential energy: (1/2) ρ g A h²."""
         h = x[0]
-        return 0.5 * rho * g * A * h**2
+        return float(0.5 * rho * g * A * h**2)
 
     def grad_H(x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         """Gradient: ∇H = ρ g A h."""
@@ -145,7 +145,7 @@ def mass_spring_damper(
     def H(x: npt.NDArray[np.floating]) -> float:
         """Total energy: (1/2) k q² + (1/2) p²/m."""
         q, p = x[0], x[1]
-        return 0.5 * k * q**2 + 0.5 * p**2 / m
+        return float(0.5 * k * q**2 + 0.5 * p**2 / m)
 
     def grad_H(x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         """Gradient: [k q, p/m]."""

@@ -18,7 +18,7 @@ With ``u = 0`` the energy is non-increasing: ``dH/dt = −∇Hᵀ R ∇H ≤ 0``
 This module imports torch lazily so the core package stays numpy/scipy-only.
 """
 
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -54,7 +54,7 @@ class PortHamiltonianNN:
         n_inputs: int = 0,
         hidden: int = 32,
         quadratic_floor: bool = True,
-        seed: Optional[int] = None,
+        seed: int | None = None,
     ) -> None:
         torch = _require_torch()
         self._torch = torch
@@ -68,23 +68,28 @@ class PortHamiltonianNN:
         nn = torch.nn
 
         self._H_net = nn.Sequential(
-            nn.Linear(n_states, hidden), nn.Tanh(),
-            nn.Linear(hidden, hidden), nn.Tanh(),
+            nn.Linear(n_states, hidden),
+            nn.Tanh(),
+            nn.Linear(hidden, hidden),
+            nn.Tanh(),
             nn.Linear(hidden, 1),
         ).double()
         # A_θ entries -> skew J = A - A^T
         self._A_net = nn.Sequential(
-            nn.Linear(n_states, hidden), nn.Tanh(),
+            nn.Linear(n_states, hidden),
+            nn.Tanh(),
             nn.Linear(hidden, n_states * n_states),
         ).double()
         # L_θ entries -> PSD R = L L^T
         self._L_net = nn.Sequential(
-            nn.Linear(n_states, hidden), nn.Tanh(),
+            nn.Linear(n_states, hidden),
+            nn.Tanh(),
             nn.Linear(hidden, n_states * n_states),
         ).double()
         if n_inputs > 0:
             self._g_net = nn.Sequential(
-                nn.Linear(n_states, hidden), nn.Tanh(),
+                nn.Linear(n_states, hidden),
+                nn.Tanh(),
                 nn.Linear(hidden, n_states * n_inputs),
             ).double()
         else:
@@ -144,7 +149,7 @@ class PortHamiltonianNN:
     def dynamics(
         self,
         x: npt.NDArray[np.floating],
-        u: Optional[npt.NDArray[np.floating]] = None,
+        u: npt.NDArray[np.floating] | None = None,
         t: float = 0.0,
     ) -> npt.NDArray[np.floating]:
         """Numpy-facing vector field, compatible with the integrators."""
@@ -155,7 +160,7 @@ class PortHamiltonianNN:
             ut = torch.as_tensor(np.atleast_2d(u), dtype=torch.float64)
         # NOTE: do not wrap in torch.no_grad(): computing ∇H needs autograd.
         dx = self.dynamics_tensor(xt, ut)
-        return dx.detach().numpy().reshape(np.shape(x))
+        return np.asarray(dx.detach().numpy().reshape(np.shape(x)), dtype=float)
 
     def parameters(self) -> list[Any]:
         params: list[Any] = []
@@ -183,7 +188,7 @@ class PortHamiltonianNN:
         self,
         X: npt.NDArray[np.floating],
         dXdt: npt.NDArray[np.floating],
-        U: Optional[npt.NDArray[np.floating]] = None,
+        U: npt.NDArray[np.floating] | None = None,
         epochs: int = 200,
         lr: float = 1e-2,
         energy_penalty: float = 0.0,

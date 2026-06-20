@@ -1,7 +1,5 @@
 """Naive baseline predictors for forecasting (mandatory for honest evaluation)."""
 
-from typing import Optional
-
 import numpy as np
 import numpy.typing as npt
 
@@ -133,7 +131,7 @@ def seasonal_naive(
 def get_best_baseline(
     train: npt.NDArray[np.floating],
     test: npt.NDArray[np.floating],
-    period: Optional[int] = None,
+    period: int | None = None,
 ) -> tuple[str, npt.NDArray[np.floating], float]:
     """
     Evaluate all baselines and return the best one (by RMSE).

@@ -1,6 +1,6 @@
 """Linear algebra utilities for port-Hamiltonian systems."""
 
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 import numpy.typing as npt
@@ -103,9 +103,7 @@ def check_skew_symmetric(
     return violation <= tol, float(violation)
 
 
-def check_psd(
-    R: npt.NDArray[np.floating], tol: float = 1e-10
-) -> tuple[bool, float]:
+def check_psd(R: npt.NDArray[np.floating], tol: float = 1e-10) -> tuple[bool, float]:
     """
     Check if matrix is positive semidefinite within tolerance.
 

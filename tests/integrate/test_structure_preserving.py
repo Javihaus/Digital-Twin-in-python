@@ -48,5 +48,8 @@ def test_rejects_non_increasing_time() -> None:
 
     with pytest.raises(ValueError):
         implicit_midpoint(
-            lambda tv, x, uv: -x, np.array([1.0]), np.array([0.0, 0.0, 1.0]), np.zeros((3, 1))
+            lambda tv, x, uv: -x,
+            np.array([1.0]),
+            np.array([0.0, 0.0, 1.0]),
+            np.zeros((3, 1)),
         )

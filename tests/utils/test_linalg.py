@@ -43,7 +43,7 @@ def test_psd_from_cholesky() -> None:
 def test_numerical_gradient() -> None:
     """Test numerical gradient computation."""
     # Quadratic function: f(x) = x1^2 + 2*x2^2
-    f = lambda x: x[0]**2 + 2*x[1]**2
+    f = lambda x: x[0] ** 2 + 2 * x[1] ** 2
     x = np.array([1.0, 2.0])
 
     grad = numerical_gradient(f, x)

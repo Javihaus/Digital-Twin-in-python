@@ -2,14 +2,13 @@
 
 # Placeholder for Phase 6 full implementation
 
-from typing import List
 
 from PKG.systems.phs import PortHamiltonianSystem
 
 
 def interconnect(
-    systems: List[PortHamiltonianSystem],
-    connections: List[tuple[int, int]],
+    systems: list[PortHamiltonianSystem],
+    connections: list[tuple[int, int]],
 ) -> PortHamiltonianSystem:
     """
     Interconnect multiple PHS via power-preserving port connections.

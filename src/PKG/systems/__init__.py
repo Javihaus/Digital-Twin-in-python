@@ -1,11 +1,12 @@
 """Port-Hamiltonian systems and reference library."""
 
-from PKG.systems.phs import PortHamiltonianSystem
-from PKG.systems.library import water_tank, mass_spring_damper
-
-__all__ = ["PortHamiltonianSystem", "water_tank", "mass_spring_damper"]
-
-# Phase 5: IPHS
 from PKG.systems.iphs import IrreversiblePHS
+from PKG.systems.library import mass_spring_damper, water_tank
+from PKG.systems.phs import PortHamiltonianSystem
 
-__all__.append("IrreversiblePHS")
+__all__ = [
+    "PortHamiltonianSystem",
+    "IrreversiblePHS",
+    "water_tank",
+    "mass_spring_damper",
+]

@@ -56,7 +56,9 @@ def test_interval_score_rewards_calibrated_over_too_wide() -> None:
     rng = np.random.default_rng(2)
     y = rng.standard_normal(2000)
     # Calibrated-ish 90% interval for N(0,1): +-1.645
-    s_good = interval_score(y, np.full_like(y, -1.645), np.full_like(y, 1.645), level=0.9)
+    s_good = interval_score(
+        y, np.full_like(y, -1.645), np.full_like(y, 1.645), level=0.9
+    )
     # Needlessly wide interval: larger (worse) score
     s_wide = interval_score(y, np.full_like(y, -5.0), np.full_like(y, 5.0), level=0.9)
     assert s_good < s_wide

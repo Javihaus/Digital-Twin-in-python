@@ -12,20 +12,19 @@ Public API (stable):
 __version__ = "2.0.0-alpha"
 
 # Phase 1: PHS core ✅
-from PKG.systems import PortHamiltonianSystem, water_tank, mass_spring_damper
-
 # Phase 2: Evaluation harness ✅
-from PKG.evaluation import evaluate, EvalReport
+from PKG.evaluation import EvalReport, evaluate
+from PKG.learn import PortHamiltonianNN  # constructs lazily; needs [torch] at use
+from PKG.systems import PortHamiltonianSystem, mass_spring_damper, water_tank
+
+# Phase 5: IPHS ✅ (entropy production, second-law enforcement)
+from PKG.systems.iphs import IrreversiblePHS
 
 # Phase 3: DigitalTwin ✅
 from PKG.twin import DigitalTwin
 
 # Phase 4: Learned PHS + UQ ✅ (core: Ensemble + calibration; PHNN behind [torch])
 from PKG.uq import Ensemble
-from PKG.learn import PortHamiltonianNN  # constructs lazily; needs [torch] at use
-
-# Phase 5: IPHS ✅ (entropy production, second-law enforcement)
-from PKG.systems.iphs import IrreversiblePHS
 
 # Phase 6: Composition + GP-PHS (in-progress: GP-PHS done behind [gp];
 #          twin/compose.py still a stub)

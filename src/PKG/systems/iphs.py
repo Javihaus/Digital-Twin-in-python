@@ -1,6 +1,6 @@
 """Irreversible Port-Hamiltonian Systems (IPHS) with entropy production."""
 
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 import numpy.typing as npt
@@ -80,6 +80,7 @@ class IrreversiblePHS:
     def grad_S(self, x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
         """Compute gradient of entropy ∇S(x)."""
         from PKG.utils.linalg import numerical_gradient
+
         return numerical_gradient(self.S, x)
 
     def _ensure_valid_L(self, x: npt.NDArray[np.floating], tol: float = 1e-8) -> None:

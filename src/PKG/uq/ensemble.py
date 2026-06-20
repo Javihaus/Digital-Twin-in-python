@@ -12,7 +12,8 @@ This module is core (numpy only). Members only need a
 :class:`PKG.twin.DigitalTwin` and learned models satisfy.
 """
 
-from typing import Any, Sequence
+from collections.abc import Sequence
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt

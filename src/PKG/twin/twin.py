@@ -1,6 +1,6 @@
 """Digital Twin: Main interface for PHS-based twins."""
 
-from typing import Any, Optional, Union
+from typing import Any
 
 import numpy as np
 import numpy.typing as npt
@@ -38,9 +38,9 @@ class DigitalTwin:
 
     def __init__(
         self,
-        model: Union[PortHamiltonianSystem, str] = "phnn",
+        model: PortHamiltonianSystem | str = "phnn",
         uq: str = "none",
-        ensemble: Optional[Any] = None,
+        ensemble: Any | None = None,
     ) -> None:
         if isinstance(model, PortHamiltonianSystem):
             self.model = model
@@ -79,9 +79,9 @@ class DigitalTwin:
     def fit(
         self,
         data: npt.NDArray[np.floating],
-        state_cols: Optional[list[str]] = None,
-        input_cols: Optional[list[str]] = None,
-        time_col: Optional[str] = None,
+        state_cols: list[str] | None = None,
+        input_cols: list[str] | None = None,
+        time_col: str | None = None,
     ) -> dict[str, Any]:
         """
         Fit the twin to data (for learned models).
@@ -157,6 +157,7 @@ class DigitalTwin:
 
         if return_uncertainty:
             # uq == 'ensemble' is the only valid path here (guarded above).
+            assert self.ensemble is not None
             band = self.ensemble.forecast_interval(x0, t, u, level=level, method=method)
             forecast_result["mean"] = band["mean"]
             forecast_result["std"] = band["std"]
@@ -198,7 +199,7 @@ class DigitalTwin:
         observation: npt.NDArray[np.floating],
         obs_noise: float = 0.1,
         prior_noise: float = 1.0,
-        H: Optional[npt.NDArray[np.floating]] = None,
+        H: npt.NDArray[np.floating] | None = None,
     ) -> dict[str, npt.NDArray[np.floating]]:
         """
         Linear-Gaussian (Kalman) measurement update of a state estimate.

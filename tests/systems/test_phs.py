@@ -47,8 +47,7 @@ def test_water_tank_power_balance(h: float) -> None:
     actual = pb["dH_dt"]
 
     assert np.isclose(actual, expected, atol=1e-8), (
-        f"Power balance violated: dH/dt={actual}, "
-        f"dissipated + supplied={expected}"
+        f"Power balance violated: dH/dt={actual}, " f"dissipated + supplied={expected}"
     )
 
 
@@ -149,7 +148,9 @@ def test_water_tank_trajectory_energy_decay() -> None:
     t_eval = np.linspace(0, 10, 100)
     u = np.zeros((100, 1))  # No input
 
-    def dynamics(t: float, x: npt.NDArray[np.floating], u: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+    def dynamics(
+        t: float, x: npt.NDArray[np.floating], u: npt.NDArray[np.floating]
+    ) -> npt.NDArray[np.floating]:
         return tank.dynamics(x, u)
 
     result = integrate_with_inputs(dynamics, x0, t_eval, u)
@@ -172,7 +173,9 @@ def test_mass_spring_damper_trajectory_energy_decay() -> None:
     t_eval = np.linspace(0, 10, 100)
     u = np.zeros((100, 1))
 
-    def dynamics(t: float, x: npt.NDArray[np.floating], u: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+    def dynamics(
+        t: float, x: npt.NDArray[np.floating], u: npt.NDArray[np.floating]
+    ) -> npt.NDArray[np.floating]:
         return sys.dynamics(x, u)
 
     result = integrate_with_inputs(dynamics, x0, t_eval, u)

@@ -20,11 +20,16 @@ _Last updated: 2026-06-19._
 
 ## Tests
 
-- Default suite: **79 passed, 1 skipped** (`pip install -e . && pytest`).
+- Default suite: **85 passed, 1 skipped** (`pip install -e . && pytest`).
+- Coverage **91.6%** (gate: 85%). ruff, black and `mypy --strict` all clean on
+  `src/PKG`.
 - Skipped tests are optional-extra tests that skip cleanly when the extra is
   absent:
   - `tests/learn/test_phnn.py` — requires `[torch]`.
   - `tests/uq/test_gp_phs.py` — requires `[gp]` (sklearn); **passes when installed.**
+- Coverage gate excludes optional-extra modules (`learn/phnn.py`, `learn/losses.py`,
+  `uq/gp_phs.py`) and the Phase-6 stub (`twin/compose.py`); they are covered by
+  their own gated tests when the extra is installed.
 
 ## Known limitations / honest caveats
 
