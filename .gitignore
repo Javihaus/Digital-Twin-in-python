@@ -143,3 +143,6 @@ examples/battery_soh/slides/node_modules/
 examples/battery_soh/slides/package*.json
 examples/battery_soh/slides/*.pdf
 examples/battery_soh/slides/slide-*.jpg
+
+# Real market data (downloaded locally, not committed)
+examples/grid_storage_dispatch/data/

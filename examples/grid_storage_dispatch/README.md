@@ -77,10 +77,37 @@ python run_dispatch.py
 
 Runs on a laptop CPU in seconds (parameterised cvxpy problems, CLARABEL solver).
 
+By default the script uses clearly-diurnal **synthetic** signals. To run on real
+public EU data, see below — the script auto-detects it.
+
+## Reproduce on real EU data (OPSD / ENTSO-E)
+
+The example reads real day-ahead prices and demand from
+[Open Power System Data](https://data.open-power-system-data.org/time_series/)
+(ENTSO-E origin, CC-BY 4.0) if present — no code changes needed.
+
+```bash
+# 1. Download the 60-minute time series (one file) and put it in data/:
+#    https://data.open-power-system-data.org/time_series/2020-10-06/time_series_60min_singleindex.csv
+#    -> examples/grid_storage_dispatch/data/time_series_60min_singleindex.csv
+
+# 2. Slice it to one country/window (default Spain, 90 days):
+python prepare_opsd.py            # or:  python prepare_opsd.py DE_LU 90
+
+# 3. Re-run — it now reports "data source: OPSD/ENTSO-E (real)":
+python run_dispatch.py
+```
+
+`prepare_opsd.py` writes `data/eu_market.csv` (`timestamp, price_eur_mwh,
+load_mw`). The national demand series is used as a **shape** and rescaled per day
+to a `SITE_PEAK ≈ 9 MW` site so the 10 MWh / 5 MW battery is meaningful; real
+day-ahead prices are used directly for arbitrage. The `data/` folder is
+git-ignored (downloaded locally, not committed).
+
 ## Scope and honesty notes
 
-- Prices and loads are **synthetic** (clearly diurnal) to make the mechanism
-  legible; swap in real ISO price / site-load series to reproduce on your data.
+- The default signals are **synthetic** (clearly diurnal) for legibility; real
+  EU public data (OPSD/ENTSO-E) drops in via `prepare_opsd.py` (see above).
 - The degradation cost and capacity band are illustrative parameterisations of
   the light-end SoH model; the point is the **pipeline** (PM → calibrated UQ →
   RTO), not these specific constants.

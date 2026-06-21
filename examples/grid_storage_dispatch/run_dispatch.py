@@ -86,11 +86,41 @@ def capacity_belief(eq_cycles: float, rel_sigma: float = 0.05) -> tuple[float, f
 # over lifetime throughput.  cost_repl / (cycle_life * E_NOM * 2)  (charge+discharge)
 C_DEG = 220_000.0 / (4000.0 * E_NOM * 2.0)  # ~$/MWh; ≈ 2.75
 DEMAND_CHARGE = 200.0  # $/MW over the horizon (peak-shaving objective)
+SITE_PEAK = 9.0  # MW — national demand shape is scaled to this site peak
+
+
+def load_eu_csv() -> dict | None:
+    """Load real EU day-ahead price + demand if data/eu_market.csv exists.
+
+    Schema (produced by prepare_opsd.py from Open Power System Data / ENTSO-E):
+    columns ``timestamp, price_eur_mwh, load_mw``. Returns daily 24 h windows;
+    national demand is normalised per day and rescaled to ``SITE_PEAK`` so a
+    site-scale battery is meaningful (the real *shape*, scaled to site size).
+    """
+    p = HERE / "data" / "eu_market.csv"
+    if not p.exists():
+        return None
+    df = pd.read_csv(p)
+    df = df.dropna(subset=["price_eur_mwh", "load_mw"])
+    n = (len(df) // 24) * 24
+    if n < 24:
+        return None
+    price = df["price_eur_mwh"].to_numpy()[:n].reshape(-1, 24)
+    load = df["load_mw"].to_numpy()[:n].reshape(-1, 24)
+    load_site = load / load.max(axis=1, keepdims=True) * SITE_PEAK
+    return {"price": price, "load": load_site, "n_days": price.shape[0]}
+
+
+REAL = load_eu_csv()
+DATA_SOURCE = "OPSD/ENTSO-E (real)" if REAL is not None else "synthetic"
 
 
 # ------------------------------------------------------------------- signals
 def daily_price(days: int, seed: int) -> np.ndarray:
-    """Synthetic hourly electricity price ($/MWh): night-low, morning/evening peaks."""
+    """Hourly electricity price: real (OPSD) if available, else synthetic."""
+    if REAL is not None:
+        idx = np.arange(days) % REAL["n_days"]
+        return REAL["price"][idx].ravel()
     rng = np.random.default_rng(seed)
     hours = np.arange(24)
     base = (
@@ -106,7 +136,10 @@ def daily_price(days: int, seed: int) -> np.ndarray:
 
 
 def daily_load(days: int, seed: int) -> np.ndarray:
-    """Synthetic hourly site load (MW): morning ramp + sharp evening peak."""
+    """Hourly site load (MW): real demand shape (OPSD, scaled) if available, else synthetic."""
+    if REAL is not None:
+        idx = np.arange(days) % REAL["n_days"]
+        return REAL["load"][idx].ravel()
     rng = np.random.default_rng(seed)
     hours = np.arange(24)
     base = (
@@ -498,7 +531,7 @@ def fig_calibration(fname: str, n: int = 120) -> None:
 
 
 def main() -> None:
-    print(f"Setup OK | C_DEG ≈ {C_DEG:.2f} $/MWh | demand charge {DEMAND_CHARGE} $/MW")
+    print(f"Setup OK | data source: {DATA_SOURCE} | C_DEG ≈ {C_DEG:.2f} $/MWh")
     print("Trajectories...")
     fig_trajectories("arbitrage", "01_arbitrage_trajectories.png", "Price ($/MWh)")
     fig_trajectories("peak", "02_peak_trajectories.png", "Load (MW)")
