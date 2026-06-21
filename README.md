@@ -18,11 +18,11 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 </div>
 
 
-## What is otwin?
+## What is Otwin?
 
-otwin builds **digital twins** by pairing a *physical prior you trust* with a *learned correction*, then attaching **calibrated uncertainty** and grading itself only with leakage-free metrics. It is **one pattern**, applied across a spectrum — from full energy-conserving dynamics down to a slow degradation curve.
+Otwin builds **digital twins** by pairing a *physical prior you trust* with a *learned correction*, then attaching **calibrated uncertainty** and grading itself only with leakage-free metrics. It is **one pattern**, applied across a spectrum — from full energy-conserving dynamics down to a slow degradation curve.
 
-The physical prior exists for one reason: **extrapolation**. Black-box models interpolate well but drift on long horizons and out-of-distribution inputs. Structure keeps a forecast physically admissible far ahead, and the calibrated interval states how much to trust it — a stated 90% interval is checked to actually contain the truth ~90% of the time.
+The physical prior can be used to forecasting far into the future or under new conditions — exactly where data-only models drift and break physical laws. Structure keeps those long-range forecasts physically valid; the calibrated interval says how much to trust them (a stated 90% interval is checked to really hold ~90% of the time).
 
 ---
 
