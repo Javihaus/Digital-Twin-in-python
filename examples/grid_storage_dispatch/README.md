@@ -1,12 +1,14 @@
 # Grid-scale storage: predictive maintenance **and** real-time optimization
 
+![Grid-scale storage dispatch — physical schematic and PM→RTO workflow](../../assets/grid.png)
+
 A worked example for the IEEE PES topic *"AI-powered Digital Twins for Grid-Scale
 Energy Storage: Enabling Predictive Maintenance and Real-Time Optimization."*
 
 The title names two things. This example shows they are **one pipeline**:
 
 > The calibrated **predictive-maintenance** twin (battery State-of-Health — the
-> light-end model from [`../battery_soh`](../battery_soh)) gives the **real-time
+> empirical-end model from [`../battery_soh`](../battery_soh)) gives the **real-time
 > optimizer** what a plain optimizer lacks: the *shrinking, uncertain usable
 > capacity*, a *degradation cost per unit of throughput*, and — crucially — a
 > **calibrated uncertainty band** on the capacity that becomes a robust (chance)
@@ -138,7 +140,7 @@ git-ignored (downloaded locally, not committed).
 - The default signals are **synthetic** (clearly diurnal) for legibility; real
   EU public data (OPSD/ENTSO-E) drops in via `prepare_opsd.py` (see above).
 - The degradation cost and capacity band are illustrative parameterisations of
-  the light-end SoH model; the point is the **pipeline** (PM → calibrated UQ →
+  the empirical SoH model; the point is the **pipeline** (PM → calibrated UQ →
   RTO), not these specific constants.
 - This is a single-asset dispatch; multi-asset / network-coupled dispatch is a
   natural extension via port composition.

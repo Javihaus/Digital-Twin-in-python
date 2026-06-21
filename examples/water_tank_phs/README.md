@@ -1,7 +1,9 @@
-# Water tank — the strong end (analytic port-Hamiltonian)
+# Water tank — first-principles model (port-Hamiltonian)
 
-The simplest **strong-end** example: a draining water tank written as an analytic
-port-Hamiltonian system. It shows the property that makes the strong end
+![Water tank — physical schematic and grey-box workflow](../../assets/tank.png)
+
+The simplest **first-principles** example: a draining water tank written as an analytic
+port-Hamiltonian system. It shows the property that makes a first-principles model
 worthwhile — **passivity by construction**: with no inflow, the stored energy is
 monotonically non-increasing, so the forecast cannot invent energy no matter how
 far ahead you integrate.

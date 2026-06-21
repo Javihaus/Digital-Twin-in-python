@@ -1,0 +1,62 @@
+<svg viewBox="0 0 1040 500" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" role="img">
+  <title>Example 3 — grid storage dispatch: schematic + flow</title>
+  <rect x="0" y="0" width="1040" height="500" rx="16" fill="#FBF8F3"/>
+  <text x="40" y="34" font-size="20" font-weight="700" fill="#1B2430">Example 3 — Grid-scale storage dispatch</text>
+
+  <!-- ===== physical schematic: BESS — grid bus — load ===== -->
+  <rect x="120" y="78" width="120" height="64" rx="8" fill="#ffffff" stroke="#1B2430" stroke-width="2.5"/>
+  <rect x="240" y="98" width="11" height="26" rx="2" fill="#1B2430"/>
+  <text x="180" y="115" font-size="12" font-weight="700" fill="#1B2430" text-anchor="middle">BESS</text>
+  <text x="180" y="158" font-size="11.5" fill="#444" text-anchor="middle">energy E · power P</text>
+  <path d="M251 110 H430" fill="none" stroke="#1C4E73" stroke-width="2.5"/>
+  <path d="M330 96 H360 M353 89 l 7 7 l -7 7" fill="none" stroke="#B5651D" stroke-width="2"/>
+  <path d="M360 124 H330 M337 117 l -7 7 l 7 7" fill="none" stroke="#B5651D" stroke-width="2"/>
+  <text x="345" y="84" font-size="11" font-weight="700" fill="#B5651D" text-anchor="middle">charge / discharge  P</text>
+  <rect x="430" y="64" width="8" height="96" fill="#1C4E73"/>
+  <text x="434" y="178" font-size="11.5" fill="#1B2430" text-anchor="middle">grid bus</text>
+  <path d="M438 110 H560" fill="none" stroke="#1C4E73" stroke-width="2.5"/>
+  <path d="M560 92 l 26 18 l -26 18 z" fill="none" stroke="#1B2430" stroke-width="2"/>
+  <text x="600" y="114" font-size="11.5" fill="#444">load (MW)</text>
+  <rect x="640" y="88" width="120" height="44" rx="8" fill="#F1EAE2" stroke="#cdbfae"/>
+  <text x="700" y="106" font-size="11.5" font-weight="700" fill="#1B2430" text-anchor="middle">day-ahead</text>
+  <text x="700" y="122" font-size="11.5" fill="#444" text-anchor="middle">price (EUR/MWh)</text>
+
+  <!-- ===== flow (PM -> RTO) ===== -->
+  <text x="200" y="218" font-size="12" font-weight="700" fill="#3D80A9" text-anchor="middle" letter-spacing="0.5">PREDICTIVE MAINTENANCE</text>
+  <text x="700" y="218" font-size="12" font-weight="700" fill="#B5651D" text-anchor="middle" letter-spacing="0.5">REAL-TIME OPTIMIZATION</text>
+
+  <g font-size="13" fill="#1B2430">
+    <rect x="60" y="234" width="260" height="92" rx="12" fill="#fff" stroke="#3D80A9" stroke-width="2.5"/>
+    <text x="190" y="264" text-anchor="middle" font-weight="700">Calibrated SoH twin</text>
+    <text x="190" y="285" text-anchor="middle" font-size="12" fill="#444">(from Example 2)</text>
+    <text x="190" y="304" text-anchor="middle" font-size="12" fill="#444">capacity cap ± sigma · deg cost</text>
+
+    <rect x="60" y="372" width="260" height="60" rx="12" fill="#F1EAE2" stroke="#cdbfae"/>
+    <text x="190" y="398" text-anchor="middle" font-weight="700">Price / load signal</text>
+    <text x="190" y="417" text-anchor="middle" font-size="12" fill="#444">arbitrage · peak shaving</text>
+
+    <rect x="400" y="290" width="230" height="92" rx="12" fill="#fff" stroke="#1C4E73" stroke-width="2.5"/>
+    <text x="515" y="322" text-anchor="middle" font-weight="700">MPC optimizer</text>
+    <text x="515" y="343" text-anchor="middle" font-size="12" fill="#444">receding horizon</text>
+    <text x="515" y="361" text-anchor="middle" font-size="12" fill="#444">structure + cost + band</text>
+
+    <rect x="668" y="290" width="150" height="92" rx="12" fill="#fff" stroke="#1C4E73" stroke-width="2.5"/>
+    <text x="743" y="326" text-anchor="middle" font-weight="700">Robust</text>
+    <text x="743" y="346" text-anchor="middle" font-size="12" fill="#444">dispatch uses</text>
+    <text x="743" y="363" text-anchor="middle" font-size="12" fill="#444">lower band</text>
+
+    <rect x="856" y="290" width="150" height="92" rx="12" fill="#1C4E73"/>
+    <text x="931" y="322" text-anchor="middle" font-weight="700" fill="#fff">Outcome</text>
+    <text x="931" y="343" text-anchor="middle" font-size="12" fill="#dce6ee">9% shortfall at</text>
+    <text x="931" y="361" text-anchor="middle" font-size="12" fill="#dce6ee">near-max value</text>
+
+    <g stroke="#B5651D" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M320 286 C 360 290, 372 320, 398 328 m -11 -7 l 11 7 l -8 9"/>
+      <path d="M320 398 C 362 398, 374 352, 398 342 m -2 -13 l 4 13 l -14 0"/>
+      <path d="M630 336 l 32 0 m -8 -7 l 8 7 l -8 7"/>
+      <path d="M818 336 l 32 0 m -8 -7 l 8 7 l -8 7"/>
+    </g>
+    <text x="360" y="306" font-size="10.5" fill="#B5651D">capacity + cost + band</text>
+  </g>
+  <text x="60" y="460" font-size="12" fill="#5b5b5b">Naive (assumes nominal capacity) over-promises every day (100% shortfall); the calibrated band makes the optimizer trustworthy.</text>
+</svg>

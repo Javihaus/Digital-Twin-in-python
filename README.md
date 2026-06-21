@@ -94,7 +94,20 @@ pip install "otwin[dev]"      # Testing / linting / typing / docs
 ```python
 import numpy as np
 from otwin import DigitalTwin, evaluate
-from otwin.systems import water_tank
+from otwin.systems import water_tank   # a ready-made first-principles model
+
+# ── First-principles catalog ──────────────────────────────────────────────
+# Available now:
+#   water_tank          fluid system (draining tank)
+#   mass_spring_damper  mechanical oscillator
+# Build your own from energy H, interconnection J, dissipation R, input g:
+#   from otwin.systems import PortHamiltonianSystem   # conservative/dissipative system
+#   from otwin.systems import IrreversiblePHS         # adds entropy production
+#
+# Roadmap (named structures, not yet importable):
+#   rc_circuit      electrical RLC          heat_exchanger  thermal mass
+#   reactor         chemical reactor (CSTR) degradation     empirical fade law
+# ──────────────────────────────────────────────────────────────────────────
 
 # 1. Choose a model structure: a first-principles (port-Hamiltonian) system
 twin = DigitalTwin(model=water_tank())
@@ -220,15 +233,21 @@ See `examples/` for full runnable code.
 ### 1. Water tank (first-principles, port-Hamiltonian)
 White-box structure preservation (energy, dissipation) with leakage-free validation. See [`examples/water_tank_phs`](examples/water_tank_phs).
 
+<img src="assets/tank.png" alt="Water tank example — physical schematic and grey-box workflow" width="760">
+
 <img src="examples/water_tank_phs/figures/water_tank_dynamics.png" alt="Water tank: state trajectory and monotonic energy decay" width="640">
 
 ### 2. Battery State-of-Health (empirical-law model)
 NASA battery fleet: SoH / Remaining-Useful-Life forecasting with an empirical fade-law structure, an estimated bounded residual, and conformal intervals. **Not** port-Hamiltonian — the empirical end of grey-box. See [`examples/battery_soh`](examples/battery_soh).
 
+<img src="assets/battery.png" alt="Battery State-of-Health example — physical schematic and grey-box workflow" width="760">
+
 <img src="examples/battery_soh/figures/01_hero_forecast.png" alt="Battery State-of-Health forecast with calibrated uncertainty band" width="640">
 
 ### 3. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
 The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for peak shaving and energy arbitrage. Shows that **calibrated uncertainty** is what turns predictive maintenance into trustworthy real-time optimization: the robust plan hits its 90% feasibility target at near-maximal value, while a naive plan over-promises every day. See [`examples/grid_storage_dispatch`](examples/grid_storage_dispatch).
+
+<img src="assets/grid.png" alt="Grid storage dispatch example — physical schematic and predictive-maintenance to real-time-optimization workflow" width="820">
 
 <img src="examples/grid_storage_dispatch/figures/03_arbitrage_montecarlo.png" alt="Grid storage dispatch: realised value vs shortfall rate across strategies" width="680">
 

@@ -1,0 +1,47 @@
+<svg viewBox="0 0 1000 440" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" role="img">
+  <title>Example 1 — water tank: schematic + flow</title>
+  <rect x="0" y="0" width="1000" height="440" rx="16" fill="#FBF8F3"/>
+  <text x="40" y="34" font-size="20" font-weight="700" fill="#1B2430">Example 1 — Water tank (first-principles · white-box)</text>
+
+  <!-- ===== physical schematic (same symbols as the flow/equations) ===== -->
+  <path d="M440 78 V180 H560 V78" fill="none" stroke="#1B2430" stroke-width="2.5"/>
+  <rect x="442" y="126" width="116" height="52" fill="#9CC2DA" opacity="0.7"/>
+  <path d="M500 50 V78 M493 71 l 7 7 l 7 -7" fill="none" stroke="#1C4E73" stroke-width="2.5"/>
+  <text x="500" y="44" font-size="12.5" font-weight="700" fill="#1C4E73" text-anchor="middle">u  (inflow)</text>
+  <path d="M424 126 V178 M419 133 l 5 -7 l 5 7 M419 171 l 5 7 l 5 -7" fill="none" stroke="#444" stroke-width="1.4"/>
+  <text x="416" y="156" font-size="12" fill="#444" text-anchor="end">x = height (state)</text>
+  <path d="M560 165 H596 M589 158 l 7 7 l -7 7" fill="none" stroke="#B5651D" stroke-width="2.5"/>
+  <text x="604" y="169" font-size="12" font-weight="700" fill="#B5651D">outflow · dissipation R</text>
+  <text x="500" y="205" font-size="12" fill="#1B2430" text-anchor="middle">stored energy H(x)   ·   output y</text>
+
+  <!-- ===== flow ===== -->
+  <g font-size="13" fill="#1B2430">
+    <rect x="40" y="248" width="200" height="86" rx="12" fill="#ffffff" stroke="#1C4E73" stroke-width="2"/>
+    <text x="140" y="278" text-anchor="middle" font-weight="700">Model structure</text>
+    <text x="140" y="298" text-anchor="middle" font-size="12" fill="#444">water tank (PHS)</text>
+    <text x="140" y="316" text-anchor="middle" font-size="12" fill="#444">H, J, R, g</text>
+
+    <rect x="280" y="248" width="200" height="86" rx="12" fill="#ffffff" stroke="#1C4E73" stroke-width="2"/>
+    <text x="380" y="278" text-anchor="middle" font-weight="700">Forecast</text>
+    <text x="380" y="298" text-anchor="middle" font-size="12" fill="#444">structure-preserving</text>
+    <text x="380" y="316" text-anchor="middle" font-size="12" fill="#444">integration</text>
+
+    <rect x="520" y="248" width="200" height="86" rx="12" fill="#ffffff" stroke="#1C4E73" stroke-width="2"/>
+    <text x="620" y="278" text-anchor="middle" font-weight="700">Outputs</text>
+    <text x="620" y="298" text-anchor="middle" font-size="12" fill="#444">height x(t)</text>
+    <text x="620" y="316" text-anchor="middle" font-size="12" fill="#444">energy H(x)</text>
+
+    <rect x="760" y="248" width="200" height="86" rx="12" fill="#1C4E73"/>
+    <text x="860" y="278" text-anchor="middle" font-weight="700" fill="#fff">Validate</text>
+    <text x="860" y="298" text-anchor="middle" font-size="12" fill="#dce6ee">vs persistence</text>
+    <text x="860" y="316" text-anchor="middle" font-size="12" fill="#dce6ee">skill 0.94</text>
+
+    <g stroke="#B5651D" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M244 291 l 30 0 m -8 -7 l 8 7 l -8 7"/>
+      <path d="M484 291 l 30 0 m -8 -7 l 8 7 l -8 7"/>
+      <path d="M724 291 l 30 0 m -8 -7 l 8 7 l -8 7"/>
+    </g>
+  </g>
+  <rect x="40" y="360" width="920" height="44" rx="10" fill="#F1EAE2" stroke="#cdbfae"/>
+  <text x="500" y="387" text-anchor="middle" font-size="13" fill="#1C4E73" font-weight="700">Guarantee: with u = 0, energy H(x) is monotonically non-increasing (passivity) — no energy-creating drift.</text>
+</svg>

@@ -1,0 +1,61 @@
+<svg viewBox="0 0 1100 440" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" role="img">
+  <title>Example 2 — battery SoH: schematic + flow</title>
+  <rect x="0" y="0" width="1100" height="440" rx="16" fill="#FBF8F3"/>
+  <text x="40" y="34" font-size="20" font-weight="700" fill="#1B2430">Example 2 — Battery State-of-Health (empirical · grey-box)</text>
+
+  <!-- ===== physical schematic ===== -->
+  <rect x="360" y="78" width="150" height="74" rx="8" fill="#ffffff" stroke="#1B2430" stroke-width="2.5"/>
+  <rect x="510" y="100" width="12" height="30" rx="2" fill="#1B2430"/>
+  <rect x="368" y="86" width="80" height="58" rx="3" fill="#3D80A9" opacity="0.55"/>
+  <text x="435" y="120" font-size="12" font-weight="700" fill="#1B2430" text-anchor="middle">SoH = Q / Q0</text>
+  <path d="M580 90 V150 H700" fill="none" stroke="#bbb" stroke-width="1.4"/>
+  <path d="M582 92 C 612 104, 660 140, 698 148" fill="none" stroke="#3D80A9" stroke-width="2.5"/>
+  <text x="640" y="166" font-size="11.5" fill="#444" text-anchor="middle">n = cycles</text>
+  <text x="566" y="92" font-size="11.5" fill="#444" text-anchor="end">SoH</text>
+  <path d="M300 115 H352 M345 108 l 7 7 l -7 7" fill="none" stroke="#B5651D" stroke-width="2.5"/>
+  <text x="326" y="104" font-size="11.5" font-weight="700" fill="#B5651D" text-anchor="middle">charge / discharge cycles</text>
+  <text x="730" y="120" font-size="12" fill="#1B2430">fade rate a · SoH(n)=SoH0·e^(-a·n)</text>
+
+  <!-- ===== flow ===== -->
+  <g font-size="12.5" fill="#1B2430">
+    <rect x="30" y="240" width="150" height="96" rx="12" fill="#F1EAE2" stroke="#cdbfae"/>
+    <text x="105" y="272" text-anchor="middle" font-weight="700">Fleet data</text>
+    <text x="105" y="292" text-anchor="middle" font-size="11.5" fill="#444">SoH per cycle</text>
+    <text x="105" y="309" text-anchor="middle" font-size="11.5" fill="#444">(NASA, 8 cells)</text>
+
+    <rect x="212" y="240" width="150" height="96" rx="12" fill="#fff" stroke="#3D80A9" stroke-width="2"/>
+    <text x="287" y="272" text-anchor="middle" font-weight="700">Model structure</text>
+    <text x="287" y="292" text-anchor="middle" font-size="11.5" fill="#444">fade law</text>
+    <text x="287" y="309" text-anchor="middle" font-size="11.5" fill="#444">SoH0·e^(-a·n)</text>
+
+    <rect x="394" y="240" width="150" height="96" rx="12" fill="#fff" stroke="#3D80A9" stroke-width="2"/>
+    <text x="469" y="272" text-anchor="middle" font-weight="700">Estimate</text>
+    <text x="469" y="292" text-anchor="middle" font-size="11.5" fill="#444">bounded</text>
+    <text x="469" y="309" text-anchor="middle" font-size="11.5" fill="#444">residual g(n)</text>
+
+    <rect x="576" y="240" width="150" height="96" rx="12" fill="#fff" stroke="#3D80A9" stroke-width="2"/>
+    <text x="651" y="272" text-anchor="middle" font-weight="700">Quantify</text>
+    <text x="651" y="292" text-anchor="middle" font-size="11.5" fill="#444">conformal band</text>
+    <text x="651" y="309" text-anchor="middle" font-size="11.5" fill="#444">sigma(n)=s0+s1·h</text>
+
+    <rect x="758" y="240" width="150" height="96" rx="12" fill="#fff" stroke="#3D80A9" stroke-width="2"/>
+    <text x="833" y="272" text-anchor="middle" font-weight="700">Forecast</text>
+    <text x="833" y="292" text-anchor="middle" font-size="11.5" fill="#444">SoH + RUL</text>
+    <text x="833" y="309" text-anchor="middle" font-size="11.5" fill="#444">with band</text>
+
+    <rect x="940" y="240" width="150" height="96" rx="12" fill="#3D80A9"/>
+    <text x="1015" y="272" text-anchor="middle" font-weight="700" fill="#fff">Validate</text>
+    <text x="1015" y="292" text-anchor="middle" font-size="11.5" fill="#e6eff5">temporal split</text>
+    <text x="1015" y="309" text-anchor="middle" font-size="11.5" fill="#e6eff5">Theil's U · CRPS</text>
+
+    <g stroke="#B5651D" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M184 288 l 22 0 m -7 -6 l 7 6 l -7 6"/>
+      <path d="M366 288 l 22 0 m -7 -6 l 7 6 l -7 6"/>
+      <path d="M548 288 l 22 0 m -7 -6 l 7 6 l -7 6"/>
+      <path d="M730 288 l 22 0 m -7 -6 l 7 6 l -7 6"/>
+      <path d="M912 288 l 22 0 m -7 -6 l 7 6 l -7 6"/>
+    </g>
+  </g>
+  <rect x="30" y="362" width="1060" height="42" rx="10" fill="#F1EAE2" stroke="#cdbfae"/>
+  <text x="560" y="388" text-anchor="middle" font-size="12.5" fill="#3D80A9" font-weight="700">Empirical fade-law prior + estimated residual + calibrated band -> Theil's U &lt; 1 on the 24 C cells.</text>
+</svg>

@@ -1,13 +1,15 @@
-# Battery State-of-Health — the light end of the spectrum
+# Battery State-of-Health — empirical-law model (grey-box)
+
+![Battery State-of-Health — physical schematic and grey-box workflow](../../assets/battery.png)
 
 Forecasting lithium-ion **State-of-Health (SoH)** and **Remaining-Useful-Life
-(RUL)** on the NASA battery-aging dataset. This is the **light end** of otwin:
+(RUL)** on the NASA battery-aging dataset. This is the **empirical end** of otwin (grey-box):
 there is no energy dynamics to conserve, only a slow degradation trend, so a
 transparent **fade-law prior** carries the trend, a **bounded learned residual**
 corrects it, and **horizon-aware conformal intervals** quantify uncertainty.
 
 > Not port-Hamiltonian — capacity fade is a monotone degradation curve. Same
-> four-step pattern as the strong end (prior → residual → calibrated uncertainty
+> workflow as the first-principles end (prior → residual → calibrated uncertainty
 > → leakage-free evaluation), only the physics is lighter.
 
 ## The fleet
