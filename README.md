@@ -111,20 +111,17 @@ Traditional learned dynamics models (neural ODEs, LSTMs, generic regression) lea
 
 **Port-Hamiltonian systems** enforce structure:
 
-
-$ẋ = (J(x) − R(x)) ∇H(x) + g(x) u$
-$y = g(x)ᵀ ∇H(x)$
-
+$$\dot{x} = \bigl(J(x) - R(x)\bigr)\,\nabla H(x) + g(x)\,u, \qquad y = g(x)^{\top}\,\nabla H(x)$$
 
 where:
-- $J(x) = −J(x)ᵀ$ (skew-symmetric → lossless interconnection)
-- $R(x) ⪰ 0$ (positive semidefinite → dissipation)
+
+- $J(x) = -J(x)^{\top}$ (skew-symmetric $\rightarrow$ lossless interconnection)
+- $R(x) \succeq 0$ (positive semidefinite $\rightarrow$ dissipation)
 - $H(x)$ is the energy/storage function
 
 **Power balance (provable by construction):**
 
-$dH/dt = −∇Hᵀ R ∇H + yᵀu  ≤  yᵀu$
-
+$$\frac{dH}{dt} = -\,\nabla H^{\top} R\,\nabla H + y^{\top}u \;\leq\; y^{\top}u$$
 
 With $u = 0$, energy is non-increasing. **No energy-creating drift, by algebra.**
 
@@ -134,23 +131,17 @@ When you learn a `PortHamiltonianNN`, the network architecture *enforces* `J` sk
 
 ## The light end: empirical laws
 
-When a system only degrades — capacity fade, wear, fatigue — there is no energy
-function to conserve. otwin uses a **transparent trend law** as the prior, learns a
-**bounded residual** on top, and quantifies uncertainty with **horizon-aware
-conformal intervals**:
+When a system only degrades — capacity fade, wear, fatigue — there is no energy function to conserve. otwin uses a **transparent trend law** as the prior, learns a **bounded residual** on top, and quantifies uncertainty with **horizon-aware conformal intervals**:
 
+$$\widehat{\mathrm{SoH}}(n) = \mathrm{SoH}_0\,e^{-a n} + g(n)$$
 
-$SoH(n) = SoH_0 · e^{(-a·n)} + g(n)$ # fade-law prior + learned residual
+*(fade-law prior + learned residual)*
 
-$[l(n), u(n)] = SoH(n) ± z·σ(n),   σ(n) = s_0 + s_1·(n - n_0)$  # band that widens with horizon
+$$\bigl[\,\ell(n),\,u(n)\,\bigr] = \widehat{\mathrm{SoH}}(n) \pm z\,\sigma(n), \qquad \sigma(n) = s_0 + s_1\,(n - n_0)$$
 
+*(band that widens with the horizon)*
 
-Same four-step pattern as the strong end — only the prior is lighter. This is
-demonstrated end-to-end on the NASA battery fleet in
-[`examples/battery_soh`](examples/battery_soh) (State-of-Health and
-Remaining-Useful-Life forecasting). A reusable light-end primitive
-(`otwin.systems.degradation`) is on the roadmap; today the pattern lives in the
-worked example.
+Same four-step pattern as the strong end — only the prior is lighter. This is demonstrated end-to-end on the NASA battery fleet in [`examples/battery_soh`](examples/battery_soh) (State-of-Health and Remaining-Useful-Life forecasting). A reusable light-end primitive (`otwin.systems.degradation`) is on the roadmap; today the pattern lives in the worked example.
 
 ---
 
