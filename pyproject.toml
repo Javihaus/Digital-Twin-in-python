@@ -60,6 +60,15 @@ gp = [
 viz = [
     "matplotlib>=3.5.0",
     "plotly>=5.0.0",
+    "seaborn>=0.12.0",
+]
+# Optional: everything needed to run the worked examples in examples/
+examples = [
+    "matplotlib>=3.5.0",
+    "seaborn>=0.12.0",
+    "pandas>=1.3.0",
+    "scikit-learn>=1.0.0",
+    "cvxpy>=1.3.0",
 ]
 # Dev: testing, linting, typing, docs
 dev = [

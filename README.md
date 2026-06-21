@@ -66,6 +66,7 @@ pip install git+https://github.com/Javihaus/otwin.git@v2
 pip install "otwin[torch]"  # For learned PHS (PortHamiltonianNN)
 pip install "otwin[gp]"     # For GP-PHS (Gaussian Process uncertainty)
 pip install "otwin[viz]"    # For matplotlib + plotly visualization
+pip install "otwin[examples]" # Everything to run examples/ (cvxpy, pandas, sklearn, seaborn)
 pip install "otwin[dev]"    # For testing/linting/typing/docs
 ```
 
@@ -268,10 +269,10 @@ The calibrated SoH twin feeds a receding-horizon (MPC) dispatch optimizer for pe
 
 ## Documentation
 
-- **API Reference:** [docs/api/](docs/api/)
-- **User Guide:** [docs/guide/](docs/guide/)
-- **Mathematical Background:** [docs/theory/](docs/theory/)
-- **Citations:** [CITATIONS.md](CITATIONS.md) (all references tracked, VERIFIED/UNVERIFIED status)
+- **Getting started:** [GETTING_STARTED.md](GETTING_STARTED.md)
+- **Worked examples:** [`examples/`](examples) — water tank (PHS), battery SoH (light end), grid-scale storage dispatch
+- **Citations:** [CITATIONS.md](CITATIONS.md) (references with VERIFIED / UNVERIFIED status)
+- **API docs (Sphinx):** source in [`docs/`](docs) — build with `make -C docs html`
 
 ---
 

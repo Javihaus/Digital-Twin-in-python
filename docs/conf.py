@@ -12,10 +12,10 @@ sys.path.insert(0, os.path.abspath('../src'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'Hybrid Digital Twin'
+project = 'otwin'
 copyright = '2024, Javier Marin'
 author = 'Javier Marin'
-release = '1.0.0'
+release = '2.0.0-alpha'
 
 # -- General configuration ---------------------------------------------------
 

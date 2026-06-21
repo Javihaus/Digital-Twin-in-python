@@ -103,12 +103,18 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip setuptools wheel
-        pip install -e ".[viz]"
+        pip install -e ".[examples]"
 
     - name: Run water tank example
       run: |
         cd examples/water_tank_phs
         timeout 300 python water_tank_demo.py
+      continue-on-error: true
+
+    - name: Run grid storage dispatch example (synthetic data)
+      run: |
+        cd examples/grid_storage_dispatch
+        timeout 300 python run_dispatch.py
       continue-on-error: true
 
   benchmarks:
