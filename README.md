@@ -244,14 +244,16 @@ Systems expressible as (irreversible) port-Hamiltonian / structured ODE state-sp
 
 See `examples/` for full runnable code.
 
-### 1. Water Tank (Analytic PHS)
-Demonstrates structure preservation (energy, dissipation) and UQ calibration.
+### 1. Water Tank (analytic PHS)
+Strong end: structure preservation (energy, dissipation) with a leakage-free benchmark.
 
 ### 2. Battery State-of-Health (light end: empirical law + residual)
-NASA battery fleet: SoH / Remaining-Useful-Life forecasting with a fade-law prior, a bounded learned residual, and conformal intervals. **Not** port-Hamiltonian — the light end of the spectrum.
+NASA battery fleet: SoH / Remaining-Useful-Life forecasting with a fade-law prior, a bounded learned residual, and conformal intervals. **Not** port-Hamiltonian — the light end of the spectrum. See [`examples/battery_soh`](examples/battery_soh).
 
-### 3. CSTR Glucose↔Fructose (IPHS with Entropy)
-Irreversible thermodynamics with entropy production σ ≥ 0 (second-law guarantee).
+### 3. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
+The calibrated SoH twin feeds a receding-horizon (MPC) dispatch optimizer for peak shaving and energy arbitrage. Shows that **calibrated uncertainty** is what turns predictive maintenance into trustworthy real-time optimization: robust dispatch hits its 90% feasibility target at near-maximal value, while a naive plan over-promises every day. See [`examples/grid_storage_dispatch`](examples/grid_storage_dispatch).
+
+*Planned:* irreversible-PHS reactor (CSTR with entropy production) and multi-physics port composition.
 
 ---
 
