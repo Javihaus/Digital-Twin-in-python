@@ -1,9 +1,18 @@
 """Water tank PHS demonstration: structure preservation + evaluation."""
 
+from pathlib import Path
+
+import matplotlib
 import numpy as np
 
-from otwin import DigitalTwin, evaluate, water_tank
-from otwin.utils import set_seed
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt  # noqa: E402
+import seaborn as sns  # noqa: E402
+
+from otwin import DigitalTwin, evaluate, water_tank  # noqa: E402
+from otwin.utils import set_seed  # noqa: E402
+
+sns.set_theme(style="whitegrid", context="talk")
 
 # Reproducibility
 set_seed(42)
@@ -31,11 +40,12 @@ print(f"Initial energy: {energies[0]:.4f} J")
 print(f"Final energy:   {energies[-1]:.4f} J")
 print(f"Energy drift:   {energy_drift:.2f}%")
 
-# Verify passivity: energy should decrease
+# Verify passivity: with no inflow (u = 0) the stored energy must be
+# monotonically non-increasing — the tank dissipates, it never gains energy.
 assert energies[-1] < energies[0], "Energy increased (violates passivity)!"
-assert abs(energy_drift) < 1.0, f"Energy drift too large: {energy_drift}%"
+assert np.all(np.diff(energies) <= 1e-9), "Energy not monotonically non-increasing!"
 
-print("✅ Passivity verified: energy decreased as expected")
+print("✅ Passivity verified: energy is monotonically non-increasing")
 
 # Verify power balance at sample points
 print("\nVerifying power balance at sample points...")
@@ -57,6 +67,7 @@ observed_data = forecast["x"] + np.random.randn(*forecast["x"].shape) * noise_st
 # Evaluate using temporal holdout
 print("\nEvaluating forecast accuracy (temporal split + baselines)...")
 
+
 # Simple wrapper for evaluation compatibility
 class TwinWrapper:
     def __init__(self, twin_obj, x0, t_grid):
@@ -67,20 +78,23 @@ class TwinWrapper:
     def predict(self, X):
         # For evaluation: predict next timestep
         u_dummy = np.zeros((len(X), 1))
-        t_dummy = self.t_grid[:len(X)]
+        t_dummy = self.t_grid[: len(X)]
         result = self.twin.forecast(X[0], t_dummy, u_dummy)
         return result["x"]
+
 
 wrapper = TwinWrapper(twin, x0, t)
 
 # Evaluate
 try:
-    report = evaluate(wrapper, observed_data, protocol="temporal_holdout", test_frac=0.2)
+    report = evaluate(
+        wrapper, observed_data, protocol="temporal_holdout", test_frac=0.2
+    )
     print(report)
     print("\n✅ Evaluation completed")
-except Exception as e:
-    print(f"Note: Evaluation requires fit() method. Skipping for analytic model demo.")
-    print(f"(This will work properly in Phase 4 with learned models)")
+except Exception:
+    print("Note: Evaluation requires fit() method. Skipping for analytic model demo.")
+    print("(This will work properly with learned models.)")
 
 print("\n" + "=" * 60)
 print("Water Tank PHS Demo Complete")
@@ -91,3 +105,21 @@ print("  ✓ Energy decay (passivity by construction)")
 print("  ✓ Power balance identity (dH/dt = dissipated + supplied)")
 print("  ✓ Structure-preserving integration")
 print("  ✓ Rigorous evaluation framework")
+
+# ---- figure ----
+FIG = Path(__file__).resolve().parent / "figures"
+FIG.mkdir(exist_ok=True)
+fig, ax = plt.subplots(1, 2, figsize=(12, 4.6))
+ax[0].plot(t, forecast["x"][:, 0], color="#1C4E73", lw=2.4)
+ax[0].set_xlabel("time (s)")
+ax[0].set_ylabel("water height (m)")
+ax[0].set_title("State trajectory")
+ax[1].plot(t, energies, color="#B5651D", lw=2.4)
+ax[1].set_xlabel("time (s)")
+ax[1].set_ylabel("energy  H(x)  (J)")
+ax[1].set_title("Energy decays monotonically (passivity)")
+fig.suptitle("Water tank (analytic PHS): structure-preserving, passive by construction")
+fig.tight_layout()
+fig.savefig(FIG / "water_tank_dynamics.png", dpi=160)
+plt.close(fig)
+print(f"\nWrote figure: {FIG / 'water_tank_dynamics.png'}")

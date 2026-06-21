@@ -58,15 +58,44 @@ leaves value on the table. At the calibrated `k ≈ 1.28`, empirical coverage is
 
 ## Figures
 
-| File | What |
-|---|---|
-| `01_arbitrage_trajectories.png` | Price, SoC, and cumulative unmet energy per strategy (naive Σ ≈ 56 MWh vs robust Σ = 0) |
-| `02_peak_trajectories.png` | Same, peak-shaving objective |
-| `03_arbitrage_montecarlo.png` | Realised value and shortfall rate over 150 days (arbitrage) |
-| `04_peak_montecarlo.png` | Same, peak shaving |
-| `05_calibration_sweet_spot.png` | Value and shortfall vs robustness margin; calibrated point marked |
+**Real-time dispatch under uncertain capacity (arbitrage).** Price, state-of-charge,
+and cumulative *unmet* energy per strategy — the naive plan leaves ~56 MWh
+undeliverable, the calibrated-robust plan leaves 0.
+
+![Arbitrage dispatch trajectories](figures/01_arbitrage_trajectories.png)
+
+**Monte Carlo over 150 days.** Realised value vs capacity-shortfall rate. The
+robust (calibrated-UQ) dispatch meets the ≤10% feasibility target at near-maximal
+value; the naive plan over-promises every single day.
+
+![Arbitrage Monte Carlo](figures/03_arbitrage_montecarlo.png)
+
+![Peak-shaving Monte Carlo](figures/04_peak_montecarlo.png)
+
+**Calibration is the sweet spot.** Sweeping the robustness margin `k`, realised
+value peaks near the calibrated margin (`k ≈ 1.28`, 90% coverage); too little
+margin causes shortfalls, too much leaves value on the table.
+
+![Calibration sweet spot](figures/05_calibration_sweet_spot.png)
 
 Per-figure data is exported to `figure_data/*.csv`.
+
+## Minimal example
+
+```python
+import numpy as np
+from run_dispatch import capacity_belief, plan_horizon, daily_price, C_DEG
+
+price = daily_price(1, seed=11)           # 24 h day-ahead price
+cap_hat, sigma = capacity_belief(800)     # SoH twin: usable capacity + calibrated band
+z = 1.2816                                # one-sided 90%
+
+# Robust dispatch uses the calibrated *lower* capacity band:
+plan = plan_horizon("arbitrage", e0=3.0,
+                    cap_assumed=cap_hat - z * sigma,
+                    signal_H=price, c_deg=C_DEG)
+print(f"hour-0 action: charge {plan['pc0']:.2f} MW / discharge {plan['pd0']:.2f} MW")
+```
 
 ## Run
 
@@ -104,7 +133,7 @@ to a `SITE_PEAK ≈ 9 MW` site so the 10 MWh / 5 MW battery is meaningful; real
 day-ahead prices are used directly for arbitrage. The `data/` folder is
 git-ignored (downloaded locally, not committed).
 
-## Scope and honesty notes
+## Scope and caveats
 
 - The default signals are **synthetic** (clearly diurnal) for legibility; real
   EU public data (OPSD/ENTSO-E) drops in via `prepare_opsd.py` (see above).
