@@ -21,7 +21,7 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 
 ## Overview
 
-otwin builds **digital twins** as **grey-box models**: you supply the physical *model structure* you trust, otwin **estimates** the unknown parts from data, attaches **calibrated uncertainty**, and **validates** without leakage. If you have used MATLAB's System Identification or Simscape, the idea is familiar — otwin brings the same grey-box discipline to Python, CPU-first.
+otwin builds **digital twins** as **grey-box models**: you supply the physical *model structure* you trust, otwin **estimates** the unknown parts from data, attaches **calibrated uncertainty**, and **validates** without leakage. It brings grey-box discipline to Python, CPU-first.
 
 Engineers already know the three options:
 
@@ -48,7 +48,7 @@ You choose **how much first-principles structure you can write down**. Everythin
 | write the system's dynamics from physics | **First-principles (port-Hamiltonian)** | water tank, RC circuit, mass-spring |
 | only state a coarse trend it follows | **Empirical law + estimated residual** | battery State-of-Health, fatigue |
 
-> Like Simscape physical networks, the first-principles models describe a system as components that **exchange energy through ports** — so conservation and passivity hold by construction, not by hope. **Battery State-of-Health sits at the empirical end: a degradation curve, _not_ an energy-conserving system.** Confusing the two is the most common conceptual error.
+> The first-principles models describe a system as components that **exchange energy through ports** — so conservation and passivity hold by construction, not by hope. **Battery State-of-Health sits at the empirical end: a degradation curve, _not_ an energy-conserving system.** Confusing the two is the most common conceptual error.
 
 > **What otwin is not.** otwin models *observable-state, structure-known* dynamics — the white/grey-box side. The black-box side (latent-state ML *world models*) learns dynamics with no imposed physics. Same substrate (state, conservation, dissipation, coupling); opposite ends of the white-box ↔ black-box axis.
 
@@ -56,7 +56,7 @@ You choose **how much first-principles structure you can write down**. Everythin
 
 ## The otwin workflow
 
-One workflow, whether your model structure is first-principles or empirical (it mirrors MATLAB System Identification: **estimate → validate → forecast**):
+One workflow, whether your model structure is first-principles or empirical — **estimate → validate → forecast**:
 
 1. **Choose a model structure** — a first-principles (port-Hamiltonian) model, or an empirical law.
 2. **Estimate** it from data — unknown parameters and a bounded residual.
@@ -121,7 +121,7 @@ Calibrated uncertainty (ensembles / GP) and the full **empirical-law** workflow
 
 Black-box models (neural ODEs, LSTMs, generic regression) learn **unstructured** mappings. They interpolate well, but on **long horizons** or **unseen operating conditions** they drift, violate conservation laws, and produce unphysical behavior.
 
-A **port-Hamiltonian** model fixes the structure. As in Simscape physical networks, the system is described as components that exchange energy through ports:
+A **port-Hamiltonian** model fixes the structure. The system is described as components that exchange energy through ports:
 
 $$\dot{x} = \bigl(J(x) - R(x)\bigr)\,\nabla H(x) + g(x)\,u, \qquad y = g(x)^{\top}\,\nabla H(x)$$
 
@@ -200,7 +200,7 @@ Empirical-law models: aging and degradation (battery State-of-Health, fatigue, w
 - Random splits are opt-in with a loud warning ("measures interpolation, not forecasting")
 
 ### Composability (physical networks)
-- Port interconnection (connect twins through shared ports, as in Simscape)
+- Port interconnection (connect twins through shared ports)
 - Modular: swap analytic ↔ learned ↔ hybrid model structures
 - Combine subsystems into multi-physics twins
 
