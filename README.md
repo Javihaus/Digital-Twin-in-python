@@ -1,8 +1,10 @@
 <div align="center">
-
-<img src="assets/otwin-woodmark.png" alt="otwin" width="340">
-
-# Physics-informed digital twins with calibrated uncertainty
+<br>
+<img src="assets/otwin-woodmark.png" alt="otwin" width="400">
+<br>
+<br> 
+  
+# Grey-Box Digital Twins with Calibrated Uncertainty
 
 Composable, physics-informed digital twins with calibrated uncertainty and leakage-free validation by default — lightweight, CPU-first.
 
