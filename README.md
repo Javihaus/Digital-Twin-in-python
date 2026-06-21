@@ -23,7 +23,7 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 
 ## Overview
 
-otwin builds **AI-powered digital twins** that stay **physics-informed**: you bring the physical *model structure* you trust, otwin **estimates** the rest from data, attaches **calibrated uncertainty**, and **validates** without leakage — CPU-first.
+Otwin builds **AI-powered digital twins** that stay **physics-informed**: you bring the physical *model structure* you trust, otwin **estimates** the rest from data, attaches **calibrated uncertainty**, and **validates** without leakage — CPU-first.
 
 Engineers know three modelling options:
 
