@@ -1,6 +1,6 @@
 # Grid-scale storage: predictive maintenance **and** real-time optimization
 
-![Grid-scale storage dispatch — physical schematic and PM→RTO workflow](../../assets/grid.png)
+![Grid-scale storage dispatch — block diagram (PM → RTO)](../../assets/grid_block.svg)
 
 A worked example for the IEEE PES topic *"AI-powered Digital Twins for Grid-Scale
 Energy Storage: Enabling Predictive Maintenance and Real-Time Optimization."*

@@ -1,0 +1,49 @@
+<svg viewBox="0 0 1060 340" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif" role="img">
+  <rect x="0" y="0" width="1060" height="340" fill="#ffffff"/>
+  <text x="40" y="42" font-size="22" font-weight="700" fill="#1B2430">Water tank — first-principles (white-box) twin</text>
+  <text x="40" y="68" font-size="14" fill="#5b5b5b">The model's structure guarantees energy can't be created — forecasts stay physical far ahead.</text>
+
+  <defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#1B2430"/></marker></defs>
+
+  <!-- Block 1: model (subsystem) -->
+  <rect x="60" y="150" width="220" height="104" rx="5" fill="#EAF1F6" stroke="#1C4E73" stroke-width="2"/>
+  <rect x="68" y="158" width="204" height="88" rx="3" fill="none" stroke="#9CC2DA"/>
+  <text x="170" y="192" font-size="16" font-weight="700" fill="#1B2430" text-anchor="middle">Water tank model</text>
+  <text x="170" y="214" font-size="14" font-weight="700" fill="#1C4E73" text-anchor="middle">port-Hamiltonian (PHS)</text>
+  <text x="170" y="234" font-size="13" fill="#5b5b5b" text-anchor="middle">energy H · J · R · input g</text>
+
+  <!-- Block 2: forecast -->
+  <rect x="380" y="150" width="210" height="104" rx="5" fill="#ffffff" stroke="#1C4E73" stroke-width="1.6"/>
+  <text x="485" y="196" font-size="16" font-weight="700" fill="#1B2430" text-anchor="middle">Forecast</text>
+  <text x="485" y="220" font-size="13" fill="#5b5b5b" text-anchor="middle">structure-preserving</text>
+  <text x="485" y="238" font-size="13" fill="#5b5b5b" text-anchor="middle">integrator</text>
+
+  <!-- Block 3: outputs -->
+  <rect x="690" y="150" width="180" height="104" rx="5" fill="#ffffff" stroke="#1C4E73" stroke-width="1.6"/>
+  <path d="M712 232 L712 196 M712 232 L854 232" stroke="#bbb" stroke-width="1.2" fill="none"/>
+  <path d="M714 226 C 740 214, 800 200, 852 200" stroke="#3D80A9" stroke-width="1.8" fill="none"/>
+  <text x="780" y="186" font-size="15" font-weight="700" fill="#1B2430" text-anchor="middle">Outputs</text>
+
+  <!-- Block 4: validate -->
+  <rect x="900" y="150" width="130" height="104" rx="5" fill="#1C4E73"/>
+  <text x="965" y="194" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">Validate</text>
+  <text x="965" y="216" font-size="12.5" fill="#dce6ee" text-anchor="middle">vs persistence</text>
+  <text x="965" y="234" font-size="12.5" fill="#dce6ee" text-anchor="middle">skill 0.94</text>
+
+  <!-- wires -->
+  <g stroke="#1B2430" stroke-width="1.6" fill="none">
+    <path d="M14 202 L60 202" marker-end="url(#a)"/>
+    <path d="M280 202 L380 202" marker-end="url(#a)"/>
+    <path d="M590 202 L690 202" marker-end="url(#a)"/>
+    <path d="M870 202 L900 202" marker-end="url(#a)"/>
+  </g>
+  <g font-size="13" fill="#444" font-style="italic">
+    <text x="16" y="194">u (inflow)</text>
+    <text x="300" y="194">x(t)</text>
+    <text x="600" y="194">x(t), H(x)</text>
+  </g>
+
+  <!-- passivity note -->
+  <rect x="60" y="278" width="970" height="40" rx="8" fill="#F1EAE2" stroke="#cdbfae"/>
+  <text x="545" y="303" font-size="13.5" fill="#1C4E73" font-weight="700" text-anchor="middle">Passivity by construction: with no inflow, the stored energy H(x) is monotonically non-increasing.</text>
+</svg>

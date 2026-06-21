@@ -39,7 +39,9 @@ You choose **how much first-principles structure you can write down**. Everythin
 
 <div align="center">
 
-<img src="assets/spectrum.svg" alt="otwin grey-box modeling: first-principles (white-box, port-Hamiltonian) to empirical (grey-box, fade law), under one workflow — choose structure, estimate, quantify uncertainty, validate" width="820">
+<img src="assets/overview.svg" alt="otwin grey-box digital twins: choose a model structure, then estimate, quantify uncertainty, validate" width="900">
+
+<sub>otwin builds grey-box digital twins: choose a model structure (first-principles or empirical), then one workflow — estimate, quantify uncertainty, validate.</sub>
 
 </div>
 
@@ -233,25 +235,23 @@ See `examples/` for full runnable code.
 ### 1. Water tank (first-principles, port-Hamiltonian)
 White-box structure preservation (energy, dissipation) with leakage-free validation. See [`examples/water_tank_phs`](examples/water_tank_phs).
 
-<img src="assets/tank.png" alt="Water tank example — physical schematic and grey-box workflow" width="760">
+<img src="assets/tank_block.svg" alt="Water tank block diagram: model structure, structure-preserving forecast, validate" width="900">
 
-<img src="examples/water_tank_phs/figures/water_tank_dynamics.png" alt="Water tank: state trajectory and monotonic energy decay" width="640">
+<sub>A first-principles (white-box) twin: the structure-preserving forecast keeps energy physical; validated against a persistence baseline.</sub>
 
 ### 2. Battery State-of-Health (empirical-law model)
 NASA battery fleet: SoH / Remaining-Useful-Life forecasting with an empirical fade-law structure, an estimated bounded residual, and conformal intervals. **Not** port-Hamiltonian — the empirical end of grey-box. See [`examples/battery_soh`](examples/battery_soh).
 
-<img src="assets/battery.png" alt="Battery State-of-Health example — physical schematic and grey-box workflow" width="760">
+<img src="assets/battery_block.svg" alt="Battery State-of-Health block diagram: fade-law model, estimate residual, calibrated band, validate" width="980">
 
-<img src="examples/battery_soh/figures/01_hero_forecast.png" alt="Battery State-of-Health forecast with calibrated uncertainty band" width="640">
+<sub>An empirical (grey-box) twin: a transparent fade law + an estimated residual + a calibrated band; validated against baselines.</sub>
 
 ### 3. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
 The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for peak shaving and energy arbitrage. Shows that **calibrated uncertainty** is what turns predictive maintenance into trustworthy real-time optimization: the robust plan hits its 90% feasibility target at near-maximal value, while a naive plan over-promises every day. See [`examples/grid_storage_dispatch`](examples/grid_storage_dispatch).
 
-<img src="assets/grid.png" alt="Grid storage dispatch example — physical schematic and predictive-maintenance to real-time-optimization workflow" width="820">
+<img src="assets/grid_block.svg" alt="Grid storage dispatch block diagram: SoH twin feeds the MPC optimizer in a receding-horizon loop" width="900">
 
-<img src="examples/grid_storage_dispatch/figures/03_arbitrage_montecarlo.png" alt="Grid storage dispatch: realised value vs shortfall rate across strategies" width="680">
-
-*(Default figures use synthetic signals; drop in real EU data — OPSD / ENTSO-E — to regenerate.)*
+<sub>Predictive maintenance feeds real-time optimization — the calibrated SoH twin makes the dispatch trustworthy (re-planned each step).</sub>
 
 *Planned:* irreversible-PHS reactor (CSTR with entropy production) and multi-physics port composition.
 

@@ -1,6 +1,6 @@
 # Water tank — first-principles model (port-Hamiltonian)
 
-![Water tank — physical schematic and grey-box workflow](../../assets/tank.png)
+![Water tank — block diagram (grey-box workflow)](../../assets/tank_block.svg)
 
 The simplest **first-principles** example: a draining water tank written as an analytic
 port-Hamiltonian system. It shows the property that makes a first-principles model

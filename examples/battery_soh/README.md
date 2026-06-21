@@ -1,6 +1,6 @@
 # Battery State-of-Health — empirical-law model (grey-box)
 
-![Battery State-of-Health — physical schematic and grey-box workflow](../../assets/battery.png)
+![Battery State-of-Health — block diagram (grey-box workflow)](../../assets/battery_block.svg)
 
 Forecasting lithium-ion **State-of-Health (SoH)** and **Remaining-Useful-Life
 (RUL)** on the NASA battery-aging dataset. This is the **empirical end** of otwin (grey-box):
