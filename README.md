@@ -2,7 +2,7 @@
 
 <img src="assets/otwin-woodmark.png" alt="otwin" width="340">
 
-# Physics-informed digital twins with calibrated uncertainty
+# Grey-Box Digital Twins with Calibrated Uncertainty
 
 Composable, physics-informed digital twins with calibrated uncertainty and leakage-free validation by default — lightweight, CPU-first.
 
@@ -321,7 +321,7 @@ If you use otwin in research, please cite:
 
 ```bibtex
 @software{otwin,
-  title = {otwin: Physics-informed digital twins with calibrated uncertainty},
+  title = {otwin: Grey-box digital twins with calibrated uncertainty},
   author = {Marin, Javier},
   year = {2025},
   version = {2.0.0-alpha},
