@@ -110,22 +110,22 @@ Traditional learned dynamics models (neural ODEs, LSTMs, generic regression) lea
 
 **Port-Hamiltonian systems** enforce structure:
 
-```
-ẋ = (J(x) − R(x)) ∇H(x) + g(x) u
-y = g(x)ᵀ ∇H(x)
-```
+
+$ẋ = (J(x) − R(x)) ∇H(x) + g(x) u$
+$y = g(x)ᵀ ∇H(x)$
+
 
 where:
-- `J(x) = −J(x)ᵀ` (skew-symmetric → lossless interconnection)
-- `R(x) ⪰ 0` (positive semidefinite → dissipation)
-- `H(x)` is the energy/storage function
+- $J(x) = −J(x)ᵀ$ (skew-symmetric → lossless interconnection)
+- $R(x) ⪰ 0$ (positive semidefinite → dissipation)
+- $H(x)$ is the energy/storage function
 
 **Power balance (provable by construction):**
-```
-dH/dt = −∇Hᵀ R ∇H + yᵀu  ≤  yᵀu
-```
 
-With `u = 0`, energy is non-increasing. **No energy-creating drift, by algebra.**
+$dH/dt = −∇Hᵀ R ∇H + yᵀu  ≤  yᵀu$
+
+
+With $u = 0$, energy is non-increasing. **No energy-creating drift, by algebra.**
 
 When you learn a `PortHamiltonianNN`, the network architecture *enforces* `J` skew and `R` PSD regardless of weights. The guarantee is structural.
 
@@ -138,10 +138,11 @@ function to conserve. otwin uses a **transparent trend law** as the prior, learn
 **bounded residual** on top, and quantifies uncertainty with **horizon-aware
 conformal intervals**:
 
-```
-SoH(n) = SoH0 · e^(-a·n)  +  g(n)                          # fade-law prior + learned residual
-[l(n), u(n)] = SoH(n) ± z·σ(n),   σ(n) = s0 + s1·(n - n0)  # band that widens with horizon
-```
+
+$SoH(n) = SoH_0 · e^{(-a·n)} + g(n)$ # fade-law prior + learned residual
+
+$[l(n), u(n)] = SoH(n) ± z·σ(n),   σ(n) = s_0 + s_1·(n - n_0)$  # band that widens with horizon
+
 
 Same four-step pattern as the strong end — only the prior is lighter. This is
 demonstrated end-to-end on the NASA battery fleet in
