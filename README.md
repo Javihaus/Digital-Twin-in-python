@@ -1,6 +1,8 @@
 <div align="center">
-
-<img src="assets/otwin-woodmark.png" alt="otwin" width="340">
+<br>
+<img src="assets/otwin-woodmark.png" alt="otwin" width="400">
+<br>
+<br>
 
 # Grey-Box Digital Twins with Calibrated Uncertainty
 
