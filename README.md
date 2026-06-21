@@ -4,7 +4,7 @@
 <br>
 <br>
 
-# Grey-Box Digital Twins with Calibrated Uncertainty
+# AI-powered Digital Twins with Calibrated Uncertainty
 
 Composable, physics-informed digital twins with calibrated uncertainty and leakage-free validation by default — lightweight, CPU-first.
 
@@ -23,19 +23,21 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 
 ## Overview
 
-otwin builds **digital twins** as **grey-box models**: you supply the physical *model structure* you trust, otwin **estimates** the unknown parts from data, attaches **calibrated uncertainty**, and **validates** without leakage. It brings grey-box discipline to Python, CPU-first.
+otwin builds **AI-powered digital twins** that stay **physics-informed**: you bring the physical *model structure* you trust, otwin **estimates** the rest from data, attaches **calibrated uncertainty**, and **validates** without leakage — CPU-first.
 
-Engineers already know the three options:
+Engineers know three modelling options:
 
-- **White-box** — the whole model is derived from first principles; every equation and parameter is known.
-- **Black-box** — data decides everything (neural networks, generic ML). This is the "world model" end.
-- **Grey-box** — you fix the *structure* from physics and **estimate** the unknown parts from data. **otwin is grey-box by design.**
+- **White-box** — the whole model comes from first principles; every equation and parameter is known.
+- **Grey-box** — you fix the *structure* from physics and **estimate** the unknown parts from data.
+- **Black-box** — data decides everything (neural networks, generic ML).
+
+otwin works on the **physics-informed side — from white-box to grey-box**. The black-box end is where latent-state *world models* live; otwin is their **observable-state, physics-grounded counterpart** — the digital-twins ∩ world-models intersection it targets.
 
 Why structure matters: black-box models are accurate at *interpolation* — predicting inside the range of data they have seen — but pushed **beyond that data** (long horizons, or operating conditions never seen in training) they drift and break physical laws. The physical structure keeps long-range forecasts physically valid; the calibrated interval says how much to trust each one — a stated 90% interval is checked to really hold ~90% of the time.
 
 ---
 
-## Modeling approach: grey-box by design
+## Modeling approach: from white-box to grey-box
 
 You choose **how much first-principles structure you can write down**. Everything after that choice is the same workflow.
 
@@ -323,7 +325,7 @@ If you use otwin in research, please cite:
 
 ```bibtex
 @software{otwin,
-  title = {otwin: Grey-box digital twins with calibrated uncertainty},
+  title = {otwin: Physics-informed digital twins with calibrated uncertainty},
   author = {Marin, Javier},
   year = {2025},
   version = {2.0.0-alpha},
