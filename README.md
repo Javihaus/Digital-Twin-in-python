@@ -276,6 +276,14 @@ White-box structure preservation (energy, dissipation) with leakage-free validat
   
 <sub>A first-principles (white-box) twin: the structure-preserving forecast keeps energy physical; validated against a persistence baseline.</sub>
 
+<div align="center">
+
+<img src="examples/water_tank_phs/figures/water_tank_dynamics.png" alt="Water tank: state trajectory drains while the stored energy decays monotonically" width="820">
+
+</div>
+
+<sub><b>Result.</b> With the inflow off, the height drains and the stored energy <code>H(x)</code> decays monotonically — the structure-preserving integrator cannot invent energy, so the forecast stays physical at any horizon (skill ≈ 0.94 vs a persistence baseline).</sub>
+
 ### 2. DC motor (first-principles, multi-domain port-Hamiltonian)
 A multi-domain (electrical + mechanical) twin: two energy stores coupled by the gyrator `K`. The structure-preserving forecast is validated against the closed-form steady state (`ω_ss`, `I_ss`), and the stored energy is non-increasing once the voltage is removed (passivity by construction). Structure from van der Schaft & Jeltsema (2014), Example 2.5. See [`examples/dc_motor`](examples/dc_motor).
 
@@ -286,6 +294,14 @@ A multi-domain (electrical + mechanical) twin: two energy stores coupled by the 
 </div>
 
 <sub>A first-principles (white-box) twin spanning two physical domains: the numeric steady state matches the analytic ω_ss = VK/(Re·b + K²) to within 0.001%, and energy decays monotonically with the voltage off.</sub>
+
+<div align="center">
+
+<img src="examples/dc_motor/figures/dc_motor_response.png" alt="DC motor: angular velocity and current converge to the analytic steady state, then coast down" width="820">
+
+</div>
+
+<sub><b>Result.</b> Spin-up under a constant voltage, then coast-down. The numeric angular velocity and current converge exactly to the closed-form steady state (dashed) — the model is validated against an analytic solution, not fitted to data.</sub>
 
 ### 3. Battery State-of-Health (empirical-law model)
 NASA battery fleet: SoH / Remaining-Useful-Life forecasting with an empirical fade-law structure, an estimated bounded residual, and conformal intervals. **Not** port-Hamiltonian — the empirical end of grey-box. See [`examples/battery_soh`](examples/battery_soh).
@@ -298,6 +314,14 @@ NASA battery fleet: SoH / Remaining-Useful-Life forecasting with an empirical fa
 
 <sub>An empirical (grey-box) twin: a transparent fade law + an estimated residual + a calibrated band; validated against baselines.</sub>
 
+<div align="center">
+
+<img src="examples/battery_soh/figures/01_hero_forecast.png" alt="Battery SoH forecast: physics-informed hybrid tracks the true decay to end-of-life while a data-only model diverges" width="680">
+
+</div>
+
+<sub><b>Result.</b> From the split point onward, the physics-informed hybrid tracks the true degradation down through the 80% end-of-life line, while a data-only model (GP) extrapolates the wrong way. The 90% interval is calibrated — it actually covers the realised path.</sub>
+
 ### 4. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
 The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for peak shaving and energy arbitrage. Shows that **calibrated uncertainty** is what turns predictive maintenance into trustworthy real-time optimization: the robust plan hits its 90% feasibility target at near-maximal value, while a naive plan over-promises every day. See [`examples/grid_storage_dispatch`](examples/grid_storage_dispatch).
 
@@ -308,6 +332,14 @@ The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for p
 </div>
 
 <sub>Predictive maintenance feeds real-time optimization — the calibrated SoH twin makes the dispatch trustworthy (re-planned each step).</sub>
+
+<div align="center">
+
+<img src="examples/grid_storage_dispatch/figures/01_arbitrage_trajectories.png" alt="Grid dispatch under uncertain capacity: the calibrated-UQ plan leaves zero demand unmet, the naive plan over-promises every day" width="540">
+
+</div>
+
+<sub><b>Result.</b> Dispatching against the same uncertain capacity, the calibrated-UQ (robust) plan leaves <b>0.0 MWh</b> of demand unmet over the horizon, versus 3.8 MWh degradation-aware and 55.6 MWh naive — calibrated uncertainty is what makes the schedule deliverable, not just optimal on paper.</sub>
 
 *Planned:* irreversible-PHS reactor (CSTR with entropy production) and multi-physics port composition.
 
