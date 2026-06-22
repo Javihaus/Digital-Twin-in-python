@@ -11,8 +11,9 @@ Pipeline
    impedance / partial-cycle protocols that do not represent capacity fade).
 2. Per cell, split temporally (train on the first cycles, forecast the rest).
 3. Three models:
-     - physics-only  : SoH(n) = 1 - a*sqrt(n) - b*n   (SEI growth + linear aging),
-                       a, b >= 0 fit on train only.
+     - physics-only  : SoH(n) = 1 - c*n**z   (Wang throughput power law at constant
+                       temperature/current; exponent z ~ 0.5 diffusion-limited SEI,
+                       z ~ 1 linear aging), c, z >= 0 fit on train only.
      - ML-only       : Gaussian Process on cycle -> SoH (extrapolates to the mean).
      - hybrid        : physics prior + GP on the residual; a bootstrap ensemble
                        gives a predictive distribution whose intervals widen with
@@ -42,7 +43,7 @@ import seaborn as sns  # noqa: E402
 sns.set_theme(style="whitegrid", context="talk", palette="deep")
 import numpy as np  # noqa: E402
 import pandas as pd  # noqa: E402
-from scipy.optimize import nnls  # noqa: E402
+from scipy.optimize import curve_fit  # noqa: E402
 from sklearn.gaussian_process import GaussianProcessRegressor  # noqa: E402
 from sklearn.gaussian_process.kernels import (  # noqa: E402
     RBF,
@@ -113,33 +114,70 @@ def load_fleet() -> pd.DataFrame:
 # ----------------------------------------------------------------------------
 # 2. Models
 # ----------------------------------------------------------------------------
-def fit_physics(n: np.ndarray, soh: np.ndarray) -> float:
-    """Fade-rate a >= 0 for SoH(n) ∝ exp(-a*n) (nonneg least squares in -log space).
+def fit_physics(n: np.ndarray, soh: np.ndarray) -> np.ndarray:
+    """Mechanistic fade law: capacity loss = c * n**z, with c, z >= 0.
 
-    Exponential fade is bounded in (0, 1] and monotone decreasing, so it cannot
-    extrapolate to nonsense (no negative SoH, no spurious acceleration). Points are
-    weighted toward recent cycles so the fitted rate reflects the cell's *current*
-    degradation rather than its flatter early life.
+    This is the constant-temperature, constant-current specialisation of the
+    Wang et al. (2011) semi-empirical law ``Q_loss = B·exp(-Ea/RT)·(Ah)^z``. At a
+    single ambient temperature the Arrhenius factor ``exp(-Ea/RT)`` folds into the
+    prefactor ``c`` (Ea is *not* identifiable without a temperature sweep), and at
+    constant-current cycling the charge throughput ``Ah`` is proportional to the
+    cycle number ``n``. What remains is the throughput power law, whose exponent
+    ``z`` is mechanistically informative:
+
+      - ``z ≈ 1/2``  diffusion-limited SEI growth — a solid-electrolyte-interphase
+        film limited by solvent diffusion thickens with the square root of
+        throughput. This self-limiting square-root law is the standard physics-based
+        signature of SEI formation.
+      - ``z ≈ 1``    linear aging (active-material loss / linear throughput wear),
+        the mechanism that does not self-limit.
+
+    Unlike a separate ``a·sqrt(n) + b·n`` split (where ``sqrt(n)`` and ``n`` are too
+    collinear over one cell's bounded range to identify), the single exponent ``z``
+    is recovered from the curvature of the loss curve in log-log space.
+
+    c, z are estimated by recency-weighted nonlinear least squares directly on the
+    SoH residual (so the fit minimises State-of-Health error, not log-loss error).
+    The exponent is constrained to the physical band ``z in [0.5, 1.0]`` spanned by
+    the two named mechanisms — diffusion-limited SEI growth (z=1/2) and linear
+    throughput wear (z=1). This keeps the model self-limiting (z<=1, so it cannot
+    invent runaway fade when extrapolating) and keeps z mechanistically readable,
+    rather than letting an unconstrained exponent overfit one cell's training half.
+
+    Returns the array ``[c, z]``.
     """
-    y = -np.log(np.clip(soh, 1e-4, 1.0))  # >= 0
-    A = n.reshape(-1, 1)
     sw = np.sqrt(np.linspace(0.3, 1.0, n.size))  # recency weight
-    coef, _ = nnls(A * sw[:, None], y * sw)
-    return float(coef[0])
+
+    def model(nn: np.ndarray, c: float, z: float) -> np.ndarray:
+        return 1.0 - c * np.power(nn, z)
+
+    try:
+        popt, _ = curve_fit(
+            model, n, soh,
+            p0=[1e-3, 0.7],
+            bounds=([0.0, 0.5], [np.inf, 1.0]),
+            sigma=1.0 / np.clip(sw, 1e-3, None),  # smaller sigma => higher weight
+            maxfev=10000,
+        )
+        c, z = float(popt[0]), float(popt[1])
+    except (RuntimeError, ValueError):
+        c, z = 1e-3, 0.7
+    return np.array([c, z])
 
 
 def physics_predict(
-    n: np.ndarray, a: float, n_last: float, soh_last: float
+    n: np.ndarray, coef: np.ndarray, n_last: float, soh_last: float
 ) -> np.ndarray:
-    """Anchored exp(-a n) shifted (additively) to pass through the last point.
+    """Anchored fade law SoH(n) = 1 - c*n**z, shifted to pass the last point.
 
     Additive anchoring keeps in-sample residuals small everywhere (no back-cast
     blow-up), so a residual learner sees only genuine structure, not anchoring
     artefacts.
     """
-    p = np.exp(-a * n)
-    offset = soh_last - np.exp(-a * n_last)
-    return p + offset
+    c, z = float(coef[0]), float(coef[1])
+    base = 1.0 - c * np.power(n, z)
+    offset = soh_last - (1.0 - c * np.power(n_last, z))
+    return base + offset
 
 
 def _gp() -> GaussianProcessRegressor:
@@ -159,8 +197,8 @@ def _conformal_sigma(n_tr, soh_tr, n_te, n_last):
     """
     m = max(int(0.7 * n_tr.size), 5)
     if n_tr.size - m >= 3:
-        a_c = fit_physics(n_tr[:m], soh_tr[:m])
-        pred_c = physics_predict(n_tr[m:], a_c, n_tr[m - 1], soh_tr[m - 1])
+        coef_c = fit_physics(n_tr[:m], soh_tr[:m])
+        pred_c = physics_predict(n_tr[m:], coef_c, n_tr[m - 1], soh_tr[m - 1])
         res_c = np.abs(soh_tr[m:] - pred_c)
         h_c = n_tr[m:] - n_tr[m - 1]
         s1, s0 = np.polyfit(h_c, res_c, 1)
@@ -176,8 +214,8 @@ def forecast_cell(n_tr, soh_tr, n_te):
     n_last, soh_last = float(n_tr[-1]), float(soh_tr[-1])
 
     # physics-only (anchored at last observed point)
-    a = fit_physics(n_tr, soh_tr)
-    phys_te = physics_predict(n_te, a, n_last, soh_last)
+    coef = fit_physics(n_tr, soh_tr)
+    phys_te = physics_predict(n_te, coef, n_last, soh_last)
 
     # ML-only: GP on cycle -> SoH (reverts to the training mean when extrapolating)
     gp_ml = _gp().fit(n_tr.reshape(-1, 1), soh_tr)
@@ -186,7 +224,7 @@ def forecast_cell(n_tr, soh_tr, n_te):
     # hybrid: physics + a *damped* GP residual correction. The damping makes the
     # correction act near the last observation and fade out into the forecast, so
     # the hybrid can only improve on physics near-term and never destabilise it.
-    resid_tr = soh_tr - physics_predict(n_tr, a, n_last, soh_last)
+    resid_tr = soh_tr - physics_predict(n_tr, coef, n_last, soh_last)
     gp_res = _gp().fit(n_tr.reshape(-1, 1), resid_tr)
     corr = gp_res.predict(n_te.reshape(-1, 1))
     tau = max(0.4 * (n_te[-1] - n_last), 1.0)
@@ -206,7 +244,8 @@ def forecast_cell(n_tr, soh_tr, n_te):
         "hybrid": hyb_te,
         "sigma": sigma_h,
         "ensemble": members,        # (N_ENSEMBLE, n_te)
-        "phys_param_a": a,
+        "phys_c": float(coef[0]),   # prefactor (Arrhenius factor folded in)
+        "phys_z": float(coef[1]),   # throughput exponent (~0.5 diffusion, ~1 linear)
     }
 
 
@@ -244,7 +283,20 @@ def run() -> dict:
             "physics": fc["physics"], "ml": fc["ml"], "hybrid": fc["hybrid"],
             "mean": mean, "lo": lo, "hi": hi, "ensemble": ens,
             "bl_persist": bl_persist, "bl_drift": bl_drift,
+            "phys_c": fc["phys_c"], "phys_z": fc["phys_z"],
         }
+    # mechanism readout: the fitted throughput exponent z per cell.
+    #   z ~ 0.5 -> diffusion-limited SEI growth;  z ~ 1 -> linear aging.
+    zs = [r["phys_z"] for r in results.values()]
+    print("\nFade-law exponent z (loss = c * n**z, fitted on train):")
+    for bid, r in results.items():
+        kind = (
+            "diffusion-limited SEI" if r["phys_z"] <= 0.6
+            else "linear throughput wear" if r["phys_z"] >= 0.9
+            else "mixed"
+        )
+        print(f"   {bid}: z = {r['phys_z']:.2f}  ({kind})")
+    print(f"   fleet mean z = {np.mean(zs):.2f}")
     return results
 
 

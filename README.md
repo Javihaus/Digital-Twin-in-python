@@ -304,7 +304,7 @@ A multi-domain (electrical + mechanical) twin: two energy stores coupled by the 
 <sub><b>Result.</b> Spin-up under a constant voltage, then coast-down. The numeric angular velocity and current converge exactly to the closed-form steady state (dashed) — the model is validated against an analytic solution, not fitted to data.</sub>
 
 ### 3. Battery State-of-Health (empirical-law model)
-NASA battery fleet: SoH / Remaining-Useful-Life forecasting with an empirical fade-law structure, an estimated bounded residual, and conformal intervals. **Not** port-Hamiltonian — the empirical end of grey-box. See [`examples/battery_soh`](examples/battery_soh).
+NASA battery fleet: SoH / Remaining-Useful-Life forecasting with a mechanistic fade-law structure (the Wang throughput power law `SoH = 1 − c·n^z`, whose exponent separates diffusion-limited SEI growth at `z ≈ 0.5` from linear wear at `z ≈ 1`), an estimated bounded residual, and conformal intervals. **Not** port-Hamiltonian — the empirical end of grey-box. See [`examples/battery_soh`](examples/battery_soh).
 
 <div align="center">
 

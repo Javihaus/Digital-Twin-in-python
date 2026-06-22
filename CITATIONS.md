@@ -38,6 +38,19 @@ application to the CSTR.* Chemical Engineering Science, 89, 223–234.
 
 ---
 
+## Battery degradation (State-of-Health)
+
+### Cycle-life model for graphite-LiFePO4 cells
+**Reference:** Wang, J., Liu, P., Hicks-Garner, J., Sherman, E., Soukiazian, S.,
+Verbrugge, M., Tataria, H., Musser, J., & Finamore, P. (2011). *Cycle-life model
+for graphite-LiFePO4 cells.* Journal of Power Sources, 196(8), 3942–3948. DOI:
+10.1016/j.jpowsour.2010.11.134. **Status: VERIFIED.**
+**Use:** Semi-empirical capacity-fade law `Q_loss = B·exp(−Ea/RT)·(Ah)^z` behind
+the mechanistic fade-law prior in `examples/battery_soh` (constant-temperature,
+constant-current specialisation `SoH = 1 − c·n^z`; throughput exponent z).
+
+---
+
 ## Uncertainty quantification & calibration
 
 ### Simple and Scalable Predictive Uncertainty Estimation using Deep Ensembles
