@@ -48,10 +48,10 @@ def eq(name: str, tex: str, fontsize: int = 26, color: str = INK, pad: float = 0
     plt.close(fig)
 
 
-# Degradation prior (empirical fade law, SEI sqrt + linear aging motivation)
+# Degradation prior: Wang throughput power law (z=1/2 SEI diffusion, z=1 linear)
 eq("eq_prior",
-   r"$Q(n)=Q_0-k_{\mathrm{SEI}}\sqrt{n}-k_{\mathrm{cyc}}\,n"
-   r"\quad\Rightarrow\quad f_\theta(n)=\mathrm{SoH}_{n_0}\,e^{-a\,(n-n_0)},\ \ a\geq 0$")
+   r"$Q(n)=Q_0-c\,n^{z},\ \ z\in[\frac{1}{2},1]"
+   r"\quad\Rightarrow\quad f_\theta(n)=\mathrm{SoH}_{n_0}-c\,(n^{z}-n_0^{z})$")
 
 # Hybrid decomposition
 eq("eq_hybrid",
