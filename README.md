@@ -276,7 +276,18 @@ White-box structure preservation (energy, dissipation) with leakage-free validat
   
 <sub>A first-principles (white-box) twin: the structure-preserving forecast keeps energy physical; validated against a persistence baseline.</sub>
 
-### 2. Battery State-of-Health (empirical-law model)
+### 2. DC motor (first-principles, multi-domain port-Hamiltonian)
+A multi-domain (electrical + mechanical) twin: two energy stores coupled by the gyrator `K`. The structure-preserving forecast is validated against the closed-form steady state (`ω_ss`, `I_ss`), and the stored energy is non-increasing once the voltage is removed (passivity by construction). Structure from van der Schaft & Jeltsema (2014), Example 2.5. See [`examples/dc_motor`](examples/dc_motor).
+
+<div align="center">
+
+<img src="assets/dc.png" alt="DC motor block diagram: two energy stores (electrical, mechanical) coupled by the gyrator K, with dissipation Re and b" width="900">
+
+</div>
+
+<sub>A first-principles (white-box) twin spanning two physical domains: the numeric steady state matches the analytic ω_ss = VK/(Re·b + K²) to within 0.001%, and energy decays monotonically with the voltage off.</sub>
+
+### 3. Battery State-of-Health (empirical-law model)
 NASA battery fleet: SoH / Remaining-Useful-Life forecasting with an empirical fade-law structure, an estimated bounded residual, and conformal intervals. **Not** port-Hamiltonian — the empirical end of grey-box. See [`examples/battery_soh`](examples/battery_soh).
 
 <div align="center">
@@ -287,7 +298,7 @@ NASA battery fleet: SoH / Remaining-Useful-Life forecasting with an empirical fa
 
 <sub>An empirical (grey-box) twin: a transparent fade law + an estimated residual + a calibrated band; validated against baselines.</sub>
 
-### 3. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
+### 4. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
 The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for peak shaving and energy arbitrage. Shows that **calibrated uncertainty** is what turns predictive maintenance into trustworthy real-time optimization: the robust plan hits its 90% feasibility target at near-maximal value, while a naive plan over-promises every day. See [`examples/grid_storage_dispatch`](examples/grid_storage_dispatch).
 
 <div align="center">
@@ -305,7 +316,7 @@ The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for p
 ## Documentation
 
 - **Get started:** [GETTING_STARTED.md](GETTING_STARTED.md)
-- **Examples:** [`examples/`](examples) — water tank (first-principles), battery SoH (empirical), grid-scale storage dispatch
+- **Examples:** [`examples/`](examples) — water tank and DC motor (first-principles), battery SoH (empirical), grid-scale storage dispatch
 - **Citations:** [CITATIONS.md](CITATIONS.md) (references with VERIFIED / UNVERIFIED status)
 - **API docs (Sphinx):** source in [`docs/`](docs) — build with `make -C docs html`
 

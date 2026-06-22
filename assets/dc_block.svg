@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 380" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#1B2430"/>
+    </marker>
+  </defs>
+
+  <!-- title -->
+  <text x="500" y="40" text-anchor="middle" font-size="22" font-weight="700" fill="#1B2430">DC motor — port-Hamiltonian structure</text>
+  <text x="500" y="64" text-anchor="middle" font-size="14" fill="#6B7280">two energy stores coupled by the gyrator K  (electrical &#8596; mechanical)</text>
+
+  <!-- input -->
+  <text x="40" y="170" font-size="17" font-weight="600" fill="#1C4E73">V</text>
+  <text x="40" y="190" font-size="12" fill="#6B7280">voltage</text>
+  <line x1="60" y1="165" x2="120" y2="165" stroke="#1B2430" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- electrical sum junction -->
+  <circle cx="138" cy="165" r="16" fill="#fff" stroke="#1B2430" stroke-width="1.4"/>
+  <text x="138" y="170" text-anchor="middle" font-size="16" fill="#1B2430">&#931;</text>
+  <text x="124" y="150" font-size="13" fill="#2E7D32">+</text>
+  <text x="120" y="200" font-size="13" fill="#B5651D">&#8722;</text>
+  <line x1="154" y1="165" x2="210" y2="165" stroke="#1B2430" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- electrical store block -->
+  <rect x="210" y="125" width="210" height="80" rx="8" fill="#EAF1F7" stroke="#1C4E73" stroke-width="1.6"/>
+  <text x="315" y="153" text-anchor="middle" font-size="15" font-weight="600" fill="#1C4E73">Electrical store</text>
+  <text x="315" y="177" text-anchor="middle" font-size="16" fill="#1B2430">1 / (L s + Re)</text>
+  <text x="315" y="196" text-anchor="middle" font-size="12" fill="#6B7280">flux &#966; &#8594; current I</text>
+
+  <!-- I signal to forward gyrator -->
+  <line x1="420" y1="165" x2="500" y2="165" stroke="#1B2430" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="460" y="156" text-anchor="middle" font-size="14" font-weight="600" fill="#B5651D">I</text>
+
+  <!-- forward gyrator K (torque = K I) -->
+  <rect x="500" y="135" width="120" height="60" rx="8" fill="#FFFFFF" stroke="#B5651D" stroke-width="1.6"/>
+  <text x="560" y="162" text-anchor="middle" font-size="18" font-weight="700" fill="#B5651D">K</text>
+  <text x="560" y="182" text-anchor="middle" font-size="12" fill="#6B7280">torque = K&#183;I</text>
+
+  <!-- to mechanical sum -->
+  <line x1="620" y1="165" x2="664" y2="165" stroke="#1B2430" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <circle cx="682" cy="165" r="16" fill="#fff" stroke="#1B2430" stroke-width="1.4"/>
+  <text x="682" y="170" text-anchor="middle" font-size="16" fill="#1B2430">&#931;</text>
+  <text x="668" y="150" font-size="13" fill="#2E7D32">+</text>
+  <text x="664" y="200" font-size="13" fill="#B5651D">&#8722;</text>
+  <line x1="698" y1="165" x2="740" y2="165" stroke="#1B2430" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- mechanical store block -->
+  <rect x="740" y="125" width="210" height="80" rx="8" fill="#EAF1F7" stroke="#1C4E73" stroke-width="1.6"/>
+  <text x="845" y="153" text-anchor="middle" font-size="15" font-weight="600" fill="#1C4E73">Mechanical store</text>
+  <text x="845" y="177" text-anchor="middle" font-size="16" fill="#1B2430">1 / (J s + b)</text>
+  <text x="845" y="196" text-anchor="middle" font-size="12" fill="#6B7280">momentum p &#8594; speed &#969;</text>
+
+  <!-- output omega -->
+  <line x1="950" y1="165" x2="985" y2="165" stroke="#1B2430" stroke-width="1.4" marker-end="url(#arrow)"/>
+  <text x="975" y="150" text-anchor="end" font-size="17" font-weight="600" fill="#1C4E73">&#969;</text>
+  <text x="985" y="186" text-anchor="end" font-size="12" fill="#6B7280">speed</text>
+
+  <!-- feedback path: omega tap -> back-emf gyrator -> electrical sum (minus) -->
+  <circle cx="966" cy="165" r="3" fill="#1B2430"/>
+  <line x1="966" y1="165" x2="966" y2="300" stroke="#1B2430" stroke-width="1.4"/>
+  <line x1="966" y1="300" x2="620" y2="300" stroke="#1B2430" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- back-emf gyrator K -->
+  <rect x="500" y="270" width="120" height="60" rx="8" fill="#FFFFFF" stroke="#B5651D" stroke-width="1.6"/>
+  <text x="560" y="297" text-anchor="middle" font-size="18" font-weight="700" fill="#B5651D">K</text>
+  <text x="560" y="317" text-anchor="middle" font-size="12" fill="#6B7280">back-emf = K&#183;&#969;</text>
+
+  <line x1="500" y1="300" x2="138" y2="300" stroke="#1B2430" stroke-width="1.4"/>
+  <line x1="138" y1="300" x2="138" y2="181" stroke="#1B2430" stroke-width="1.4" marker-end="url(#arrow)"/>
+
+  <!-- footer note -->
+  <text x="500" y="365" text-anchor="middle" font-size="12" fill="#9CA3AF">J = [[0, &#8722;K],[K, 0]] (skew)   &#183;   R = diag(Re, b) (PSD)   &#183;   H = &#966;&#178;/2L + p&#178;/2J   &#183;   van der Schaft &amp; Jeltsema (2014), Ex. 2.5</text>
+</svg>

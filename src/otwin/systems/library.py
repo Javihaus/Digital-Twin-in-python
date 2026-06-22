@@ -173,3 +173,88 @@ def mass_spring_damper(
         n_inputs=1,
         grad_H=grad_H,
     )
+
+
+def dc_motor(
+    L: float = 0.5,
+    inertia: float = 0.01,
+    Re: float = 1.0,
+    b: float = 0.1,
+    K: float = 0.5,
+) -> PortHamiltonianSystem:
+    """
+    DC motor as a multi-domain (electrical + mechanical) port-Hamiltonian system.
+
+    Reference: van der Schaft & Jeltsema (2014), "Port-Hamiltonian Systems
+    Theory: An Introductory Overview", Example 2.5, Eq. (2.30).
+
+    State: x = [phi, p]
+        phi - inductor flux-linkage (Wb), electrical energy store
+        p   - rotor angular momentum (kg·m²/s), mechanical energy store
+    Input: u = [V] (applied voltage)
+    Output: y = I (armature current)
+    Energy: H(phi, p) = phi² / (2 L) + p² / (2 inertia)
+
+    Dynamics (Eq. 2.30):
+        [phi_dot]   ([ 0  -K ]   [Re  0 ]) [phi/L]   [1]
+        [ p_dot ] = ([ K   0 ] - [ 0  b ]) [ p/J ] + [0] V
+        y = [1 0] grad_H = phi / L
+
+    Structure:
+        J = [[0, -K], [K, 0]]   skew-symmetric (the gyrator couples the
+                                electrical and mechanical domains)
+        R = diag(Re, b)         PSD: armature resistance and viscous friction
+        g = [[1], [0]]          voltage drives the electrical state
+
+    With V = 0 the stored energy is non-increasing (passivity by construction).
+
+    Args:
+        L: Armature inductance (H)
+        inertia: Rotor moment of inertia (kg·m²)
+        Re: Armature resistance (ohm)
+        b: Viscous friction coefficient (N·m·s)
+        K: Motor/gyrator constant (N·m/A = V·s)
+
+    Returns:
+        PortHamiltonianSystem for the DC motor.
+
+    Example:
+        >>> motor = dc_motor()
+        >>> x = np.array([1.0, 0.0])   # some flux, rotor at rest
+        >>> u = np.array([0.0])        # no applied voltage
+        >>> dx = motor.dynamics(x, u)
+        >>> motor.energy(x) > 0
+        True
+    """
+
+    def H(x: npt.NDArray[np.floating]) -> float:
+        """Total energy: magnetic phi²/(2L) + kinetic p²/(2 inertia)."""
+        phi, p = x[0], x[1]
+        return float(0.5 * phi**2 / L + 0.5 * p**2 / inertia)
+
+    def grad_H(x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+        """Gradient: [phi/L, p/inertia] = [current I, angular velocity omega]."""
+        phi, p = x[0], x[1]
+        return np.array([phi / L, p / inertia])
+
+    def J(x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+        """Gyrator coupling (skew-symmetric)."""
+        return np.array([[0.0, -K], [K, 0.0]])
+
+    def R(x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+        """Dissipation: armature resistance Re and viscous friction b."""
+        return np.array([[Re, 0.0], [0.0, b]])
+
+    def g_mat(x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+        """Voltage acts on the electrical (flux) state."""
+        return np.array([[1.0], [0.0]])
+
+    return PortHamiltonianSystem(
+        H=H,
+        J=J,
+        R=R,
+        g=g_mat,
+        n_states=2,
+        n_inputs=1,
+        grad_H=grad_H,
+    )

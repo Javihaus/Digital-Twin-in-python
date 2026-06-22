@@ -6,7 +6,7 @@ Public API (stable):
 - DigitalTwin: Main twin interface
 - evaluate: Evaluation protocol
 - PortHamiltonianSystem: Analytic PHS
-- systems.library: Reference systems (water_tank, mass_spring_damper)
+- systems.library: Reference systems (water_tank, mass_spring_damper, dc_motor)
 """
 
 __version__ = "2.0.0-alpha"
@@ -15,7 +15,12 @@ __version__ = "2.0.0-alpha"
 # Phase 2: Evaluation harness ✅
 from otwin.evaluation import EvalReport, evaluate
 from otwin.learn import PortHamiltonianNN  # constructs lazily; needs [torch] at use
-from otwin.systems import PortHamiltonianSystem, mass_spring_damper, water_tank
+from otwin.systems import (
+    PortHamiltonianSystem,
+    dc_motor,
+    mass_spring_damper,
+    water_tank,
+)
 
 # Phase 5: IPHS ✅ (entropy production, second-law enforcement)
 from otwin.systems.iphs import IrreversiblePHS
@@ -37,6 +42,7 @@ __all__ = [
     "PortHamiltonianSystem",
     "water_tank",
     "mass_spring_damper",
+    "dc_motor",
     "Ensemble",
     "PortHamiltonianNN",
     "IrreversiblePHS",
