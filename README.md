@@ -27,9 +27,10 @@ Otwin builds **AI-powered digital twins** that stay **physics-informed**: you br
 
 Engineers know three modelling options:
 
-- **White-box** — the whole model comes from first principles; every equation and parameter is known.
-- **Grey-box** — you fix the *structure* from physics and **estimate** the unknown parts from data.
-- **Black-box** — data decides everything (neural networks, generic ML).
+|<img src="docs/icons/white-box.svg" width="90">| White-box | the whole model comes from first principles; every equation and parameter is known|
+|---|---|---|
+|<img src="docs/icons/grey-box" width="90">|Grey-box | you fix the structure from a physical model and estimate the unknown parts from data|
+|<img src="docs/icons/black-box.svg" width="90">|Black-box |data decides everything (neural networks, generic ML) 
 
 otwin works on the **physics-informed side — from white-box to grey-box**. The black-box end is where latent-state *world models* live; otwin is their **observable-state, physics-grounded counterpart** — the digital-twins ∩ world-models intersection it targets.
 
@@ -62,12 +63,11 @@ You choose **how much first-principles structure you can write down**. Everythin
 
 ## The Otwin workflow
 
-One workflow, whether your model structure is first-principles or empirical — **estimate → validate → forecast**:
-
-1. <img src="assets/icons/model.svg" width="90"> **Choose a model structure** — a first-principles (port-Hamiltonian) model, or an empirical law.
-2. **Estimate** it from data — unknown parameters and a bounded residual.
-3. **Quantify uncertainty** — calibrated, horizon-aware intervals.
-4. **Validate** without leakage — temporal / rolling-origin split against mandatory baselines.
+| <img src="docs/icons/model.svg" width="90"> | Choose a model structure | first-principles (port-Hamiltonian) model, or an empirical law |
+|---|---|---|
+| <img src="docs/icons/estimation.svg" width="90"> |Estimate | from data — unknown parameters and a bounded residual |
+| <img src="docs/icons/uncertainty.svg" width="90"> |Quantify uncertainty |calibrated, horizon-aware intervals |
+| <img src="docs/icons/verification.svg" width="90"> |validate | without leakage — temporal / rolling-origin split against mandatory baselines |
 
 ---
 
