@@ -97,6 +97,7 @@ You choose **how much first-principles structure you can write down**. Everythin
   <td>without leakage — temporal / rolling-origin split against mandatory baselines</td>
 </tr>
 </table>
+
 ---
 
 ## Installation
