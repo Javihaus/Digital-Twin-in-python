@@ -23,19 +23,31 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 
 ## Overview
 
-Otwin builds **AI-powered digital twins** that stay **physics-informed**: you bring the physical *model structure* you trust, otwin **estimates** the rest from data, attaches **calibrated uncertainty**, and **validates** without leakage — CPU-first.
+Otwin builds **AI-powered digital twins** that stay **physics-informed**: you bring the physical *model structure* you know, Otwin **estimates** the rest from data, attaches **calibrated uncertainty**, and **validates** without leakage.
 
-Engineers know three modelling options:
+In engineering we have three modelling options:
 
-||||
-|:-:|---|---|
-|<img src="docs/icons/white-box.svg" width="90">|**White-box**|  the whole model comes from first principles; every equation and parameter is known|
-|<img src="docs/icons/grey-box.svg" width="90">|**Grey-box**|  you fix the structure from a physical model and estimate the unknown parts from data|
-|<img src="docs/icons/black-box.svg" width="90">|**Black-box**|  data decides everything (neural networks, generic ML) 
+<table>
+<tr>
+  <td align="center"><img src="docs/icons/white-box.svg" width="90"></td>
+  <td><strong>White-box</strong></td>
+  <td>the whole model comes from first principles; every equation and parameter is known</td>
+</tr>
+<tr>
+  <td align="center"><img src="docs/icons/grey-box.svg" width="90"></td>
+  <td><strong>Grey-box</strong></td>
+  <td>you fix the structure from a physical model and estimate the unknown parts from data</td>
+</tr>
+<tr>
+  <td align="center"><img src="docs/icons/black-box.svg" width="90"></td>
+  <td><strong>Black-box</strong></td>
+  <td>data decides everything (neural networks, generic ML)</td>
+</tr>
+</table>
 
-otwin works on the **physics-informed side — from white-box to grey-box**. The black-box end is where latent-state *world models* live; otwin is their **observable-state, physics-grounded counterpart** — the digital-twins ∩ world-models intersection it targets.
+Otwin works on the **physics-informed side — from white-box to grey-box**. The black-box end is where current latent-state *world models* live; Otwin is their **observable-state, physics-grounded counterpart** — the digital-twins-world-models intersection it targets.
 
-Why structure matters: black-box models are accurate at *interpolation* — predicting inside the range of data they have seen — but pushed **beyond that data** (long horizons, or operating conditions never seen in training) they drift and break physical laws. The physical structure keeps long-range forecasts physically valid; the calibrated interval says how much to trust each one — a stated 90% interval is checked to really hold ~90% of the time.
+Physical Models or World Models? Black-box models are accurate at *interpolation* — predicting inside the range of data they have seen — but pushed **beyond that data** (long horizons, or operating conditions never seen in training) they drift and break physical laws. The physical structure keeps long-range forecasts physically valid; the calibrated interval says how much to trust each one — a stated 90% interval is checked to really hold ~90% of the time.
 
 ---
 
@@ -47,7 +59,7 @@ You choose **how much first-principles structure you can write down**. Everythin
 
 <img src="assets/overview.png" alt="otwin grey-box digital twins: choose a model structure, then estimate, quantify uncertainty, validate" width="900">
 
-<sub>otwin builds grey-box digital twins: choose a model structure (first-principles or empirical), then one workflow — estimate, quantify uncertainty, validate.</sub>
+<sub>Otwin builds white-box and grey-box digital twins: choose a model structure (first-principles or empirical), then one workflow — estimate, quantify uncertainty, validate.</sub>
 
 </div>
 
@@ -58,20 +70,33 @@ You choose **how much first-principles structure you can write down**. Everythin
 
 > The first-principles models describe a system as components that **exchange energy through ports** — so conservation and passivity hold by construction, not by hope. **Battery State-of-Health sits at the empirical end: a degradation curve, _not_ an energy-conserving system.** Confusing the two is the most common conceptual error.
 
-> **What otwin is not.** otwin models *observable-state, structure-known* dynamics — the white/grey-box side. The black-box side (latent-state ML *world models*) learns dynamics with no imposed physics. Same substrate (state, conservation, dissipation, coupling); opposite ends of the white-box ↔ black-box axis.
-
 ---
 
 ## The Otwin workflow
 
 
-||||
-|:-:|---|---|
-| <img src="docs/icons/model.svg" width="90"> |**Choose a model structure**| first-principles (port-Hamiltonian) model, or an empirical law |
-| <img src="docs/icons/estimation.svg" width="90"> |**Estimate**| from data — unknown parameters and a bounded residual |
-| <img src="docs/icons/uncertainty.svg" width="90"> |**Quantify uncertainty**|calibrated, horizon-aware intervals |
-| <img src="docs/icons/verification.svg" width="90"> |**validate**| without leakage — temporal / rolling-origin split against mandatory baselines |
-
+<table>
+<tr>
+  <td align="center"><img src="docs/icons/model.svg" width="90"></td>
+  <td><strong>Choose a model structure</strong></td>
+  <td>first-principles (port-Hamiltonian) model, or an empirical law</td>
+</tr>
+<tr>
+  <td align="center"><img src="docs/icons/estimation.svg" width="90"></td>
+  <td><strong>Estimate</strong></td>
+  <td>from data — unknown parameters and a bounded residual</td>
+</tr>
+<tr>
+  <td align="center"><img src="docs/icons/uncertainty.svg" width="90"></td>
+  <td><strong>Quantify uncertainty</strong></td>
+  <td>calibrated, horizon-aware intervals</td>
+</tr>
+<tr>
+  <td align="center"><img src="docs/icons/verification.svg" width="90"></td>
+  <td><strong>Validate</strong></td>
+  <td>without leakage — temporal / rolling-origin split against mandatory baselines</td>
+</tr>
+</table>
 ---
 
 ## Installation
