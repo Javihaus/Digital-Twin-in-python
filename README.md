@@ -239,21 +239,33 @@ See `examples/` for full runnable code.
 ### 1. Water tank (first-principles, port-Hamiltonian)
 White-box structure preservation (energy, dissipation) with leakage-free validation. See [`examples/water_tank_phs`](examples/water_tank_phs).
 
+<div align="center">
+  
 <img src="assets/tank_block.png" alt="Water tank block diagram: model structure, structure-preserving forecast, validate" width="900">
 
+</div>
+  
 <sub>A first-principles (white-box) twin: the structure-preserving forecast keeps energy physical; validated against a persistence baseline.</sub>
 
 ### 2. Battery State-of-Health (empirical-law model)
 NASA battery fleet: SoH / Remaining-Useful-Life forecasting with an empirical fade-law structure, an estimated bounded residual, and conformal intervals. **Not** port-Hamiltonian — the empirical end of grey-box. See [`examples/battery_soh`](examples/battery_soh).
 
-<img src="assets/battery_block.png" alt="Battery State-of-Health block diagram: fade-law model, estimate residual, calibrated band, validate" width="980">
+<div align="center">
+
+<img src="assets/battery_block.png" alt="Battery State-of-Health block diagram: fade-law model, estimate residual, calibrated band, validate" width="900">
+
+</div>
 
 <sub>An empirical (grey-box) twin: a transparent fade law + an estimated residual + a calibrated band; validated against baselines.</sub>
 
 ### 3. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
 The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for peak shaving and energy arbitrage. Shows that **calibrated uncertainty** is what turns predictive maintenance into trustworthy real-time optimization: the robust plan hits its 90% feasibility target at near-maximal value, while a naive plan over-promises every day. See [`examples/grid_storage_dispatch`](examples/grid_storage_dispatch).
 
+<div align="center">
+
 <img src="assets/grid_block.png" alt="Grid storage dispatch block diagram: SoH twin feeds the MPC optimizer in a receding-horizon loop" width="900">
+
+</div>
 
 <sub>Predictive maintenance feeds real-time optimization — the calibrated SoH twin makes the dispatch trustworthy (re-planned each step).</sub>
 
