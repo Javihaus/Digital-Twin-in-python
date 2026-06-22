@@ -411,7 +411,7 @@ If you use otwin in research, please cite:
 }
 ```
 
-See [CITATIONS.md](CITATIONS.md) for all scientific references (status: VERIFIED / UNVERIFIED).
+See [CITATIONS.md](CITATIONS.md) for all scientific references.
 
 ---
 
