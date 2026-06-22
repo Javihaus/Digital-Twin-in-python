@@ -64,7 +64,7 @@ You choose **how much first-principles structure you can write down**. Everythin
 
 One workflow, whether your model structure is first-principles or empirical — **estimate → validate → forecast**:
 
-1. **Choose a model structure** — a first-principles (port-Hamiltonian) model, or an empirical law.
+1. <img src="assets/icons/model.svg" width="90"> **Choose a model structure** — a first-principles (port-Hamiltonian) model, or an empirical law.
 2. **Estimate** it from data — unknown parameters and a bounded residual.
 3. **Quantify uncertainty** — calibrated, horizon-aware intervals.
 4. **Validate** without leakage — temporal / rolling-origin split against mandatory baselines.
