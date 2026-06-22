@@ -65,7 +65,7 @@ You choose **how much first-principles structure you can write down**. Everythin
 
 | If you can... | Model structure | Example |
 |---|---|---|
-| write the system's dynamics from physics | **First-principles (port-Hamiltonian)** | water tank, RC circuit, mass-spring |
+| write the system's dynamics from physics | **First-principles (port-Hamiltonian)** | water tank, DC motor, pumped-hydro storage |
 | only state a coarse trend it follows | **Empirical law + estimated residual** | battery State-of-Health, fatigue |
 
 > The first-principles models describe a system as components that **exchange energy through ports** — so conservation and passivity hold by construction, not by hope. **Battery State-of-Health sits at the empirical end: a degradation curve, _not_ an energy-conserving system.** Confusing the two is the most common conceptual error.
@@ -303,7 +303,18 @@ A multi-domain (electrical + mechanical) twin: two energy stores coupled by the 
 
 <sub><b>Result.</b> Spin-up under a constant voltage, then coast-down. The numeric angular velocity and current converge exactly to the closed-form steady state (dashed) — the model is validated against an analytic solution, not fitted to data.</sub>
 
-### 3. Battery State-of-Health (empirical-law model)
+### 3. Pumped-hydro storage (first-principles, white-box, grid-scale)
+A white-box twin of the dominant grid-scale storage technology (~95% of the world's installed long-duration storage). Two reservoirs store gravitational potential energy; a reversible pump-turbine moves water between them. The store is conservative by construction (`J = 0`, penstock `R` PSD), so it is validated against closed-form answers: the simulated **round-trip efficiency matches `η_pump · η_turbine` to within 0.05%**, energy is held constant while idle (≈0.006% self-discharge over 3 h), and with the valve open it is passive. The storage *medium* decides the model class — mechanical/hydraulic storage is white-box, electrochemical aging (below) is not. See [`examples/pumped_hydro`](examples/pumped_hydro).
+
+<div align="center">
+
+<img src="examples/pumped_hydro/figures/pumped_hydro_energy.png" alt="Pumped hydro: stored energy rises on charge, holds while idle, falls on discharge; round-trip efficiency matches the closed form" width="760">
+
+</div>
+
+<sub><b>Result.</b> A ≈720 MWh charge → hold → generate cycle. The stored energy is exactly conserved while idle, and the numeric round-trip efficiency (≈0.810) matches the closed-form `η_pump·η_turbine` — validated against an analytic answer, no fitting.</sub>
+
+### 4. Battery State-of-Health (empirical-law model)
 NASA battery fleet: SoH / Remaining-Useful-Life forecasting with a mechanistic fade-law structure (the Wang throughput power law `SoH = 1 − c·n^z`, whose exponent separates diffusion-limited SEI growth at `z ≈ 0.5` from linear wear at `z ≈ 1`), an estimated bounded residual, and conformal intervals. **Not** port-Hamiltonian — the empirical end of grey-box. See [`examples/battery_soh`](examples/battery_soh).
 
 <div align="center">
@@ -322,7 +333,7 @@ NASA battery fleet: SoH / Remaining-Useful-Life forecasting with a mechanistic f
 
 <sub><b>Result.</b> From the split point onward, the physics-informed hybrid tracks the true degradation down through the 80% end-of-life line, while a data-only model (GP) extrapolates the wrong way. The 90% interval is calibrated — it actually covers the realised path.</sub>
 
-### 4. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
+### 5. Grid-scale storage dispatch (predictive maintenance **and** real-time optimization)
 The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for peak shaving and energy arbitrage. Shows that **calibrated uncertainty** is what turns predictive maintenance into trustworthy real-time optimization: the robust plan hits its 90% feasibility target at near-maximal value, while a naive plan over-promises every day. See [`examples/grid_storage_dispatch`](examples/grid_storage_dispatch).
 
 <div align="center">
@@ -348,7 +359,7 @@ The calibrated SoH model feeds a receding-horizon (MPC) dispatch optimizer for p
 ## Documentation
 
 - **Get started:** [GETTING_STARTED.md](GETTING_STARTED.md)
-- **Examples:** [`examples/`](examples) — water tank and DC motor (first-principles), battery SoH (empirical), grid-scale storage dispatch
+- **Examples:** [`examples/`](examples) — water tank, DC motor and pumped-hydro storage (first-principles), battery SoH (empirical), grid-scale storage dispatch
 - **Citations:** [CITATIONS.md](CITATIONS.md) (references with VERIFIED / UNVERIFIED status)
 - **API docs (Sphinx):** source in [`docs/`](docs) — build with `make -C docs html`
 

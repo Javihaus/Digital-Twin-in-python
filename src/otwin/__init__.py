@@ -6,7 +6,8 @@ Public API (stable):
 - DigitalTwin: Main twin interface
 - evaluate: Evaluation protocol
 - PortHamiltonianSystem: Analytic PHS
-- systems.library: Reference systems (water_tank, mass_spring_damper, dc_motor)
+- systems.library: Reference systems (water_tank, mass_spring_damper, dc_motor,
+  pumped_hydro)
 """
 
 __version__ = "2.0.0-alpha"
@@ -19,6 +20,7 @@ from otwin.systems import (
     PortHamiltonianSystem,
     dc_motor,
     mass_spring_damper,
+    pumped_hydro,
     water_tank,
 )
 
@@ -43,6 +45,7 @@ __all__ = [
     "water_tank",
     "mass_spring_damper",
     "dc_motor",
+    "pumped_hydro",
     "Ensemble",
     "PortHamiltonianNN",
     "IrreversiblePHS",

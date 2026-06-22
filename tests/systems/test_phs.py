@@ -7,7 +7,12 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 from hypothesis.extra.numpy import arrays
 
-from otwin.systems.library import dc_motor, mass_spring_damper, water_tank
+from otwin.systems.library import (
+    dc_motor,
+    mass_spring_damper,
+    pumped_hydro,
+    water_tank,
+)
 from otwin.systems.phs import PortHamiltonianSystem
 
 
@@ -278,3 +283,116 @@ def test_dc_motor_steady_state_matches_closed_form() -> None:
 
     assert np.isclose(omega_num, omega_ss, rtol=1e-3)
     assert np.isclose(I_num, I_ss, rtol=1e-3)
+
+
+@given(
+    v_u=st.floats(min_value=1.0e5, max_value=2.0e6),
+    v_l=st.floats(min_value=1.0e6, max_value=2.0e7),
+)
+@settings(deadline=500)
+def test_pumped_hydro_structure(v_u: float, v_l: float) -> None:
+    """Property: pumped hydro has J = 0 (skew) and R PSD (penstock Laplacian)."""
+    plant = pumped_hydro()
+    x = np.array([v_u, v_l])
+
+    structure = plant.check_structure(x)
+
+    is_skew, violation = structure["J_skew"]
+    assert is_skew, f"J not skew-symmetric, violation: {violation}"
+
+    is_psd, min_eig = structure["R_psd"]
+    assert is_psd, f"R not PSD, min eigenvalue: {min_eig}"
+
+
+@given(
+    v_u=st.floats(min_value=1.0e5, max_value=2.0e6),
+    v_l=st.floats(min_value=1.0e6, max_value=2.0e7),
+)
+@settings(deadline=500)
+def test_pumped_hydro_passivity(v_u: float, v_l: float) -> None:
+    """Property: with the pump off the stored energy is non-increasing."""
+    plant = pumped_hydro()
+    x = np.array([v_u, v_l])
+    u = np.array([0.0])
+
+    pb = plant.power_balance(x, u)
+    assert pb["dH_dt"] <= 1e-6, f"Energy increased with pump off: dH/dt={pb['dH_dt']}"
+
+
+def test_pumped_hydro_conservation_when_sealed() -> None:
+    """Integration: as the penstock seals (R -> 0), an idle store conserves energy."""
+    from otwin.integrate import integrate_with_inputs
+
+    plant = pumped_hydro(R_penstock=1.0e12)  # valve effectively closed
+    x0 = np.array([1.0e6, 1.0e7])
+    t_eval = np.linspace(0, 6 * 3600.0, 200)
+    u = np.zeros((200, 1))  # pump off
+
+    def dynamics(
+        t: float, x: npt.NDArray[np.floating], u: npt.NDArray[np.floating]
+    ) -> npt.NDArray[np.floating]:
+        return plant.dynamics(x, u)
+
+    result = integrate_with_inputs(dynamics, x0, t_eval, u)
+    assert result["success"]
+
+    energies = np.array([plant.energy(x) for x in result["x"]])
+    # essentially constant: relative drift over 6 hours is negligible
+    drift = abs(energies[-1] - energies[0]) / energies[0]
+    assert drift < 1e-4, f"Sealed idle store did not conserve energy: drift={drift}"
+
+
+def test_pumped_hydro_round_trip_efficiency() -> None:
+    """Integration: charge then fully discharge; round trip = eta_pump * eta_turbine.
+
+    Conversion losses live at the power port (pump/turbine efficiency); the store
+    itself is conservative, so the end-to-end round-trip efficiency equals the
+    closed-form product of the two conversion efficiencies.
+    """
+    from scipy.integrate import solve_ivp
+
+    rho, g, a_u, a_l, z_u = 1000.0, 9.81, 5.0e4, 5.0e6, 300.0
+    eta_p, eta_t, p_set = 0.90, 0.90, 100.0e6
+    plant = pumped_hydro(A_u=a_u, A_l=a_l, z_u=z_u, g=g, rho=rho)
+    v_u0 = 2.0e5
+    x0 = np.array([v_u0, 1.2e7])
+
+    def head(x: npt.NDArray[np.floating]) -> float:
+        return float((z_u + x[0] / a_u) - (x[1] / a_l))
+
+    def flow(x: npt.NDArray[np.floating], p: float) -> float:
+        if p > 0:
+            return eta_p * p / (rho * g * head(x))
+        if p < 0:
+            return p / (eta_t * rho * g * head(x))
+        return 0.0
+
+    def make_dyn(p: float):
+        def dyn(t: float, x: npt.NDArray[np.floating]) -> npt.NDArray[np.floating]:
+            return plant.dynamics(x, np.array([flow(x, p)]))
+
+        return dyn
+
+    hr = 3600.0
+    charge = solve_ivp(
+        make_dyn(p_set), (0, 8 * hr), x0, max_step=60.0, rtol=1e-8, atol=1e-3
+    )
+    e_in = p_set * charge.t[-1]
+
+    def back(t: float, x: npt.NDArray[np.floating]) -> float:
+        return x[0] - v_u0
+
+    back.terminal = True
+    back.direction = -1.0
+    discharge = solve_ivp(
+        make_dyn(-p_set),
+        (0, 12 * hr),
+        charge.y[:, -1],
+        max_step=60.0,
+        rtol=1e-8,
+        atol=1e-3,
+        events=back,
+    )
+    e_out = p_set * discharge.t[-1]
+
+    assert np.isclose(e_out / e_in, eta_p * eta_t, rtol=2e-3)

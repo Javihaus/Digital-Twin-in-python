@@ -38,6 +38,20 @@ application to the CSTR.* Chemical Engineering Science, 89, 223–234.
 
 ---
 
+## Grid-scale storage (pumped hydro)
+
+### A review of pumped hydro energy storage
+**Reference:** Blakers, A., Stocks, M., Lu, B., & Cheng, C. (2021). *A review of
+pumped hydro energy storage.* Progress in Energy, 3(2), 022003. DOI:
+10.1088/2516-1083/abeb5b. **Status: VERIFIED.**
+**Use:** Source for the pumped-hydro context in `examples/pumped_hydro` — pumped
+hydro as the dominant grid-scale / long-duration storage technology (~95% of
+installed capacity) with ~70–85% round-trip efficiency. The port-Hamiltonian
+model itself (gravitational PE store + reversible pump-turbine port) is standard
+first-principles hydraulics.
+
+---
+
 ## Battery degradation (State-of-Health)
 
 ### Cycle-life model for graphite-LiFePO4 cells
