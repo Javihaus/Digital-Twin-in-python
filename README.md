@@ -308,6 +308,14 @@ A white-box twin of the dominant grid-scale storage technology (~95% of the worl
 
 <div align="center">
 
+<img src="assets/pumped_hydro.png" alt="Pumped-hydro block diagram: two reservoirs and a reversible pump-turbine power port; gravitational-energy store" width="900">
+
+</div>
+
+<sub>A first-principles (white-box) twin: a conservative gravitational-energy store with a reversible pump-turbine power port (`J = 0`, penstock `R` PSD, `g = [1, −1]ᵀ`).</sub>
+
+<div align="center">
+
 <img src="examples/pumped_hydro/figures/pumped_hydro_energy.png" alt="Pumped hydro: stored energy rises on charge, holds while idle, falls on discharge; round-trip efficiency matches the closed form" width="760">
 
 </div>

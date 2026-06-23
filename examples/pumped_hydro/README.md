@@ -1,5 +1,7 @@
 # Pumped-hydro storage — first-principles model (white-box, grid-scale)
 
+![Pumped-hydro — port-Hamiltonian schematic](../../assets/pumped_hydro_block.svg)
+
 A **white-box** digital twin of the dominant grid-scale storage technology.
 Pumped hydro is ~95% of the world's installed long-duration storage (~200 GW);
 it stores energy as the gravitational potential energy of water lifted between
