@@ -335,7 +335,7 @@ NASA battery fleet: SoH / Remaining-Useful-Life forecasting with a mechanistic f
 
 <div align="center">
 
-<img src="examples/battery_soh/figures/10_zoom_horizons.png" alt="Battery SoH forecast: physics-informed hybrid tracks the true decay to end-of-life while a data-only model diverges" width="900">
+<img src="examples/battery_soh/figures/01_hero_forecast.png" alt="Battery SoH forecast: physics-informed hybrid tracks the true decay to end-of-life while a data-only model diverges" width="900">
 
 </div>
 
