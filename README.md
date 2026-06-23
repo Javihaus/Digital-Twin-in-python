@@ -308,7 +308,7 @@ A white-box twin of the dominant grid-scale storage technology (~95% of the worl
 
 <div align="center">
 
-<img src="assets/pumped_hydro.png" alt="Pumped-hydro block diagram: two reservoirs and a reversible pump-turbine power port; gravitational-energy store" width="900">
+<img src="assets/storage.png" alt="Pumped-hydro block diagram: two reservoirs and a reversible pump-turbine power port; gravitational-energy store" width="900">
 
 </div>
 
