@@ -10,7 +10,7 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 
 [![CI](https://img.shields.io/github/actions/workflow/status/Javihaus/otwin/ci.yml?style=flat-square&label=CI)](https://github.com/Javihaus/otwin/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](https://opensource.org/licenses/MIT)
+[![License: Apache 2.0]([https://img.shields.io/badge/License-MIT-yellow?style=flat-square](https://img.shields.io/badge/license-Apache%202.0-brightgreen?style=flat))](https://opensource.org/licenses/apache)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000?style=flat-square)](https://github.com/psf/black)
 [![Typed: mypy](https://img.shields.io/badge/mypy-strict-blue?style=flat-square)](http://mypy-lang.org/)
 [![Linter: ruff](https://img.shields.io/badge/linter-ruff-red?style=flat-square)](https://github.com/astral-sh/ruff)
