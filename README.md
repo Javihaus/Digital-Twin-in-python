@@ -13,7 +13,7 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-brightgreen?style=flat-square)](https://opensource.org/licenses/apache)
 [![Stars](https://img.shields.io/github/stars/groundlens-dev/otwin?style=flat-square&label=Stars)](https://github.com/groundlens-dev/otwin/stargazers)
 [![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/groundlens-dev/otwin?style=flat-square&label=OpenSSF%20Scorecard)](https://scorecard.dev/viewer/?uri=github.com/groundlens-dev/otwin)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13390/badge)](https://www.bestpractices.dev/projects/13390)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13420/badge)](https://www.bestpractices.dev/projects/13420)
 
 </div>
 
