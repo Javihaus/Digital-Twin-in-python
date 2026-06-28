@@ -8,11 +8,11 @@
 
 Composable, physics-informed digital twins with calibrated uncertainty and leakage-free validation by default — lightweight, CPU-first.
 
-[![CI](https://img.shields.io/github/actions/workflow/status/Javihaus/otwin/ci.yml?style=flat-square&label=CI)](https://github.com/Javihaus/otwin/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/groundlens-dev/otwin/ci.yml?style=flat-square&label=CI)](https://github.com/groundlens-dev/otwin/actions)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue?style=flat-square)](https://www.python.org/downloads/)
 [![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-brightgreen?style=flat-square)](https://opensource.org/licenses/apache)
-[![Stars](https://img.shields.io/github/stars/Javihaus/otwin?style=flat-square&label=Stars)](https://github.com/Javihaus/otwin/stargazers)
-[![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/groundlens-dev/groundlens?style=flat-square&label=OpenSSF%20Scorecard)](https://scorecard.dev/viewer/?uri=github.com/groundlens-dev/groundlens)
+[![Stars](https://img.shields.io/github/stars/groundlens-dev/otwin?style=flat-square&label=Stars)](https://github.com/groundlens-dev/otwin/stargazers)
+[![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/groundlens-dev/otwin?style=flat-square&label=OpenSSF%20Scorecard)](https://scorecard.dev/viewer/?uri=github.com/groundlens-dev/otwin)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13390/badge)](https://www.bestpractices.dev/projects/13390)
 
 </div>
@@ -103,7 +103,7 @@ You choose **how much first-principles structure you can write down**. Everythin
 **Core (numpy + scipy only):**
 ```bash
 # For now, until first release:
-pip install git+https://github.com/Javihaus/otwin.git@v2
+pip install git+https://github.com/groundlens-dev/otwin.git@v2
 ```
 
 **With optional extras:**
@@ -397,7 +397,7 @@ Contributions welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 **Development setup:**
 ```bash
-git clone https://github.com/Javihaus/otwin.git
+git clone https://github.com/groundlens-dev/otwin.git
 cd otwin
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
@@ -424,7 +424,7 @@ If you use otwin in research, please cite:
   author = {Marin, Javier},
   year = {2025},
   version = {2.0.0-alpha},
-  url = {https://github.com/Javihaus/otwin}
+  url = {https://github.com/groundlens-dev/otwin}
 }
 ```
 
@@ -434,7 +434,7 @@ See [CITATIONS.md](CITATIONS.md) for all scientific references.
 
 ## License
 
-MIT License. See [LICENSE](LICENSE).
+Apache License 2.0. See [LICENSE](LICENSE).
 
 ---
 
