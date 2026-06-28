@@ -19,7 +19,7 @@ sphinx-rtd-theme>=1.0.0
 
 # Jupyter
 jupyterlab>=3.0.0
-ipywidgets>=7.6.0
+ipywidgets>=8.1.8
 
 # Additional utilities
 psutil>=5.7.0
