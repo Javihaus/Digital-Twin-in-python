@@ -15,6 +15,7 @@ Composable, physics-informed digital twins with calibrated uncertainty and leaka
 [![OpenSSF Scorecard](https://img.shields.io/ossf-scorecard/github.com/groundlens-dev/otwin?style=flat-square&label=OpenSSF%20Scorecard)](https://scorecard.dev/viewer/?uri=github.com/groundlens-dev/otwin)
 [![OpenSSF Best Practices](https://www.bestpractices.dev/projects/13420/badge)](https://www.bestpractices.dev/projects/13420)
 
+
 </div>
 
 ---
