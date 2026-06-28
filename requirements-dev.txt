@@ -22,4 +22,4 @@ jupyterlab>=3.0.0
 ipywidgets>=7.6.0
 
 # Additional utilities
-psutil>=5.7.0
+psutil>=7.2.2
